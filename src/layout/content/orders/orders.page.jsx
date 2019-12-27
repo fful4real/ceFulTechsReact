@@ -2,8 +2,8 @@ import React from 'react'
 import OrdersReports from './orders-reports.component'
 import OrdersAnalysis from './orders-analysis.component'
 import OrdersHeader from './orders-header.component'
-import LastTenTransactionsList from '../dashboard/last-transactions/last-ten-transactions-list.component'
 import './orders.styles.scss'
+import LastTenOrdersList from './last-ten-orders/last-ten-orders-list.component'
 
 const OrdersPage = () =>{
     return(
@@ -14,7 +14,7 @@ const OrdersPage = () =>{
                     <div className="col-xl-12">
                         <OrdersReports />
                         <OrdersAnalysis />
-                        <LastTenTransactionsList/>
+                        <LastTenOrdersList/>
                     </div>
                 </div>
             </div>

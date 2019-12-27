@@ -1,5 +1,5 @@
 import React from 'react'
-import PendingOrdersReport from './reports/pending-orders-report.component';
+import PendingOrdersReport from './reports/total-orders-report.component';
 import MonthsOrdersReport from './reports/months-orders-report.component';
 import ProcessedOrdersReport from './reports/processed-orders-report.component';
 import AbandonedOrdersReport from './reports/abandoned-orders-report.component';

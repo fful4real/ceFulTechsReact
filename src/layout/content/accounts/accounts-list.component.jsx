@@ -9,15 +9,14 @@ import IosCashOutline from 'react-ionicons/lib/IosCashOutline'
 import IosCalendarOutline from 'react-ionicons/lib/IosCalendarOutline'
 import IosPaperOutline from 'react-ionicons/lib/IosPaperOutline'
 // import MaterialIcon from 'react-material-iconic-font'
-// import MaterialIcon from '@material/react-material-icon';
 
 
 import {uid} from 'react-uid'
+import { connect } from 'react-redux'
 
-import AccountsData from './accounts.data'
-
-const AccountsList = ()=>{
-    
+const AccountsList = ({accountsData})=>{
+    const {accounts}=accountsData;
+    // console.log(accounts);
 
     return(
         <div className="card">
@@ -51,7 +50,7 @@ const AccountsList = ()=>{
                             </thead>
                             <tbody>
                                  {
-                                    AccountsData.map(({...accountData})=>(
+                                    accounts.map(({...accountData})=>(
                                         <AccountItem key={`account-${uid({...accountData})}`} {...accountData} />
                                     ))
                                 }
@@ -65,4 +64,8 @@ const AccountsList = ()=>{
     )
 }
 
-export default AccountsList;
+const mapStateToProps = rootReducerState =>({
+    accountsData:rootReducerState.accounts
+});
+
+export default connect(mapStateToProps)(AccountsList);

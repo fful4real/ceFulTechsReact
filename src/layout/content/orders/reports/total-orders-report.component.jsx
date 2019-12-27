@@ -1,7 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux';
+import { selectOrderCount, selectOrdersTotalAmount } from '../../../../redux/orders/orders.selectors';
 
-const TotalCustomersReport = ()=>{
+const TotalCustomersReport = ({ordersCount,ordersTotalAmount})=>{
 
+    console.log(ordersCount)
+    
     return(
         <div className="col-lg-3 col-md-6">
                 <div className="card card-sm">
@@ -15,8 +19,8 @@ const TotalCustomersReport = ()=>{
                             </div>
                         </div>
                         <div className="text-center">
-                            <span className="d-block display-4 text-dark mb-5">36.1K</span>
-                            <small className="d-block">1879 Customers for the month</small>
+                            <span className="d-block display-4 text-dark mb-5">{ordersCount}.6k</span>
+                            <small className="d-block">{ordersTotalAmount} Orders for the month</small>
                         </div>
                     </div>
                 </div>
@@ -24,4 +28,9 @@ const TotalCustomersReport = ()=>{
     )
 }
 
-export default TotalCustomersReport;
+const ordersState = rootReducerState =>({
+    ordersCount:selectOrderCount(rootReducerState),
+    ordersTotalAmount:selectOrdersTotalAmount(rootReducerState)
+})
+
+export default connect(ordersState)(TotalCustomersReport);

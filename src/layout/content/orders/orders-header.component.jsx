@@ -4,8 +4,10 @@ import IosListBoxOutline from 'react-ionicons/lib/IosListBoxOutline'
 import IosPaperOutline from 'react-ionicons/lib/IosPaperOutline'
 import { Button } from 'react-bootstrap';
 import CreateOrderModal from './create-order/create-order-modal.component';
+import { connect } from 'react-redux';
+import { createNewOrder } from '../../../redux/orders/orders.actions';
 
-const OrdersHeader = ()=>{
+const OrdersHeader = ({createNewOrder})=>{
     const [modalShow, setModalShow] = useState(false);
     return(
         <div className="hk-pg-header mb-10">
@@ -30,4 +32,7 @@ const OrdersHeader = ()=>{
     )
 }
 
-export default OrdersHeader;
+const mapDispatchToProps = dispatch =>({
+    createNewOrder: order => dispatch(createNewOrder(order))
+})
+export default connect(null,mapDispatchToProps)(OrdersHeader);
