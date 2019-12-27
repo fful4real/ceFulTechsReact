@@ -1,0 +1,110 @@
+@charset "UTF-8";
+/*------------------------------------------------------------------
+[Master Stylesheet]
+Project:	Deepor
+++++ Imports ++++
+++++ Reset ++++
+++++ Basic ++++
+
+	++CSS Basic++
+	++Padding++
+	++Margin++
+	++Background Colors++
+	++Text Colors++
+	++Border++
+	++Colors++
+	++Shadow++
+	++Font Size++	
+	++Font Weight++
+	++Text Case++
+	++Letter Spacing++
+	++Line Height++
+	++Width++
+	++Max Width++
+	++Min Width++
+	++Height++
+	++Max Height++
+	++Min Height++
+	++Hr++
+	++Opacity++
+	++Div Sizes++
+	++Z-Index++
+	++Loader++
+	++Scrollbar++
+	++Typography++
+	++Buttons++
+	++Wrapper++
+	++Grid++
+	++Section++
+	++Footer++
+	++Form++
+	++Inut group++
+	++Form validation++
+	++Select2++
+	++Tinymce++
+	++File Upload++
+	++Jquery Toggle++
+	++Form-Wizard++
+	++Popover++
+	++Accordion++
+	++Table++
+	++Data Table++
+	++Responsive Table++
+	++Morris Chart++
+	++Sparkline++
+	++Flot Chart++
+	++Peity chart++	
+	++Echats++
+	++Easy pie chart++
+	++Nestable++
+	++Modals++
+	++Sweet-alert++
+	++Notification++
+	++Tooltop++
+	++Images++  
+	++Icons++
+	++Checkbox++
+	++Radio++
+	++Carousel++
+	++Twitter slider++
+	++Color Pickr++
+	++Range Slider++
+	++Daterangepicker++
+	++Invoice++
+	++Faq++
+	++Profile++
+	++Activity++
+	++Widgets++
+	++Dropdown++
+	++Avatar++
+	++Pagination++
+	++Badge++
+	++List Group++
+	++Google Map++
+	++Vecotor Map++
+	++Progressbar++
+	++Chat UI++
+	++Email UI++
+	++Caledar++
+	++Auth pages++
+	++Gallery++
+	++Cropperjs++
+-------------------------------------------------------------------*/
+/****************************/
+/** Imports **/
+/****************************/
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons|Roboto:400,500,700);
+@import url(../../vendors/bootstrap/dist/css/bootstrap.min.css);
+@import url(font-awesome.min.css);
+@import url(ionicons.min.css);
+@import url(dripicons.css);
+@import url(glyphicons.css);
+@import url(themify-icons.css);
+@import url(animate.css);
+@import url(simple-line-icons.css);
+@import url(linea-icon.css);
+@import url(pe-icon-7-stroke.css);
+@import url(material-design-iconic-font.min.css);
+@import url(../../vendors/owl.carousel/dist/assets/owl.carousel.min.css);
+@import url(../../vendors/owl.carousel/dist/assets/owl.theme.default.min.css);
+/*__________________________________________________________________;*/
