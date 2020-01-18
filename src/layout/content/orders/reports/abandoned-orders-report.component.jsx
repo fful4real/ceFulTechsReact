@@ -1,27 +1,30 @@
 import React from 'react'
+import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
+import DisplayReport from '../../../../components/report/display-report';
+import { connect } from 'react-redux';
+import { selectIsFetching, selectPendingOrdersCount,selectPendingOrdersAmount } from '../../../../redux/orders/orders.selectors';
 
-const AbandonedOrdersReport = ()=>{
+const AbandonedOrdersReport = ({isFetching, theTitle="Pending Orders", ordersCount, pendingOrderAmount})=>{
 
-    return(
-        <div className="col-lg-3 col-md-6">
-                <div className="card card-sm">
-                    <div className="card-body">
-                        <div className="d-flex justify-content-between mb-5">
-                            <div>
-                                <span className="d-block font-15 text-dark font-weight-500">Abandoned Orders</span>
-                            </div>
-                            <div>
-                                <span className="text-success font-14 font-weight-500">-1%</span>
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <span className="d-block display-4 text-dark mb-5">0.5K</span>
-                            <small className="d-block">1879 Abandoned for the month</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    return isFetching?
+        (
+            <SpinnerDisplay title={theTitle} />
+        ):(
+            <DisplayReport
+                title = {theTitle}
+                value1={ordersCount}
+                value2={pendingOrderAmount}
+                subTitle=" pending"
+                incrementValue="+77"
+                incrementClass="info"
+            />
     )
 }
 
-export default AbandonedOrdersReport;
+const ordersState = rootReducerState =>({
+    ordersCount:selectPendingOrdersCount(rootReducerState),
+    pendingOrderAmount:selectPendingOrdersAmount(rootReducerState),
+    isFetching: selectIsFetching(rootReducerState)
+})
+
+export default connect(ordersState)(AbandonedOrdersReport);

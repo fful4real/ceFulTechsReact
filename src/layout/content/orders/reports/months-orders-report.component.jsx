@@ -1,27 +1,31 @@
 import React from 'react'
+import { selectIsFetching, selectOrderCountOfMonth, selectAmountForMonthOrders } from '../../../../redux/orders/orders.selectors';
+import { connect } from 'react-redux';
+import DisplayReport from '../../../../components/report/display-report';
+import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
 
-const MonthsOrdersReport = ()=>{
+const MonthsOrdersReport = ({isFetching,ordersCountOfMonth, ordersAmountOfMonth})=>{
 
-    return(
-        <div className="col-lg-3 col-md-6">
-                <div className="card card-sm">
-                    <div className="card-body">
-                        <div className="d-flex justify-content-between mb-5">
-                            <div>
-                                <span className="d-block font-15 text-dark font-weight-500">Orders of the Month</span>
-                            </div>
-                            <div>
-                                <span className="text-warning font-14 font-weight-500">+10%</span>
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <span className="d-block display-4 text-dark mb-5">23.7K</span>
-                            <small className="d-block">172,458 Order for the year</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    )
+    return isFetching?
+        (
+            <SpinnerDisplay title="Orders of the Month"/>
+        ):(
+            <DisplayReport 
+            title = "Orders of the Month"
+            value1={ordersCountOfMonth}
+            value2={ordersAmountOfMonth}
+            subTitle="for this month"
+            incrementValue="-30"
+            incrementClass="danger"
+            
+            />
+            )
 }
 
-export default MonthsOrdersReport;
+const ordersState = rootReducerState =>({
+    ordersCountOfMonth:selectOrderCountOfMonth(rootReducerState),
+    ordersAmountOfMonth:selectAmountForMonthOrders(rootReducerState),
+    isFetching: selectIsFetching(rootReducerState)
+})
+
+export default connect(ordersState)(MonthsOrdersReport);

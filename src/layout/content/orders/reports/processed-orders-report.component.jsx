@@ -1,27 +1,30 @@
 import React from 'react'
+import { selectIsFetching, selectProcessedOrdersCount, selectProcessedOrdersAmount } from '../../../../redux/orders/orders.selectors'
+import { connect } from 'react-redux'
+import DisplayReport from '../../../../components/report/display-report'
+import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay'
 
-const ProcessedOrdersReport = ()=>{
+const ProcessedOrdersReport = ({isFetching,ordersCount, processOrderAmount})=>{
 
-    return(
-        <div className="col-lg-3 col-md-6">
-                <div className="card card-sm">
-                    <div className="card-body">
-                        <div className="d-flex justify-content-between mb-5">
-                            <div>
-                                <span className="d-block font-15 text-dark font-weight-500">Processed Orders</span>
-                            </div>
-                            <div>
-                                <span className="text-danger font-14 font-weight-500">-10%</span>
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <span className="d-block display-4 text-dark mb-5">53.2K</span>
-                            <small className="d-block">37,645 Orders for last month</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    return isFetching?
+        (
+            <SpinnerDisplay title="Total Orders" />
+        ):(
+            <DisplayReport
+                title = "Processed Orders"
+                value1={ordersCount}
+                value2={processOrderAmount}
+                subTitle=" processed"
+                incrementValue="+13"
+                incrementClass="warning"
+            />
     )
 }
 
-export default ProcessedOrdersReport;
+const ordersState = rootReducerState =>({
+    ordersCount:selectProcessedOrdersCount(rootReducerState),
+    processOrderAmount:selectProcessedOrdersAmount(rootReducerState),
+    isFetching: selectIsFetching(rootReducerState)
+})
+
+export default connect(ordersState)(ProcessedOrdersReport);

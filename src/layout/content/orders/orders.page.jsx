@@ -6,11 +6,12 @@ import './orders.styles.scss'
 import LastTenOrdersList from './last-ten-orders/last-ten-orders-list.component'
 import { fetchOrdersAsync } from '../../../redux/orders/orders.actions'
 import { connect } from 'react-redux'
+import { selectOrderCount } from '../../../redux/orders/orders.selectors'
 
-const OrdersPage = ({fetchOrdersAsync}) =>{
+const OrdersPage = ({fetchOrdersAsync,ordersCount}) =>{
     // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    fetchOrdersAsync();
+    !ordersCount && fetchOrdersAsync();
   });
     return(
         <div className="hk-pg-wrapper">
@@ -33,4 +34,8 @@ const mapDispatchToProps = dispatch => ({
     fetchOrdersAsync: ()=>dispatch(fetchOrdersAsync())
 })
 
-export default connect(null, mapDispatchToProps)(OrdersPage);
+const ordersState = rootReducerState =>({
+    ordersCount:selectOrderCount(rootReducerState)
+})
+
+export default connect(ordersState, mapDispatchToProps)(OrdersPage);

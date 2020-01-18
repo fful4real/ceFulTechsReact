@@ -1,36 +1,30 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { selectOrderCount, selectOrdersTotalAmount } from '../../../../redux/orders/orders.selectors';
+import { selectOrderCount, selectOrdersTotalAmount, selectIsFetching } from '../../../../redux/orders/orders.selectors';
+import DisplayReport from '../../../../components/report/display-report';
+import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
 
-const TotalCustomersReport = ({ordersCount,ordersTotalAmount})=>{
-
-    console.log(ordersCount)
+const TotalCustomersReport = ({ordersCount,ordersTotalAmount, isFetching})=>{
     
-    return(
-        <div className="col-lg-3 col-md-6">
-                <div className="card card-sm">
-                    <div className="card-body">
-                        <div className="d-flex justify-content-between mb-5">
-                            <div>
-                                <span className="d-block font-15 text-dark font-weight-500">Total Orders</span>
-                            </div>
-                            <div>
-                                <span className="text-success font-14 font-weight-500">+10%</span>
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <span className="d-block display-4 text-dark mb-5">{ordersCount}.6k</span>
-                            <small className="d-block">{ordersTotalAmount} Orders for the month</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    return isFetching?
+        (
+            <SpinnerDisplay title="Total Orders" />
+        ):(
+            <DisplayReport
+                title = "Total Orders"
+                value1={ordersCount}
+                value2={ordersTotalAmount}
+                subTitle="for all orders"
+                incrementValue="+50"
+                incrementClass="success"
+            />
     )
 }
 
 const ordersState = rootReducerState =>({
     ordersCount:selectOrderCount(rootReducerState),
-    ordersTotalAmount:selectOrdersTotalAmount(rootReducerState)
+    ordersTotalAmount:selectOrdersTotalAmount(rootReducerState),
+    isFetching: selectIsFetching(rootReducerState)
 })
 
 export default connect(ordersState)(TotalCustomersReport);
