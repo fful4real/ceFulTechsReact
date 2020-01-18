@@ -3,15 +3,13 @@ import IosSearch from 'react-ionicons/lib/IosSearch'
 import IosPersonOutline from 'react-ionicons/lib/IosPersonOutline'
 import IosCashOutline from 'react-ionicons/lib/IosCashOutline'
 import IosCalendarOutline from 'react-ionicons/lib/IosCalendarOutline'
+import IosCalendar from 'react-ionicons/lib/IosCalendar'
 import IosStatsOutline from 'react-ionicons/lib/IosStatsOutline'
-import IosFlaskOutline from 'react-ionicons/lib/IosFlaskOutline'
 import IosImageOutline from 'react-ionicons/lib/IosImageOutline'
-import {uid} from 'react-uid'
 import LastTenOrdersItem from './last-ten-orders-item.component'
 import { connect } from 'react-redux'
 
 const LastTenOrdersList = ({ordersData:{orders}})=>{
-    
     const [searchString, setSearchString] = useState('');
 
     return(
@@ -37,21 +35,19 @@ const LastTenOrdersList = ({ordersData:{orders}})=>{
                         <table className="table table-sm table-hover mb-0 list-table">
                             <thead>
                                 <tr>
-                                    <th><IosImageOutline/><span>Image</span></th>
+                                    <th><IosImageOutline/><span>Order Reference</span></th>
                                     <th><IosPersonOutline/> <span>Customer Name</span></th>
                                     <th><IosCashOutline/><span> Amount</span></th>
                                     <th><IosStatsOutline/><span> Status</span></th>
-                                    <th><IosFlaskOutline/><span> Type</span></th>
+                                    <th><IosCalendar/><span> Created Date</span></th>
                                     <th><IosCalendarOutline /> <span>Modified Date</span></th>
                                 </tr>
                             </thead>
                             <tbody>
-                             {
-                                orders
-                                .filter(item=>item.customerName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
-                                .map(({...transactionItem})=>(
-                                        <LastTenOrdersItem key={`transaction-item-${uid({...transactionItem})}`} {...transactionItem} />
-                                    ))
+                                {
+                                    orders.map(order=>
+                                        <LastTenOrdersItem key={order.id} {...order} />
+                                    )
                                 }
                             </tbody>
                         </table>

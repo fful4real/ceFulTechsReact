@@ -1,9 +1,11 @@
-import OrdersData from "../../layout/content/orders/last-ten-orders/data";
 import OrderActionTypes from "./orders.types";
+import OrdersActionTypes from "../../layout/content/orders/orders.types";
 
 
 const INITIAL_STATE = {
-    orders:OrdersData
+    orders:[],
+    isFetching:false,
+    error:null
 }
 
 const ordersReducer = (state=INITIAL_STATE,action)=>{
@@ -12,6 +14,25 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 orders: [...state.orders,action.payload]
+            }
+        case OrdersActionTypes.FETCH_ORDERS_SUCCESS:
+            return{
+                ...state,
+                isFetching:false,
+                orders: action.payload
+            }
+        
+        case OrdersActionTypes.FETCH_ORDERS_START:
+            return{
+                ...state,
+                isFetching:true
+            }
+
+        case OrdersActionTypes.FETCH_ORDERS_FAILURE:
+            return{
+                ...state,
+                isFetching:false,
+                error: action.payload
             }
     
         default:
