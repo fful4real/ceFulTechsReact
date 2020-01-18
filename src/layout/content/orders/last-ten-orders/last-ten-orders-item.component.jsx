@@ -1,9 +1,11 @@
 import React from 'react'
+import { numberWithCommas, getDateIfDate } from '../../../../helpers/helper';
+import moment from 'moment';
 
-const LastTenOrdersItem = ({profileImgUrl,customerName,createdDate,transactionStatus,transactionType,modifiedDate})=>{
+const LastTenOrdersItem = ({profileImgUrl,orderRef,customer,amountOut,status,datec, datem})=>{
 
     let badgeColor;
-    switch (transactionStatus) {
+    switch (status.name) {
         case 'progress':
             badgeColor='primary';
             break;
@@ -15,18 +17,19 @@ const LastTenOrdersItem = ({profileImgUrl,customerName,createdDate,transactionSt
             break;
     
         default:
+            badgeColor='info';
             break;
     }
     return(
         <tr>
             <td>
-                <img className="img-fluid rounded" src={profileImgUrl} alt="icon"/>
+                {orderRef}
             </td>
-            <td>{customerName}</td>
-            <td>{createdDate}</td>
-            <td><span className={`badge badge-soft-${badgeColor}`}>{transactionStatus}</span></td>
-            <td>{transactionType}</td>
-            <td>{modifiedDate}</td>
+            <td>Felix</td>
+            <td>{numberWithCommas(amountOut)}</td>
+            <td><span className={`badge badge-soft-${badgeColor}`}>Status</span></td>
+            <td>{moment(datec).format("DD - MMM - YYYY")}</td>
+            <td>{moment(datem).format("DD - MMM - YYYY")}</td>
         </tr>
     )
 }
