@@ -7,14 +7,12 @@ import AccountsPage from './accounts/accounts.page'
 
 const ContentContainer = ()=> {
     return (
-        <>
         <Switch>
-            <Route exact path="/" component={DashBoard} />
-            <Route exact path="/orders" component={OrdersPage} />
-            <Route exact path="/customers" component={CustomersPage} />
-            <Route exact path="/accounts" component={AccountsPage} />
+            <Route path="/orders" component={OrdersPage} />
+            <Route path="/customers" component={CustomersPage} />
+            <Route path="/accounts" component={AccountsPage} />
+            <Route path="/" component={DashBoard} />
         </Switch>
-        </>
     )
 }
 

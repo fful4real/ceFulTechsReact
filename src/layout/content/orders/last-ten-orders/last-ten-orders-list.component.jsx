@@ -46,7 +46,9 @@ const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
                                 </tr>
                             </thead>
                             <tbody>
-                                <Spinner />
+                                <tr>
+                                    <td colSpan="6"><Spinner /></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -88,7 +90,7 @@ const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
                             <tbody>
                                 {
                                     orders.map(order=>
-                                        {console.log(order);return <LastTenOrdersItem key={order.id} {...order} />}
+                                         <LastTenOrdersItem key={order.id} {...order} />
                                     )
                                 }
                             </tbody>
