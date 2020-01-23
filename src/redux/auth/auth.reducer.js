@@ -5,7 +5,8 @@ const INITIAL_STATE = {
     token:null,
     userId:null,
     isLogging: false,
-    error:null
+    error:null,
+    isAuthenticated:false
 }
 
 const authReducer = (state=INITIAL_STATE,action)=>{
@@ -20,7 +21,16 @@ const authReducer = (state=INITIAL_STATE,action)=>{
                 ...state,
                 token: action.token,
                 userId: action.userId,
-                isLogging:false
+                isLogging:false,
+                isAuthenticated:true
+            }
+        case authActionTypes.USER_SET_AUTH:
+            return{
+                ...state,
+                token: action.token,
+                userId:action.userId,
+                isLogging:false,
+                isAuthenticated:true
             }
         
         case authActionTypes.USER_LOGIN_FAILURE:

@@ -2,8 +2,10 @@ import React from 'react'
 import Avatar10 from '../../../../assets/img/avatar10.jpg'
 import {Link} from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
+import { connect } from 'react-redux';
 
-const AuthenticationMenu = ()=> {
+const AuthenticationMenu = ({auth})=> {
+    const {isAuthenticated}=auth
     return (
         <li className="nav-item dropdown dropdown-authentication">
             <Nav.Link className="dropdown-toggle no-caret" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -15,7 +17,7 @@ const AuthenticationMenu = ()=> {
                         <span className="badge badge-success badge-indicator"></span>
                     </div>
                     <div className="media-body">
-                        <span>Felix FulTechs<i className="zmdi zmdi-chevron-down"></i></span>
+                        <span>{isAuthenticated&&"Welcome"} FulTechs<i className="zmdi zmdi-chevron-down"></i></span>
                     </div>
                 </div>
             </Nav.Link>
@@ -41,4 +43,8 @@ const AuthenticationMenu = ()=> {
     )
 };
 
-export default AuthenticationMenu;
+const mapStateToProps = rootReducerState =>({
+    auth:rootReducerState.auth
+});
+
+export default connect(mapStateToProps)(AuthenticationMenu);

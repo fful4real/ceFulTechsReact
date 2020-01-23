@@ -1,16 +1,15 @@
 import API_ROUTES from '../../api-route';
-import AxiosRequest from '../../axios-agent';
 import authActionTypes from "./auth.types";
-import axios from 'axios'
-// import { SubmissionError } from 'redux-form';
+import AxiosAgent from '../../axios-agent';
+import { SubmissionError } from 'redux-form';
 
 export const userLoginStart = ()=>({
     type: authActionTypes.USER_LOGIN_START,
 })
-export const userLoginSuccess = (token,userId) =>({
+export const userLoginSuccess = ({token,id}) =>({
     type: authActionTypes.USER_LOGIN_SUCCESS,
     token,
-    userId
+    userId:id
 })
 
 export const userLoginFailure = error =>({
@@ -18,35 +17,35 @@ export const userLoginFailure = error =>({
     payload: error
 })
 
+export const userSetAuth = ({token,userId}) =>({
+    type: authActionTypes.USER_SET_AUTH,
+    token,
+    userId
+
+})
+
 export const userLoginAttempt = (username, password)=>{
     const userCredentials = {username, password}
     console.log("Fetching User...")
     return dispatch =>{
         dispatch(userLoginStart());
-        AxiosRequest('post',API_ROUTES.login, null, userCredentials)
+        AxiosAgent.request('post',API_ROUTES.login, null, userCredentials)
         .then(resp => {
-            const token = resp.data.token;
-            axios.interceptors.request.use(
-                config => {
-                console.log(`${config.method.toUpperCase()} request sent to ${config.url}`);
-                return {
-                  ...config,
-                  headers: {
-                    Authorization:`Bearer ${token}`
-                  }
-                }
-                },
-                error => console.error(error)
-
-              );
-            dispatch(userLoginSuccess(token, null))
+            const {token, id} = resp.data
+            AxiosAgent.setToken(token);
             window.localStorage.setItem('token',token)
+            window.localStorage.setItem('userId',id)
+            dispatch(userLoginSuccess({token, id}))
         })
         .catch(error => {
-            dispatch(userLoginFailure(error))
-            // throw new SubmissionError({
-            //     error: "Username Or Password not correct!"
-            // });
+            if(error.validationErrors) {
+                console.log('Errorororor')
+                throw new SubmissionError(error.validationErrors)
+            } else {
+            // what you do about other communication errors is up to you
+                dispatch(userLoginFailure(error))
+                console.log(error.message)
+            }
         })
     }
 }

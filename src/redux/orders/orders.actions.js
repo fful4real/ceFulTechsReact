@@ -1,6 +1,6 @@
 import OrderActionTypes from "./orders.types";
 import OrdersActionTypes from "../../layout/content/orders/orders.types";
-import AxiosRequest from "../../axios-agent";
+import AxiosAgent from "../../axios-agent";
 
 export const createNewOrder = order =>({
     type: OrderActionTypes.CREATE_ORDER,
@@ -23,7 +23,7 @@ export const fetchOrdersAsync = ()=>{
 
     return dispatch =>{
         dispatch(fetchOrdersStart());
-        AxiosRequest('get','ce_orders', null, null)
+        AxiosAgent.request('get','ce_orders', null, null)
         .then(resp => {
             dispatch(fetchOrdersSuccess(resp.data['hydra:member']))
         })

@@ -4,7 +4,6 @@ import RenderField from '../../components/form/render-field'
 import { connect } from 'react-redux'
 import { userLoginAttempt } from '../../redux/auth/auth.action'
 import Spinner from '../../components/spinner/spinner'
-import { withRouter } from 'react-router-dom'
 
 
 class LoginForm extends Component {
@@ -14,15 +13,15 @@ class LoginForm extends Component {
     }
 
     render(){
-        const {handleSubmit, auth, history} = this.props;
+        const {handleSubmit, auth, error} = this.props;
 
-        auth.token&&history.push('/');
+        console.log(error)
 
         return(
             <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                     <p className="text-center mb-30">Sign in to your account.</p>
                     <div className="form-group">
-                        <Field name="username" placeholder="Username" disabled={auth.isLogging} label="Username" type="text" className="form-control" component={RenderField}/>
+                        <Field name="username" required={true} placeholder="Username" disabled={auth.isLogging} label="Username" type="text" className="form-control" component={RenderField}/>
                     </div>
                     <div className="form-group">
                         <div className="input-group">
@@ -54,6 +53,6 @@ const mapStateToProps = rootReducerState =>({
     auth:rootReducerState.auth
   });
 
-export default withRouter(reduxForm({
+export default reduxForm({
     form:'LoginForm'
-})(connect(mapStateToProps, mapDispatchToProps)(LoginForm)))
+})(connect(mapStateToProps, mapDispatchToProps)(LoginForm))
