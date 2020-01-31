@@ -1,13 +1,32 @@
+import CustomersActionTypes from "./customers.types";
+
+
 const INITIAL_STATE = {
-    customers:null
+    customers:[],
+    isFetchingCustomers:false,
+    error:null
 }
 
-const customersReducer = (state=INITIAL_STATE, action)=>{
+const customersReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
-        case 'CREATE_CUSTOMER':
+        case CustomersActionTypes.CUSTOMERS_FETCHING_SUCCESS:
             return{
                 ...state,
-                customers:action.payload
+                isFetchingCustomers:false,
+                customers: action.customers
+            }
+        
+        case CustomersActionTypes.CUSTOMERS_FETCHING_START:
+            return{
+                ...state,
+                isFetchingCustomers:true
+            }
+
+        case CustomersActionTypes.CUSTOMERS_FETCHING_FAILURE:
+            return{
+                ...state,
+                isFetchingCustomers:false,
+                error: action.error
             }
     
         default:

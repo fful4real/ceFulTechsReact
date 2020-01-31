@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap';
-import CreateOrderForm from './create-order-form.component';
+import CreateOrderForm from '../../../forms/create-order.form'
 
 const  CreateOrderModal =(props)=>{
     return (
@@ -11,7 +11,7 @@ const  CreateOrderModal =(props)=>{
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <CreateOrderForm/>
+          <CreateOrderForm />
         </Modal.Body>
         <Modal.Footer>
         </Modal.Footer>

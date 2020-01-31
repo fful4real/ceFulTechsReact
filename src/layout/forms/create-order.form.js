@@ -1,61 +1,12 @@
 import React from 'react'
-import Logo1 from '../../../../assets/img/logo1.jpg'
 import { Container, Row, Button, Form, Col, InputGroup } from 'react-bootstrap';
-import { createNewOrder } from '../../../../redux/orders/orders.actions';
-import $ from 'jquery'
-import { connect } from 'react-redux';
 
-
-const CreateOrderForm = ({createNewOrder})=> {
-
-    const formDataInit = {
-        customerNumber:'',
-        amountIn:'',
-        amountOut:'',
-        currencyIn:'',
-        currencyOut:'',
-        firstName:'',
-        lastName:'',
-        customerAddress:'',
-        customerTown:''
-    };
-
-    const [validated, setValidated] = React.useState(false);
-    const [formData, setformData] = React.useState(formDataInit);
-    
-
-
-    const handleChange = (event) =>{
-        setformData({...formData,[event.target.name]:event.target.value});
-    }
-
-    const handleSubmit = event => {
-        const form = event.currentTarget;
-        event.preventDefault();
-        setValidated(true);
-        if (form.checkValidity() === false) {
-            event.stopPropagation();
-        }else{
-            const newOrder= {
-                profileImgUrl: Logo1,
-                customerName:`${formData.firstName} ${formData.lastName}`,
-                createdDate:formData.amountIn,
-                transactionStatus:'progress',
-                transactionType:'Western Union',
-                modifiedDate:'13 Nov 2018',
-                orderId:''
-            };
-            createNewOrder(newOrder);
-            $('.close').trigger('click');
-        }
-
-    };
-
+const CreateOrderForm = ()=>{
 
     return (
         <Container>
             <Row>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form>
                     <Form.Row>
                         <Form.Group as={Col} md="4" controlId="validationPhoneNumber">
                         <Form.Label>Phone Number</Form.Label>
@@ -71,7 +22,6 @@ const CreateOrderForm = ({createNewOrder})=> {
                                 required
                                 aria-describedby="inputGroupPrepend"
                                 name="customerNumber"
-                                onChange={handleChange}
                             />
                             <Form.Control.Feedback type="invalid">
                                 Please provide valid Cameroon number.
@@ -86,7 +36,7 @@ const CreateOrderForm = ({createNewOrder})=> {
                                         <i className="icon-arrow-down-circle"></i>
                                     </InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control name="amountIn" onChange={handleChange} required type="text" placeholder="Amount In"/>
+                                    <Form.Control name="amountIn" required type="text" placeholder="Amount In"/>
                                     <InputGroup.Append>
                                     <InputGroup.Append>
                                         <select className="form-control" id="amountInCurrency" name="currencyIn">
@@ -107,7 +57,7 @@ const CreateOrderForm = ({createNewOrder})=> {
                                         <i className="icon-arrow-up-circle"></i>
                                     </InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control name="amountOut" onChange={handleChange} required type="text" placeholder="Amount Out"/>
+                                    <Form.Control name="amountOut" required type="text" placeholder="Amount Out"/>
                                     <InputGroup.Append>
                                     <InputGroup.Append>
                                         <select className="form-control" id="amountOutCurrency" name="currencyOut">
@@ -134,7 +84,7 @@ const CreateOrderForm = ({createNewOrder})=> {
                                 <i className="icon-user"></i>
                                 </InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control onChange={handleChange} name="firstName" required type="text" placeholder="First Name"/>
+                            <Form.Control name="firstName" required type="text" placeholder="First Name"/>
                             <Form.Control.Feedback type="invalid">
                                 Please enter a name for the customer.
                             </Form.Control.Feedback>
@@ -149,7 +99,7 @@ const CreateOrderForm = ({createNewOrder})=> {
                                     <i className="icon-user"></i>
                                 </InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control name="lastName" onChange={handleChange} type="text" placeholder="Last Name"/>
+                                <Form.Control name="lastName" type="text" placeholder="Last Name"/>
                             </InputGroup>
                         </Form.Group>
                     </Form.Row>
@@ -164,7 +114,7 @@ const CreateOrderForm = ({createNewOrder})=> {
                                     <i className="icon-location-pin"></i>
                                 </InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control onChange={handleChange} name="customerAddress" required type="text" placeholder="Address"/>
+                                <Form.Control name="customerAddress" required type="text" placeholder="Address"/>
                                 <InputGroup.Append>
                                     <select id="customerTown" className="form-control" name="customerTown">
                                         <option title="Douala">DLA</option>
@@ -186,10 +136,7 @@ const CreateOrderForm = ({createNewOrder})=> {
                 </Form>    
             </Row>
           </Container>
-        
     )
 }
-const mapDispatchToProps = dispatch =>({
-    createNewOrder: order => dispatch(createNewOrder(order)),
-})
-export default connect(null,mapDispatchToProps)(CreateOrderForm);
+
+export default CreateOrderForm

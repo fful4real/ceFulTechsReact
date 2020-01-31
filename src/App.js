@@ -9,13 +9,21 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import AxiosAgent from './axios-agent';
 import { userSetAuth } from './redux/auth/auth.action';
+import { userFetchingAttempt } from './redux/user/user.action';
+import { fetchCustomersAsync } from './redux/customers/customers.action';
 
 class App extends React.Component{
 
   componentDidMount() {
     FulTechs();
-    this.props.userSetAuth({token:window.localStorage.getItem('token'), userId:window.localStorage.getItem('userId')})
-    console.log(this.props.auth)
+    const userId = window.localStorage.getItem('userId');
+    this.props.userFetchingAttempt(userId)
+    this.props.fetchCustomersAsync()
+  }
+  UNSAFE_componentWillMount(){
+    const userId = window.localStorage.getItem('userId');
+    const token = window.localStorage.getItem('token')
+    this.props.userSetAuth({token, userId})
   }
 
   componentDidUpdate(prevprops){
@@ -47,7 +55,9 @@ const mapStateToProps = rootReducerState =>({
 });
 
 const mapDispatchToProps = {
-  userSetAuth
+  userSetAuth,
+  userFetchingAttempt,
+  fetchCustomersAsync
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);

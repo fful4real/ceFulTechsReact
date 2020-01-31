@@ -1,0 +1,7 @@
+const userActionTypes = {
+    USER_FETCHING_START : "USER_FETCHING_START",
+    USER_FETCHING_SUCCESS : "USER_FETCHING_SUCCESS",
+    USER_FETCHING_FAILURE : "USER_FETCHING_FAILURE",
+}
+
+export default userActionTypes

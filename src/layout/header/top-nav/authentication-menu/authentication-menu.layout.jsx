@@ -3,21 +3,33 @@ import Avatar10 from '../../../../assets/img/avatar10.jpg'
 import {Link} from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import { connect } from 'react-redux';
+import Spinner from '../../../../components/spinner/spinner';
 
-const AuthenticationMenu = ({auth})=> {
-    const {isAuthenticated}=auth
+const AuthenticationMenu = ({user})=> {
+    let firstName=null, lastName =null
+    if(user.userData!==null){
+        lastName = user.userData.lastName
+        firstName = user.userData.firstName
+    }
+
     return (
-        <li className="nav-item dropdown dropdown-authentication">
+    <li className="nav-item dropdown dropdown-authentication">
             <Nav.Link className="dropdown-toggle no-caret" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div className="media">
                     <div className="media-img-wrap">
                         <div className="avatar">
-                            <img src={Avatar10} alt="user" className="avatar-img rounded-circle"/>
+                            {!firstName?
+                                <Spinner spinnerHeight="40px" spinnerFontSize="1.7em" spinnerRight="0p" style={{right:'10px'}}/>:
+                                <img src={Avatar10} alt="user" className="avatar-img rounded-circle"/>
+                            }
                         </div>
-                        <span className="badge badge-success badge-indicator"></span>
+                        {firstName&&<span className="badge badge-success badge-indicator"></span>}
                     </div>
                     <div className="media-body">
-                        <span>{isAuthenticated&&"Welcome"} FulTechs<i className="zmdi zmdi-chevron-down"></i></span>
+                        {!firstName?
+                            <span>Loading...</span> :
+                            <span>{`${firstName}  ${lastName}`}<i className="zmdi zmdi-chevron-down"></i></span>
+                        }
                     </div>
                 </div>
             </Nav.Link>
@@ -38,13 +50,13 @@ const AuthenticationMenu = ({auth})=> {
                 <div className="dropdown-divider"></div>
                 <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-power"></i><span>Log out</span></Link>
             </div>
-        </li>
-               
-    )
+        </li>)
+    
 };
 
 const mapStateToProps = rootReducerState =>({
-    auth:rootReducerState.auth
+    user:rootReducerState.user,
+    auth:rootReducerState.aut
 });
 
 export default connect(mapStateToProps)(AuthenticationMenu);
