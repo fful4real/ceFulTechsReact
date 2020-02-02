@@ -13,13 +13,13 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
         case OrderActionTypes.CREATE_ORDER:
             return{
                 ...state,
-                orders: [...state.orders,action.payload]
+                orders: [...state.orders,action.order]
             }
         case OrdersActionTypes.FETCH_ORDERS_SUCCESS:
             return{
                 ...state,
                 isFetching:false,
-                orders: action.payload
+                orders: action.orders
             }
         
         case OrdersActionTypes.FETCH_ORDERS_START:

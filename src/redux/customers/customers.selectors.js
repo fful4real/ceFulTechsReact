@@ -3,38 +3,38 @@ import { numberWithCommas } from '../../helpers/helper';
 
 
 const selectCustomersState = state => state.customers;
-const selectOrders = createSelector(
+const selectCustomers = createSelector(
     [selectCustomersState],
-    orders => orders.orders
+    customers => customers.customers
 )
 
 export const selectIsFetching = createSelector(
     [selectCustomersState],
-    orders => orders.isFetching
+    customers => customers.isFetching
 )
 
-// Total Orders Selectors
+// Total Customers Selectors
 export const selectOrderCount = createSelector(
-    [selectOrders],
-    orders =>  orders.length
+    [selectCustomers],
+    customers =>  customers.length
 );
 
-export const selectOrdersTotalAmount = createSelector(
-    [selectOrders],
-    orders => {
-       const amount = orders.reduce((totalAmount,order)=>totalAmount+=parseInt(order.amountOut),0);
+export const selectCustomersTotalAmount = createSelector(
+    [selectCustomers],
+    customers => {
+       const amount = customers.reduce((totalAmount,order)=>totalAmount+=parseInt(order.amountOut),0);
 
        return numberWithCommas(amount)
     }
 )
 
 
-// Count Orders Of The Month Selectors
+// Count Customers Of The Month Selectors
 export const selectOrderCountOfMonth = createSelector(
-    [selectOrders],
-    orders => {
-        const numberOfOrdersForMonth = orders.reduce(
-            (totalOrders,order)=>{
+    [selectCustomers],
+    customers => {
+        const numberOfCustomersForMonth = customers.reduce(
+            (totalCustomers,order)=>{
                 const orderDate = new Date(order.datec);
                 const currentDate = new Date();
 
@@ -42,23 +42,23 @@ export const selectOrderCountOfMonth = createSelector(
                     && (orderDate.getYear()===currentDate.getYear())
                     ){
                     // console.log("Order ID: ",order.id)
-                    return totalOrders+1;
+                    return totalCustomers+1;
                 }
 
-                return totalOrders;
+                return totalCustomers;
             }
             
             ,0);
  
-        return numberOfOrdersForMonth
+        return numberOfCustomersForMonth
      }
 );
 
-// Ampunt for Orders Of The Month Selectors
-export const selectAmountForMonthOrders = createSelector(
-    [selectOrders],
-    orders => {
-        const amountOfOrdersForMonth = orders.reduce(
+// Ampunt for Customers Of The Month Selectors
+export const selectAmountForMonthCustomers = createSelector(
+    [selectCustomers],
+    customers => {
+        const amountOfCustomersForMonth = customers.reduce(
             (totalAmount,order)=>{
                 const orderDate = new Date(order.datec);
                 const currentDate = new Date();
@@ -75,36 +75,36 @@ export const selectAmountForMonthOrders = createSelector(
             
             ,0);
  
-        return numberWithCommas(amountOfOrdersForMonth)
+        return numberWithCommas(amountOfCustomersForMonth)
      }
 );
 
-// Selectr for processed orders
-export const selectProcessedOrdersCount = createSelector(
-    [selectOrders],
-    orders=>orders.reduce((precessedCount,order)=>parseInt(order.processedAmount)>0 ?precessedCount+1:precessedCount,0)
+// Selectr for processed customers
+export const selectProcessedCustomersCount = createSelector(
+    [selectCustomers],
+    customers=>customers.reduce((precessedCount,order)=>parseInt(order.processedAmount)>0 ?precessedCount+1:precessedCount,0)
 );
 
-export const selectProcessedOrdersAmount = createSelector(
-    [selectOrders],
-    orders=>{
-        const amountProcessed = orders.reduce((processedAmount,order)=>processedAmount+=parseInt(order.processedAmount),0)
+export const selectProcessedCustomersAmount = createSelector(
+    [selectCustomers],
+    customers=>{
+        const amountProcessed = customers.reduce((processedAmount,order)=>processedAmount+=parseInt(order.processedAmount),0)
 
         return numberWithCommas(amountProcessed)
     }
 );
 
-// Selectors for Pending orders
+// Selectors for Pending customers
 
-export const selectPendingOrdersCount = createSelector(
-    [selectOrders],
-    orders=>orders.reduce((pendingCount,order)=>parseInt(order.pendingAmount)>0 ?pendingCount+1:pendingCount,0)
+export const selectPendingCustomersCount = createSelector(
+    [selectCustomers],
+    customers=>customers.reduce((pendingCount,order)=>parseInt(order.pendingAmount)>0 ?pendingCount+1:pendingCount,0)
 );
 
-export const selectPendingOrdersAmount = createSelector(
-    [selectOrders],
-    orders=>{
-        const amountPending = orders.reduce((pendingAmount,order)=>pendingAmount+=parseInt(order.pendingAmount),0)
+export const selectPendingCustomersAmount = createSelector(
+    [selectCustomers],
+    customers=>{
+        const amountPending = customers.reduce((pendingAmount,order)=>pendingAmount+=parseInt(order.pendingAmount),0)
 
         return numberWithCommas(amountPending)
     }

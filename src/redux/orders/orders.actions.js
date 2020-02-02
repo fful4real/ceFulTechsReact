@@ -12,7 +12,7 @@ export const fetchOrdersStart = ()=>({
 })
 export const fetchOrdersSuccess = orders =>({
     type: OrdersActionTypes.FETCH_ORDERS_SUCCESS,
-    payload: orders
+    orders
 })
 export const fetchOrdersFailure = response =>({
     type: OrdersActionTypes.FETCH_ORDERS_FAILURE,

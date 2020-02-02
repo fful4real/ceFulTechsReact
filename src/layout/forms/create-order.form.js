@@ -9,12 +9,17 @@ import OrderCustomerItem from '../../components/items/order-customer-item';
 import OrderCustomerItemStyle from '../../components/items/styles/order-customer-item.style';
 import API_ROUTES from '../../api-route';
 import AxiosAgent from '../../axios-agent';
+import Alert from '../../components/alert/alert';
+import { addOrderToState } from '../../redux/orders/orders.actions';
+import { addCustomerOrders } from '../../redux/customers/customers.action';
 
-const CreateOrderForm = ({customers, currencies})=>{
+const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addCustomerOrders})=>{
     const customerData = customers.customers;
     const currencyData = currencies.currencies
+    const cityData = cities.cities
     const [searchString, setSearchString] = useState('');
     const [showDropdown, setShowDropdown] = useState('hide');
+    const [showSuccess, setShowSuccess] = useState('hide');
     const handleCustomer = customer=>{
         return customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1 ||
                 customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1||
@@ -25,12 +30,12 @@ const CreateOrderForm = ({customers, currencies})=>{
         customerNumber:'',
         amountIn:'',
         amountOut:'',
-        currencyIn:!currencies.isFetchingCurrencies?`/api/currencies/${currencyData[0].currencyCode}`:'/api/currencis/1',
-        currencyOut: !currencies.isFetchingCurrencies?`/api/currencies/${currencyData[2].currencyCode}`:'/api/currencis/1',
+        currencyIn:!currencies.isFetchingCurrencies?`/api/currencies/${currencyData[0].id}`:'/api/currencis/1',
+        currencyOut: !currencies.isFetchingCurrencies?`/api/currencies/${currencyData[1].id}`:'/api/currencis/1',
         firstName:'',
         lastName:'',
         customerAddress:'',
-        customerTown:''
+        customerTown:!cities.isFetchingCities?`${cityData[0].code}`:'',
 
     }
 
@@ -46,7 +51,13 @@ const CreateOrderForm = ({customers, currencies})=>{
                         .matches(/^[0-9]+$/, 'Only Numbers accepted'),
             amountOut:Yup.string()
                         .required('Please enter amount')
-                        .matches(/^[0-9]+$/, 'Only Numbers accepted')
+                        .matches(/^[0-9]+$/, 'Only Numbers accepted'),
+            firstName:Yup.string()
+                        .required('Enter First Name')
+                        .max(255,'Must not exceed 255 characters'),
+            customerAddress:Yup.string()
+                        .required('Enter Address')
+                        .max(255,'Must not exceed 255 characters')
     });
 
     return (
@@ -71,16 +82,26 @@ const CreateOrderForm = ({customers, currencies})=>{
                                     lastName:values.lastName,
                                     city:values.customerTown,
                                     address: values.customerAddress
-                                }
+                                } 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
-                                    .then(resp=>console.log(resp.data))
-                                    .catch(error=>console.error(error.message))
+                                    .then(resp=>{
+                                        const newOrder = resp.data
+                                        console.log('Order: ',newOrder)
+                                        setStatus({success: false})
+                                        setShowSuccess('show')
+                                        addOrderToState(newOrder)
+                                        addCustomerOrders(customerData, newOrder)
+                                        setTimeout(()=>{
+                                            setShowSuccess('hide')
+                                            setSubmitting(false)
+                                            resetForm()
+                                        },2000)
+                                    })
+                                    .catch(error=>{
 
-                                setTimeout(()=>{
-
-                                setStatus({success: false})
-                                setSubmitting(false)
-                                },5000)
+                                        console.error(error.message)
+                                    })
+                                
                             return
                         }
                     }
@@ -98,6 +119,7 @@ const CreateOrderForm = ({customers, currencies})=>{
                         <Form 
                             onSubmit={handleSubmit}
                         >
+                        {showSuccess!=='hide'&&<Alert alertIcon='check-circle' show={showSuccess}/>}
                             <Form.Row>
                                 <Form.Group as={Col} md="4" controlId="validationPhoneNumber" onBlur={()=>setTimeout(()=>setShowDropdown('hide',),150)}>
                                     <Form.Label>Phone Number</Form.Label>
@@ -325,13 +347,12 @@ const CreateOrderForm = ({customers, currencies})=>{
                                         name="customerTown"
                                         disabled={isSubmitting}
                                     >
-                                        <option title="Douala">DLA</option>
-                                        <option title="Yaounde">YDE</option>
-                                        <option title="Bamenda">BDA</option>
-                                        <option title="Buea">BUE</option>
-                                        <option title="Bafoussam">BAF</option>
-                                        <option title="Kumba">KBA</option>
-                                        <option title="Limbe">LBE</option>
+                                        {
+                                            cityData
+                                            .map(({code, id})=>(
+                                                <option key={`currency-${uid({id})}`} value={code}>{code}</option>
+                                                ))
+                                        }
                                     </select>
                                 </InputGroup.Append>
                             </InputGroup>
@@ -355,9 +376,15 @@ const CreateOrderForm = ({customers, currencies})=>{
     )
 }
 
+const mapDispatchToProps = {
+    addOrderToState,
+    addCustomerOrders
+  }
+
 const mapStateToProps = rootReducerState =>({
     customers:rootReducerState.customers,
     currencies:rootReducerState.currencies,
+    cities:rootReducerState.cities,
   });
 
-export default connect(mapStateToProps)(CreateOrderForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderForm)

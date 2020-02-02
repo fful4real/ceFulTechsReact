@@ -5,6 +5,7 @@ const API_ROUTES = {
     login:`login_check`,
     user: id=>id?`users/${id}`:'users',
     customers:id => id?`customers/${id}`:'customers',
+    customerNumber:number => `customers?mobileNumber=${number}`,
     currencies:id => id?`currencies/${id}`:'currencies',
     cities:id => id?`cities/${id}`:'cities',
     orders:id => id?`ce_orders/${id}`:'ce_orders',

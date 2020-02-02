@@ -15,6 +15,31 @@ export const fetchCustomersFailure = error =>({
     error
 })
 
+export const addCustomersOrder = customers =>({
+    type: CustomersActionTypes.CUSTOMERS_ADD_CUSTOMER_ORDER,
+    customers
+})
+
+export const addCustomerOrders = (customers, order)=>{
+    return dispatch=>{
+
+        const updatedCustomers = customers.map(customer=>{
+            return parseInt(customer.mobileNumber) === parseInt(order.receiverNumber) ? 
+            {...customer, CustomersOrder:customer.CustomersOrders.push(`/api/ce_orders/${order.id}`)}:customer
+        })
+
+        const hasCustomer = customers.filter(customer=>parseInt(customer.mobileNumber) === parseInt(order.receiverNumber))
+        if(hasCustomer.length)
+            alert('Has customer')
+        
+        AxiosAgent.request('get',API_ROUTES.customerNumber(order.receiverNumber),null,null)
+            .then(resp => console.log(resp.data['hydra:member']))
+            .catch(error=>console.error(error.message))
+        dispatch(addCustomersOrder(updatedCustomers))
+    }
+
+}
+
 export const fetchCustomersAsync = ()=>{
 
     return dispatch =>{
