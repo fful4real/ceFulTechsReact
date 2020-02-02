@@ -11,6 +11,8 @@ import AxiosAgent from './axios-agent';
 import { userSetAuth } from './redux/auth/auth.action';
 import { userFetchingAttempt } from './redux/user/user.action';
 import { fetchCustomersAsync } from './redux/customers/customers.action';
+import { fetchCurrenciesAsync } from './redux/currencies/currencies.action';
+import { fetchCitiesAsync } from './redux/cities/cities.actions';
 
 class App extends React.Component{
 
@@ -19,6 +21,8 @@ class App extends React.Component{
     const userId = window.localStorage.getItem('userId');
     this.props.userFetchingAttempt(userId)
     this.props.fetchCustomersAsync()
+    this.props.fetchCurrenciesAsync()
+    this.props.fetchCitiesAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -57,7 +61,9 @@ const mapStateToProps = rootReducerState =>({
 const mapDispatchToProps = {
   userSetAuth,
   userFetchingAttempt,
-  fetchCustomersAsync
+  fetchCustomersAsync,
+  fetchCurrenciesAsync,
+  fetchCitiesAsync
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);

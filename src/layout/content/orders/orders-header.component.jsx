@@ -5,9 +5,9 @@ import IosPaperOutline from 'react-ionicons/lib/IosPaperOutline'
 import { Button } from 'react-bootstrap';
 import CreateOrderModal from './create-order/create-order-modal.component';
 import { connect } from 'react-redux';
-import { createNewOrder } from '../../../redux/orders/orders.actions';
+import { addOrderToState } from '../../../redux/orders/orders.actions';
 
-const OrdersHeader = ({createNewOrder})=>{
+const OrdersHeader = ({addOrderToState})=>{
     const [modalShow, setModalShow] = useState(false);
     return(
         <div className="hk-pg-header mb-10">
@@ -33,6 +33,6 @@ const OrdersHeader = ({createNewOrder})=>{
 }
 
 const mapDispatchToProps = dispatch =>({
-    createNewOrder: order => dispatch(createNewOrder(order))
+    addOrderToState: order => dispatch(addOrderToState(order))
 })
 export default connect(null,mapDispatchToProps)(OrdersHeader);

@@ -2,9 +2,9 @@ import OrderActionTypes from "./orders.types";
 import OrdersActionTypes from "../../layout/content/orders/orders.types";
 import AxiosAgent from "../../axios-agent";
 
-export const createNewOrder = order =>({
+export const addOrderToState = order =>({
     type: OrderActionTypes.CREATE_ORDER,
-    payload:order
+    order
 });
 
 export const fetchOrdersStart = ()=>({
