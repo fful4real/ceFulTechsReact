@@ -15,12 +15,17 @@ export const fetchCustomersFailure = error =>({
     error
 })
 
+export const addCustomer = customer =>({
+    type: CustomersActionTypes.CUSTOMERS_ADD_CUSTOMER,
+    customer
+})
+
 export const addCustomersOrder = customers =>({
     type: CustomersActionTypes.CUSTOMERS_ADD_CUSTOMER_ORDER,
     customers
 })
 
-export const addCustomerOrders = (customers, order)=>{
+export const addOrderToCustomer = (customers, order)=>{
     return dispatch=>{
 
         const updatedCustomers = customers.map(customer=>{
@@ -29,12 +34,13 @@ export const addCustomerOrders = (customers, order)=>{
         })
 
         const hasCustomer = customers.filter(customer=>parseInt(customer.mobileNumber) === parseInt(order.receiverNumber))
-        if(!hasCustomer.length)
-        AxiosAgent.request('get',API_ROUTES.customerNumber(order.receiverNumber),null,null)
-            .then(resp => console.log(resp.data['hydra:member']))
-            .catch(error=>console.error(error.message))
-            
-        dispatch(addCustomersOrder(updatedCustomers))
+        if(!hasCustomer.length){
+            AxiosAgent.request('get',API_ROUTES.customerNumber(order.receiverNumber),null,null)
+                .then(resp => dispatch(addCustomer(resp.data['hydra:member'][0])))
+                .catch(error=>console.error(error.message))
+        }else{
+            dispatch(addCustomersOrder(updatedCustomers))
+        }
     }
 
 }

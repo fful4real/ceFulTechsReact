@@ -11,9 +11,9 @@ import API_ROUTES from '../../api-route';
 import AxiosAgent from '../../axios-agent';
 import Alert from '../../components/alert/alert';
 import { addOrderToState } from '../../redux/orders/orders.actions';
-import { addCustomerOrders } from '../../redux/customers/customers.action';
+import { addOrderToCustomer } from '../../redux/customers/customers.action';
 
-const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addCustomerOrders})=>{
+const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrderToCustomer})=>{
     const customerData = customers.customers;
     const currencyData = currencies.currencies
     const cityData = cities.cities
@@ -90,7 +90,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addCus
                                         setStatus({success: false})
                                         setShowSuccess('show')
                                         addOrderToState(newOrder)
-                                        addCustomerOrders(customerData, newOrder)
+                                        addOrderToCustomer(customerData, newOrder)
                                         setTimeout(()=>{
                                             setShowSuccess('hide')
                                             setSubmitting(false)
@@ -378,7 +378,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addCus
 
 const mapDispatchToProps = {
     addOrderToState,
-    addCustomerOrders
+    addOrderToCustomer
   }
 
 const mapStateToProps = rootReducerState =>({

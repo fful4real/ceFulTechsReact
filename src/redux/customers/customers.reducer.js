@@ -9,6 +9,16 @@ const INITIAL_STATE = {
 
 const customersReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
+        case CustomersActionTypes.CUSTOMERS_ADD_CUSTOMER_ORDER:
+            return{
+                ...state,
+                customers: action.customers
+            }
+        case CustomersActionTypes.CUSTOMERS_ADD_CUSTOMER:
+            return{
+                ...state,
+                customers: [...state.customers,action.customer]
+            }
         case CustomersActionTypes.CUSTOMERS_FETCHING_SUCCESS:
             return{
                 ...state,

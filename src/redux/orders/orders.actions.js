@@ -32,3 +32,10 @@ export const fetchOrdersAsync = ()=>{
         })
     }
 }
+
+export const dispatchAddOrderToState = order =>{
+
+    return dispatch =>{
+        dispatch(addOrderToState(order));
+    }
+}

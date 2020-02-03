@@ -10,3 +10,7 @@ export const getDateIfDate= d =>{
 export const displayDate = d =>{
     
 }
+
+export const capitalizeFirstLetter = d =>{
+    return d.charAt(0).toUpperCase() + d.slice(1)
+}

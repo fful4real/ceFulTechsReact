@@ -13,6 +13,7 @@ import Spinner from '../../../../components/spinner/spinner'
 
 const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
     const [searchString, setSearchString] = useState('');
+    let i=0
 
     return isFetching ? (
          <div className="card">
@@ -89,7 +90,9 @@ const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
                             </thead>
                             <tbody>
                                 {
-                                    orders.map(order=>
+                                    orders
+                                    .filter(()=>{i+=1; return i<11?true:false})
+                                    .map(order=>
                                          <LastTenOrdersItem key={order.id} {...order} />
                                     )
                                 }

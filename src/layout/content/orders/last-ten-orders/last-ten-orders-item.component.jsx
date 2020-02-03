@@ -1,11 +1,11 @@
 import React from 'react'
-import { numberWithCommas } from '../../../../helpers/helper';
+import { numberWithCommas, capitalizeFirstLetter } from '../../../../helpers/helper';
 import moment from 'moment';
 
 const LastTenOrdersItem = ({profileImgUrl,orderRef,customer,amountOut,status,datec, datem})=>{
 
     let badgeColor;
-    switch (status.name) {
+    switch (status.className) {
         case 'progress':
             badgeColor='primary';
             break;
@@ -25,9 +25,9 @@ const LastTenOrdersItem = ({profileImgUrl,orderRef,customer,amountOut,status,dat
             <td>
                 {orderRef}
             </td>
-            <td>Felix</td>
+            <td>{`${capitalizeFirstLetter(customer.firstName)} ${customer.lastName.toUpperCase()}`}</td>
             <td>{numberWithCommas(amountOut)}</td>
-            <td><span className={`badge badge-soft-${badgeColor}`}>Status</span></td>
+            <td><span className={`badge badge-soft-${badgeColor}`}>{status.statusLabel}</span></td>
             <td>{moment(datec).format("DD - MMM - YYYY")}</td>
             <td>{moment(datem).format("DD - MMM - YYYY")}</td>
         </tr>
