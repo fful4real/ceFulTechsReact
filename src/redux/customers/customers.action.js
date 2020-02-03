@@ -29,12 +29,11 @@ export const addCustomerOrders = (customers, order)=>{
         })
 
         const hasCustomer = customers.filter(customer=>parseInt(customer.mobileNumber) === parseInt(order.receiverNumber))
-        if(hasCustomer.length)
-            alert('Has customer')
-        
+        if(!hasCustomer.length)
         AxiosAgent.request('get',API_ROUTES.customerNumber(order.receiverNumber),null,null)
             .then(resp => console.log(resp.data['hydra:member']))
             .catch(error=>console.error(error.message))
+            
         dispatch(addCustomersOrder(updatedCustomers))
     }
 
