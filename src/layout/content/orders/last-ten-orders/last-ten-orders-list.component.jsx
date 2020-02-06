@@ -8,12 +8,11 @@ import IosStatsOutline from 'react-ionicons/lib/IosStatsOutline'
 import IosImageOutline from 'react-ionicons/lib/IosImageOutline'
 import LastTenOrdersItem from './last-ten-orders-item.component'
 import { connect } from 'react-redux'
-import { selectIsFetching } from '../../../../redux/orders/orders.selectors'
+import { selectIsFetching, selectLastTenOrders } from '../../../../redux/orders/orders.selectors'
 import Spinner from '../../../../components/spinner/spinner'
 
-const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
+const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle="",lastTenOrder})=>{
     const [searchString, setSearchString] = useState('');
-    let i=0
 
     return isFetching ? (
          <div className="card">
@@ -90,9 +89,7 @@ const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
                             </thead>
                             <tbody>
                                 {
-                                    orders
-                                    .filter(()=>{i+=1; return i<11?true:false})
-                                    .map(order=>
+                                    lastTenOrder.map(order=>
                                          <LastTenOrdersItem key={order.id} {...order} />
                                     )
                                 }
@@ -106,6 +103,8 @@ const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle=""})=>{
 
 const ordersState = rootReducerState =>({
     ordersData: rootReducerState.orders,
-    isFetching: selectIsFetching(rootReducerState)
+    isFetching: selectIsFetching(rootReducerState),
+    lastTenOrder:selectLastTenOrders(rootReducerState)
+
 })
 export default connect(ordersState)(LastTenOrdersList);

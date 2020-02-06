@@ -8,6 +8,7 @@ const API_ROUTES = {
     customerNumber:number => `customers?mobileNumber=${number}`,
     currencies:id => id?`currencies/${id}`:'currencies',
     cities:id => id?`cities/${id}`:'cities',
+    statuses:id => id?`statuses/${id}`:'statuses',
     orders:id => id?`ce_orders/${id}`:'ce_orders',
 }
 

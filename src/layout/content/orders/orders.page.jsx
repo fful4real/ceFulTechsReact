@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
-import OrdersReports from './orders-reports.component'
-import OrdersAnalysis from './orders-analysis.component'
 import OrdersHeader from './orders-header.component'
 import './orders.styles.scss'
-import LastTenOrdersList from './last-ten-orders/last-ten-orders-list.component'
 import { fetchOrdersAsync } from '../../../redux/orders/orders.actions'
 import { connect } from 'react-redux'
 import { selectOrderCount } from '../../../redux/orders/orders.selectors'
+import { createStructuredSelector } from 'reselect'
+import OrdersDashboard from './pages/orders-dashboard'
+import { Switch, Route } from 'react-router-dom'
+import OrdersList from './pages/orders-list'
+import OrdersItem from './pages/orders-item'
 
 const OrdersPage = ({fetchOrdersAsync,ordersCount}) =>{
     // Similar to componentDidMount and componentDidUpdate:
@@ -17,13 +19,11 @@ const OrdersPage = ({fetchOrdersAsync,ordersCount}) =>{
         <div className="hk-pg-wrapper">
             <div className="container mt-xl-30 mt-sm-20 mt-15">
                 <OrdersHeader/>
-                <div className="row">
-                    <div className="col-xl-12">
-                        <OrdersReports />
-                        <OrdersAnalysis />
-                        <LastTenOrdersList/>
-                    </div>
-                </div>
+                <Switch>
+                    <Route path="/orders/list" component={OrdersList} />
+                    <Route path="/orders/:id" component={OrdersItem} />
+                    <Route path="/orders" component={OrdersDashboard} />
+                </Switch>
             </div>
         </div>
     ) 
@@ -34,8 +34,8 @@ const mapDispatchToProps = dispatch => ({
     fetchOrdersAsync: ()=>dispatch(fetchOrdersAsync())
 })
 
-const ordersState = rootReducerState =>({
-    ordersCount:selectOrderCount(rootReducerState)
+const ordersState = createStructuredSelector({
+    ordersCount:selectOrderCount
 })
 
 export default connect(ordersState, mapDispatchToProps)(OrdersPage);

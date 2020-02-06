@@ -6,7 +6,8 @@ const INITIAL_STATE = {
     userId:null,
     isLogging: false,
     error:null,
-    isAuthenticated:false
+    isAuthenticated:false,
+    loginFailed:false
 }
 
 const authReducer = (state=INITIAL_STATE,action)=>{
@@ -14,7 +15,8 @@ const authReducer = (state=INITIAL_STATE,action)=>{
         case authActionTypes.USER_LOGIN_START:
             return{
                 ...state,
-                isLogging:true
+                isLogging:true,
+                loginFailed:false
             }
         case authActionTypes.USER_LOGIN_SUCCESS:
             return{
@@ -22,7 +24,7 @@ const authReducer = (state=INITIAL_STATE,action)=>{
                 token: action.token,
                 userId: action.userId,
                 isLogging:false,
-                isAuthenticated:true
+                isAuthenticated:true,
             }
         case authActionTypes.USER_SET_AUTH:
             return{
@@ -38,7 +40,17 @@ const authReducer = (state=INITIAL_STATE,action)=>{
                 ...state,
                 token: null,
                 isLogging: false,
-                error:action.error
+                error:action.error,
+                loginFailed:true
+
+            }
+        
+        case authActionTypes.USER_DESTROY_AUTH:
+            return{
+                ...state,
+                token: null,
+                userId: null,
+                isAuthenticated: false,
             }
     
         default:

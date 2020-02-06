@@ -13,6 +13,8 @@ import { userFetchingAttempt } from './redux/user/user.action';
 import { fetchCustomersAsync } from './redux/customers/customers.action';
 import { fetchCurrenciesAsync } from './redux/currencies/currencies.action';
 import { fetchCitiesAsync } from './redux/cities/cities.actions';
+import { fetchStatusesAsync } from './redux/statuses/statuses.actions';
+import { fetchOrdersAsync } from './redux/orders/orders.actions';
 
 class App extends React.Component{
 
@@ -20,9 +22,11 @@ class App extends React.Component{
     FulTechs();
     const userId = window.localStorage.getItem('userId');
     this.props.userFetchingAttempt(userId)
+    this.props.fetchOrdersAsync()
     this.props.fetchCustomersAsync()
     this.props.fetchCurrenciesAsync()
     this.props.fetchCitiesAsync()
+    this.props.fetchStatusesAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -60,10 +64,12 @@ const mapStateToProps = rootReducerState =>({
 
 const mapDispatchToProps = {
   userSetAuth,
+  fetchOrdersAsync,
   userFetchingAttempt,
   fetchCustomersAsync,
   fetchCurrenciesAsync,
-  fetchCitiesAsync
+  fetchCitiesAsync,
+  fetchStatusesAsync
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);

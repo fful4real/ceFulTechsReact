@@ -3,9 +3,8 @@ import IosAddCircleOutline from 'react-ionicons/lib/IosAddCircleOutline'
 import IosListBoxOutline from 'react-ionicons/lib/IosListBoxOutline'
 import IosPaperOutline from 'react-ionicons/lib/IosPaperOutline'
 import { Button } from 'react-bootstrap';
-import CreateOrderModal from './create-order/create-order-modal.component';
-import { connect } from 'react-redux';
-import { addOrderToState } from '../../../redux/orders/orders.actions';
+import CreateOrderModal from './create-order/create-order-modal.component'
+import { Link } from 'react-router-dom';
 
 const OrdersHeader = ({addOrderToState})=>{
     const [modalShow, setModalShow] = useState(false);
@@ -21,7 +20,10 @@ const OrdersHeader = ({addOrderToState})=>{
             </div>
             <div className="d-flex">
                 <Button variant="info" size="sm">
-                    <IosListBoxOutline color="#fff" /> List Orders&nbsp;
+                    <Link to="/orders/list">
+                        <IosListBoxOutline color="#fff"/>
+                        <span className="text-white"> List Orders&nbsp;</span>
+                    </Link>
                 </Button>
                 <Button variant="primary" size="sm" className="order-new" onClick={() => setModalShow(true)}>
                     <IosAddCircleOutline color="#fff" /> Create New Order&nbsp;
@@ -32,7 +34,4 @@ const OrdersHeader = ({addOrderToState})=>{
     )
 }
 
-const mapDispatchToProps = dispatch =>({
-    addOrderToState: order => dispatch(addOrderToState(order))
-})
-export default connect(null,mapDispatchToProps)(OrdersHeader);
+export default OrdersHeader

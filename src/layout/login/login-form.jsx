@@ -4,6 +4,7 @@ import RenderField from '../../components/form/render-field'
 import { connect } from 'react-redux'
 import { userLoginAttempt } from '../../redux/auth/auth.action'
 import Spinner from '../../components/spinner/spinner'
+import Alert from '../../components/alert/alert'
 
 
 class LoginForm extends Component {
@@ -19,10 +20,16 @@ class LoginForm extends Component {
         console.log(error)
 
         return(
-            <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+            <form onSubmit={handleSubmit(this.onSubmit.bind(this))} className="relative-position">
+                <div className="login-error" style={{maxWidth:'500px',position:'relative', margin:"0px 18px 0px auto"}}>
+                    {auth.loginFailed&&<Alert show="show" alertType='danger' alertText='Invalid login!' />}
+                </div>
                     <p className="text-center mb-30">Sign in to your account.</p>
                     <div className="form-group">
                         <Field name="username" required={true} placeholder="Username" disabled={auth.isLogging} label="Username" type="text" className="form-control" component={RenderField}/>
+                    </div>
+                    <div className="form-group">
+                        
                     </div>
                     <div className="form-group">
                         <div className="input-group">

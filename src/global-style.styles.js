@@ -1,6 +1,13 @@
 import { createGlobalStyle } from 'styled-components'
 
 const FulTechsStyle = createGlobalStyle`
+#orderTable{
+  .rdt_TableHeader{
+    display:none !important
+  }
+}
+
+
 table.list-table{
   tr{
     cursor:pointer;

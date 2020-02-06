@@ -1,4 +1,4 @@
-import Cities from "./cities.types";
+import CitiesActionTypes from "./cities.types";
 
 
 const INITIAL_STATE = {
@@ -6,23 +6,22 @@ const INITIAL_STATE = {
     isFetchingCities:false,
     error:null
 }
-
 const CitiesReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
-        case Cities.CITIES_FETCHING_SUCCESS:
+        case CitiesActionTypes.CITIES_FETCHING_SUCCESS:
             return{
                 ...state,
                 isFetchingCities:false,
                 cities: action.cities
             }
         
-        case Cities.CITIES_FETCHING_START:
+        case CitiesActionTypes.CITIES_FETCHING_START:
             return{
                 ...state,
                 isFetchingCities:true
             }
 
-        case Cities.CITIES_FETCHING_FAILURE:
+        case CitiesActionTypes.CITIES_FETCHING_FAILURE:
             return{
                 ...state,
                 isFetchingCities:false,

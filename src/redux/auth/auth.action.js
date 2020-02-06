@@ -24,6 +24,12 @@ export const userSetAuth = ({token,userId}) =>({
 
 })
 
+
+
+export const userDestroyAuth = () =>({
+    type: authActionTypes.USER_DESTROY_AUTH
+})
+
 export const userLoginAttempt = (username, password)=>{
     const userCredentials = {username, password}
     console.log("Fetching User...")

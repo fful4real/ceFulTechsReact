@@ -1,11 +1,22 @@
 import {createSelector} from 'reselect'
 import { numberWithCommas } from '../../helpers/helper';
+import moment from 'moment';
 
 
 const selectOrderState = state => state.orders;
+const selectCurrencyState = state => state.currencies;
+const selectCurrencies = createSelector(
+    [selectCurrencyState],
+    currencies => currencies.currencies
+)
 const selectOrders = createSelector(
-    [selectOrderState],
-    orders => orders.orders
+    [selectOrderState, selectCurrencies],
+    (orders, currencies) => orders.orders.map(order=>(
+        {...order,
+            currencyIn:currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyIn.split("/")[3]))[0],
+            currencyOut:currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyOut.split("/")[3]))[0]
+        }
+    ))
 )
 
 export const selectIsFetching = createSelector(
@@ -26,6 +37,11 @@ export const selectOrdersTotalAmount = createSelector(
 
        return numberWithCommas(amount)
     }
+)
+
+export const selectLastTenOrders = createSelector(
+    [selectOrders],
+    orders => orders.slice(0,10)
 )
 
 
@@ -82,7 +98,7 @@ export const selectAmountForMonthOrders = createSelector(
 // Selectr for processed orders
 export const selectProcessedOrdersCount = createSelector(
     [selectOrders],
-    orders=>orders.reduce((precessedCount,order)=>parseInt(order.processedAmount)>0 ?precessedCount+1:precessedCount,0)
+    orders=>orders.reduce((precessedCount,order)=>order.status.statusCode==="OK" ?precessedCount+1:precessedCount,0)
 );
 
 export const selectProcessedOrdersAmount = createSelector(
@@ -98,7 +114,7 @@ export const selectProcessedOrdersAmount = createSelector(
 
 export const selectPendingOrdersCount = createSelector(
     [selectOrders],
-    orders=>orders.reduce((pendingCount,order)=>parseInt(order.pendingAmount)>0 ?pendingCount+1:pendingCount,0)
+    orders=>orders.reduce((pendingCount,order)=>order.status.statusCode==="PDN" ?pendingCount+1:pendingCount,0)
 );
 
 export const selectPendingOrdersAmount = createSelector(
@@ -109,4 +125,16 @@ export const selectPendingOrdersAmount = createSelector(
         return numberWithCommas(amountPending)
     }
 );
+
+export const selectOrdersTableData = createSelector(
+    [selectOrders,selectCurrencies],
+    (orders,currencies)=>orders.map(order=>({...order,
+        customer:`${order.customer.firstName} ${order.customer.lastName.toUpperCase()}`, 
+        status:order.status.statusLabel,
+        statusClass:order.status.className,
+        datec:moment(order.datec).format("DD - MMM - YYYY"),
+        amountIn:numberWithCommas(order.amountIn),
+        amountOut:numberWithCommas(order.amountOut)
+    }))
+)
 

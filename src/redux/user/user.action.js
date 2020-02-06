@@ -23,7 +23,10 @@ export const userFetchingAttempt = (userId)=>{
             dispatch(userFetchingSuccess(resp.data))
         })
         .catch(error => {
-            dispatch(userFetchingFailure(error))
+            userId&&alert("Something went wrong!")
+            window.localStorage.removeItem('token')
+            window.localStorage.removeItem('userId')
+            userId&&window.location.reload()
         })
     }
 }

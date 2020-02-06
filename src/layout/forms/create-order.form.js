@@ -86,15 +86,19 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
                                         const newOrder = resp.data
-                                        console.log('Order: ',newOrder)
                                         setStatus({success: false})
                                         setShowSuccess('show')
-                                        addOrderToState(newOrder)
+                                        addOrderToState({...newOrder, 
+                                            customer:{firstName:orderValues.firstName, 
+                                                lastName:orderValues.lastName.toUpperCase()
+                                            },
+                                            status:{statusCode:"NEW", statusLabel:"New", className:"primary"}
+                                        })
                                         addOrderToCustomer(customerData, newOrder)
+                                        setSubmitting(false)
+                                        resetForm()
                                         setTimeout(()=>{
                                             setShowSuccess('hide')
-                                            setSubmitting(false)
-                                            resetForm()
                                         },2000)
                                     })
                                     .catch(error=>{
@@ -138,6 +142,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                         value={values.customerNumber}
                                         disabled={isSubmitting}
                                         className="dropdown"
+                                        autoComplete="off"
                                     />
                                     {touched.customerNumber&&errors.customerNumber&&
                                         <Form.Control.Feedback type="invalid" style={{display:'block'}}>
