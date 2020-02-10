@@ -15,6 +15,7 @@ import { fetchCurrenciesAsync } from './redux/currencies/currencies.action';
 import { fetchCitiesAsync } from './redux/cities/cities.actions';
 import { fetchStatusesAsync } from './redux/statuses/statuses.actions';
 import { fetchOrdersAsync } from './redux/orders/orders.actions';
+import { fetchAccountsAsync } from './redux/accounts/accounts.action';
 
 class App extends React.Component{
 
@@ -27,6 +28,7 @@ class App extends React.Component{
     this.props.fetchCurrenciesAsync()
     this.props.fetchCitiesAsync()
     this.props.fetchStatusesAsync()
+    this.props.fetchAccountsAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -47,7 +49,11 @@ class App extends React.Component{
       token&&AxiosAgent.setToken(token)
     }
 
-    return !token ? <Redirect to='/login'  /> : (
+    return !token ? <Redirect to='/login'  /> : 
+    this.props.orders.isFetching||
+    this.props.currrencies.isFetchingCurrencies||
+    this.props.customers.isFetchingCustomers? <span>Loading...</span> :
+    (
       <div className="hk-wrapper hk-horizontal-nav">
         <FulTechsStyle/>
         <HeaderContainer />
@@ -58,8 +64,12 @@ class App extends React.Component{
   }
 }
 
+
 const mapStateToProps = rootReducerState =>({
-  auth:rootReducerState.auth
+  auth:rootReducerState.auth,
+  orders:rootReducerState.orders,
+  currrencies: rootReducerState.currencies,
+  customers:rootReducerState.customers
 });
 
 const mapDispatchToProps = {
@@ -69,7 +79,8 @@ const mapDispatchToProps = {
   fetchCustomersAsync,
   fetchCurrenciesAsync,
   fetchCitiesAsync,
-  fetchStatusesAsync
+  fetchStatusesAsync,
+  fetchAccountsAsync
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);

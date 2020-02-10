@@ -34,6 +34,12 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
                 isFetching:false,
                 error: action.payload
             }
+            
+        case OrdersActionTypes.UPDATE_ORDERS:
+            return{
+                ...state,
+                orders:action.orders
+            }
     
         default:
             return state;

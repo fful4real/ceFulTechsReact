@@ -2,21 +2,22 @@ import React, {useState} from 'react'
 import { Container, Row, Button, Form, Col, InputGroup } from 'react-bootstrap';
 import {Formik} from 'formik'
 import * as Yup from 'yup'
-import Spinner from '../../components/spinner/spinner';
+import Spinner from '../../../../components/spinner/spinner';
 import { connect } from 'react-redux';
 import { uid } from 'react-uid';
-import OrderCustomerItem from '../../components/items/order-customer-item';
-import OrderCustomerItemStyle from '../../components/items/styles/order-customer-item.style';
-import API_ROUTES from '../../api-route';
-import AxiosAgent from '../../axios-agent';
-import Alert from '../../components/alert/alert';
-import { addOrderToState } from '../../redux/orders/orders.actions';
-import { addOrderToCustomer } from '../../redux/customers/customers.action';
+import OrderCustomerItem from '../../../../components/items/order-customer-item';
+import OrderCustomerItemStyle from '../../../../components/items/styles/order-customer-item.style';
+import API_ROUTES from '../../../../api-route';
+import AxiosAgent from '../../../../axios-agent';
+import Alert from '../../../../components/alert/alert';
+import { addOrderToState } from '../../../../redux/orders/orders.actions';
+import { addOrderToCustomer } from '../../../../redux/customers/customers.action';
 
 const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrderToCustomer})=>{
     const customerData = customers.customers;
     const currencyData = currencies.currencies
     const cityData = cities.cities
+    // console.log('Felix Cities', cityData)
     const [searchString, setSearchString] = useState('');
     const [showDropdown, setShowDropdown] = useState('hide');
     const [showSuccess, setShowSuccess] = useState('hide');
@@ -85,15 +86,18 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                 } 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
-                                        const newOrder = resp.data
-                                        setStatus({success: false})
-                                        setShowSuccess('show')
-                                        addOrderToState({...newOrder, 
-                                            customer:{firstName:orderValues.firstName, 
-                                                lastName:orderValues.lastName.toUpperCase()
+                                        const newOrder = {...resp.data,
+                                            customer:{
+                                                firstName:orderValues.firstName, 
+                                                lastName:orderValues.lastName.toUpperCase(),
+                                                fkCity: '/api/cites/'+cityData.filter(city=>city.code===values.customerTown)[0].id
                                             },
                                             status:{statusCode:"NEW", statusLabel:"New", className:"primary"}
-                                        })
+                                        }
+                                        console.log(newOrder)
+                                        setStatus({success: false})
+                                        setShowSuccess('show')
+                                        addOrderToState(newOrder)
                                         addOrderToCustomer(customerData, newOrder)
                                         setSubmitting(false)
                                         resetForm()
@@ -111,6 +115,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                     }
                 >
                     {({values, status, errors, touched, handleChange, handleSubmit, handleBlur, isSubmitting, setFieldValue})=>{
+                        
                         const handleCustomerClick = ({firstName, lastName, mobileNumber, address, fkCity}) =>{
                             setFieldValue('customerNumber',mobileNumber)
                             setFieldValue('firstName',firstName)

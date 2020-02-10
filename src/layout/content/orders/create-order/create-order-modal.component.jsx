@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap';
-import CreateOrderForm from '../../../forms/create-order.form'
+import CreateOrderForm from '../../orders/forms/create-order.form'
 
 const  CreateOrderModal =(props)=>{
     return (

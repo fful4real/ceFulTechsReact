@@ -2,7 +2,7 @@ import React from 'react'
 import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
 import DisplayReport from '../../../../components/report/display-report';
 import { connect } from 'react-redux';
-import { selectIsFetching, selectPendingOrdersCount,selectPendingOrdersAmount } from '../../../../redux/orders/orders.selectors';
+import { selectIsFetchingOrders, selectPendingOrdersCount,selectPendingOrdersAmount } from '../../../../redux/orders/orders.selectors';
 
 const AbandonedOrdersReport = ({isFetching, theTitle="Pending Orders", ordersCount, pendingOrderAmount})=>{
 
@@ -24,7 +24,7 @@ const AbandonedOrdersReport = ({isFetching, theTitle="Pending Orders", ordersCou
 const ordersState = rootReducerState =>({
     ordersCount:selectPendingOrdersCount(rootReducerState),
     pendingOrderAmount:selectPendingOrdersAmount(rootReducerState),
-    isFetching: selectIsFetching(rootReducerState)
+    isFetching: selectIsFetchingOrders(rootReducerState)
 })
 
 export default connect(ordersState)(AbandonedOrdersReport);

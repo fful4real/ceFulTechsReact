@@ -15,7 +15,7 @@ const TopNavigation = ()=>(
                     <i className="ion ion-ios-menu"></i>
                 </Link>
                 <Navbar.Brand href="/">
-                    <img className="brand-img d-inline-block mr-5" src={Logo} alt="brand" />FulTechs-
+                    <img className="brand-img d-inline-block mr-5" src={Logo} alt="brand" />FulTechs
                 </Navbar.Brand>
                 <ul className="navbar-nav hk-navbar-content">
                     <li className="nav-item">

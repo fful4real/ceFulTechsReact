@@ -39,3 +39,17 @@ export const dispatchAddOrderToState = order =>{
         dispatch(addOrderToState(order));
     }
 }
+
+// Update Order after processing
+
+export const updateOrder = orders =>({
+    type: OrdersActionTypes.UPDATE_ORDERS,
+    orders
+})
+
+export const updateOrderAsync = (orders) =>{
+
+    return dispatch =>{
+        dispatch(updateOrder(orders));
+    }
+}

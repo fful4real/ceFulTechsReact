@@ -8,7 +8,7 @@ import IosStatsOutline from 'react-ionicons/lib/IosStatsOutline'
 import IosImageOutline from 'react-ionicons/lib/IosImageOutline'
 import LastTenOrdersItem from './last-ten-orders-item.component'
 import { connect } from 'react-redux'
-import { selectIsFetching, selectLastTenOrders } from '../../../../redux/orders/orders.selectors'
+import { selectIsFetchingOrders, selectLastTenOrders } from '../../../../redux/orders/orders.selectors'
 import Spinner from '../../../../components/spinner/spinner'
 
 const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle="",lastTenOrder})=>{
@@ -103,7 +103,7 @@ const LastTenOrdersList = ({ordersData:{orders}, isFetching, theTitle="",lastTen
 
 const ordersState = rootReducerState =>({
     ordersData: rootReducerState.orders,
-    isFetching: selectIsFetching(rootReducerState),
+    isFetching: selectIsFetchingOrders(rootReducerState),
     lastTenOrder:selectLastTenOrders(rootReducerState)
 
 })
