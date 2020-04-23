@@ -3,7 +3,7 @@ import userActionTypes from "./user.types";
 
 const INITIAL_STATE = {
     isFetchingUser:true,
-    userData:{},
+    user:{},
     userError:null
 }
 
@@ -18,14 +18,14 @@ const userReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 isFetchingUser:false,
-                userData: action.user,
+                user: action.user,
                 userError:null
             }
         case userActionTypes.USER_FETCHING_FAILURE:
             return{
                 ...state,
                 isFetchingUser:false,
-                userData:null,
+                user:null,
                 userError: action.error
             }
     

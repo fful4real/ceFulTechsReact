@@ -1,15 +1,24 @@
 import React, { useState } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { selectOrdersTableData, selectIsFetching } from '../../../../redux/orders/orders.selectors'
+import { selectOrdersTableData, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors'
 import DataTable from 'react-data-table-component'
 import SearchForm from '../../../../components/form/search-form'
 import { OrderListFormStyle } from './styles/order-list.style'
-const  OrdersList = ({selectOrdersTableData,selectIsFetching})=> {
-    console.log(selectOrdersTableData)
+import { Redirect } from 'react-router-dom'
+const  OrdersList = ({selectOrdersTableData,selectIsFetchingOrders})=> {
+    // console.log(selectOrdersTableData)
     const [searchString, setSearchString] = useState('')
+    const [itemPage, setItemPage] = useState(false)
     const handleSearch = value => setSearchString(value)
-    const data = selectOrdersTableData.filter(item=>item.customer.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+    const handleRowClick = row => {
+        // console.log(row)
+        setItemPage(row)
+    }
+    const data = selectOrdersTableData.filter(item=>
+            (item.customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
+            (item.customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+        )
     const columns = [
         {
             name:'Ref',
@@ -20,38 +29,53 @@ const  OrdersList = ({selectOrdersTableData,selectIsFetching})=> {
             name:'Customer',
             selector: 'customer',
             sortable:true,
-            cell: row => <div><i className="icon-user font-11 text-primary mr-5"></i>{row.customer}</div>
+            cell: row => <div onClick={()=>handleRowClick(row)}>
+                            <i className="icon-user font-11 text-primary mr-5"></i>
+                            <span className="text-capitalize-">{row.customer.firstName}</span>
+                            <span className="text-uppercase-">&nbsp;{row.customer.lastName}</span>
+                        </div>
         },
         {
             name:'Amount In',
             selector: 'amountIn',
             sortable:true,
-            cell: row => <div>
-                            <i className="icon-arrow-up font-11 text-success mr-5"></i>{`${row.amountIn} ${row.currencyIn.currencyCode}`}
+            cell: row => <div onClick={()=>handleRowClick(row)}>
+                            <i className="icon-arrow-down font-11 text-success mr-5"></i>{`${row.amountIn} ${row.currencyIn.currencyCode}`}
                         </div>
         },
         {
             name:'Amount Out',
             selector: 'amountOut',
             sortable:true,
-            cell: row => <div>
+            cell: row => <div onClick={()=>handleRowClick(row)}>
                             <i className="icon-arrow-up font-11 text-danger mr-5"></i>{`${row.amountOut} ${row.currencyOut.currencyCode}`}
+                        </div>
+        },
+        {
+            name:'Pending',
+            selector: 'pendingAmount',
+            sortable:true,
+            cell: row => <div onClick={()=>handleRowClick(row)}>
+                            <span>{`${row.pendingAmount} ${row.currencyOut.currencyCode}`}</span>
                         </div>
         },
         {
             name:'Status',
             selector: 'status',
             sortable:true,
-            cell: row => <div><span className={`badge badge-soft-${row.statusClass}`}>{row.status}</span></div>
+            cell: row => <div onClick={()=>handleRowClick(row)}><span className={`badge badge-soft-${row.status.className}`}>{row.status.statusLabel}</span></div>
         },
         {
             name:'Created Date',
             selector: 'datec',
             sortable:true,
-            cell: row => <div><span className="text-muted"><i className="icon-clock font-13"></i> {row.datec}</span></div>
+            cell: row => <div onClick={()=>handleRowClick(row)}><span className="text-muted"><i className="icon-clock font-13"></i> {row.datec}</span></div>
         }
     ]
-    return (
+    return itemPage? 
+    (<Redirect to={`/orders/${itemPage.id}`}/>)
+    :
+     (
         <div className="row">
             <div className="col-xl-12">
                 <div className="hk-sec-wrapper">
@@ -69,12 +93,13 @@ const  OrdersList = ({selectOrdersTableData,selectIsFetching})=> {
                                     striped={true}
                                     pointerOnHover={true}
                                     responsive={true}
-                                    progressPending={selectIsFetching}
+                                    progressPending={selectIsFetchingOrders}
                                     pagination={true}
                                     when={row=>alert(row)}
                                     fixedHeader={true}
                                     fixedHeaderScrollHeight="100vh"
                                     expandableRows={true}
+                                    onRowClicked={handleRowClick}
                                 />
                             </div>
                         </div>
@@ -87,7 +112,7 @@ const  OrdersList = ({selectOrdersTableData,selectIsFetching})=> {
 
 const ordersState = createStructuredSelector({
     selectOrdersTableData,
-    selectIsFetching
+    selectIsFetchingOrders
 })
 
 export default connect(ordersState)(OrdersList)

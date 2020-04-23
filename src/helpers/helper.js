@@ -11,6 +11,12 @@ export const displayDate = d =>{
     
 }
 
-export const capitalizeFirstLetter = d =>{
-    return d.charAt(0).toUpperCase() + d.slice(1)
+export const capitalizeFirstLetter = (s) => {
+    s=s.toLowerCase();
+    return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+export const sanitizeString = (str)=>{
+    str = str.replace(/[^a-z0-9áéíóúñü: \\.,_-]/gim,"");
+    return str.trim();
 }

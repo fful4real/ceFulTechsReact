@@ -1,15 +1,37 @@
-import AccountsData from "../../layout/content/accounts/accounts.data";
+import AccountsActionTypes from "./accounts.types";
+
 
 const INITIAL_STATE = {
-    accounts:AccountsData
+    accounts:[],
+    isFetchingAccounts:false,
+    error:null
 }
 
-const accountsReducer = (state=INITIAL_STATE,action)=>{
+const AccountsReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
-        case 'CREATE_NEW_ACCOUNT':
+        case AccountsActionTypes.ACCOUNTS_FETCHING_SUCCESS:
             return{
                 ...state,
-                accounts:action.payload
+                isFetchingAccounts:false,
+                accounts: action.accounts
+            }
+        
+        case AccountsActionTypes.ACCOUNTS_FETCHING_START:
+            return{
+                ...state,
+                isFetchingAccounts:true
+            }
+
+        case AccountsActionTypes.ACCOUNTS_FETCHING_FAILURE:
+            return{
+                ...state,
+                isFetchingAccounts:false,
+                error: action.error
+            }
+        case AccountsActionTypes.UPDATE_ACCOUNTS:
+            return{
+                ...state,
+                accounts:action.accounts
             }
     
         default:
@@ -17,4 +39,4 @@ const accountsReducer = (state=INITIAL_STATE,action)=>{
     }
 }
 
-export default accountsReducer;
+export default AccountsReducer;

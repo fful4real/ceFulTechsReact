@@ -11,7 +11,7 @@ import OrdersList from './pages/orders-list'
 import OrdersItem from './pages/orders-item'
 
 const OrdersPage = ({fetchOrdersAsync,ordersCount}) =>{
-    // Similar to componentDidMount and componentDidUpdate:
+    
   useEffect(() => {
     !ordersCount && fetchOrdersAsync();
   });
@@ -30,9 +30,9 @@ const OrdersPage = ({fetchOrdersAsync,ordersCount}) =>{
     
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchOrdersAsync: ()=>dispatch(fetchOrdersAsync())
-})
+const mapDispatchToProps = {
+    fetchOrdersAsync
+}
 
 const ordersState = createStructuredSelector({
     ordersCount:selectOrderCount

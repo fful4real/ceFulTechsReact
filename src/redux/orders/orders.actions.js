@@ -1,21 +1,20 @@
-import OrderActionTypes from "./orders.types";
-import OrdersActionTypes from "../../layout/content/orders/orders.types";
 import AxiosAgent from "../../axios-agent";
+import OrdersActionTypes from "./orders.types";
 
 export const addOrderToState = order =>({
-    type: OrderActionTypes.CREATE_ORDER,
+    type: OrdersActionTypes.CREATE_ORDER,
     order
 });
 
 export const fetchOrdersStart = ()=>({
-    type: OrdersActionTypes.FETCH_ORDERS_START
+    type:OrdersActionTypes.ORDERS_FETCHING_START
 })
 export const fetchOrdersSuccess = orders =>({
-    type: OrdersActionTypes.FETCH_ORDERS_SUCCESS,
+    type: OrdersActionTypes.ORDERS_FETCHING_SUCCESS,
     orders
 })
 export const fetchOrdersFailure = response =>({
-    type: OrdersActionTypes.FETCH_ORDERS_FAILURE,
+    type: OrdersActionTypes.ORDERS_FETCHING_FAILURE,
     payload: response
 })
 
@@ -37,5 +36,19 @@ export const dispatchAddOrderToState = order =>{
 
     return dispatch =>{
         dispatch(addOrderToState(order));
+    }
+}
+
+// Update Order after processing
+
+export const updateOrder = orders =>({
+    type: OrdersActionTypes.UPDATE_ORDERS,
+    orders
+})
+
+export const updateOrderAsync = orders =>{
+
+    return dispatch =>{
+        dispatch(updateOrder(orders));
     }
 }

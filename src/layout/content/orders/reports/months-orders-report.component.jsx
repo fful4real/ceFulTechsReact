@@ -1,5 +1,5 @@
 import React from 'react'
-import { selectIsFetching, selectOrderCountOfMonth, selectAmountForMonthOrders } from '../../../../redux/orders/orders.selectors';
+import { selectIsFetchingOrders, selectOrderCountOfMonth, selectAmountForMonthOrders } from '../../../../redux/orders/orders.selectors';
 import { connect } from 'react-redux';
 import DisplayReport from '../../../../components/report/display-report';
 import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
@@ -25,7 +25,7 @@ const MonthsOrdersReport = ({isFetching,ordersCountOfMonth, ordersAmountOfMonth}
 const ordersState = rootReducerState =>({
     ordersCountOfMonth:selectOrderCountOfMonth(rootReducerState),
     ordersAmountOfMonth:selectAmountForMonthOrders(rootReducerState),
-    isFetching: selectIsFetching(rootReducerState)
+    isFetching: selectIsFetchingOrders(rootReducerState)
 })
 
 export default connect(ordersState)(MonthsOrdersReport);

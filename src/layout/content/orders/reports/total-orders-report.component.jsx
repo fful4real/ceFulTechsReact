@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { selectOrderCount, selectOrdersTotalAmount, selectIsFetching } from '../../../../redux/orders/orders.selectors';
+import { selectOrderCount, selectOrdersTotalAmount, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors';
 import DisplayReport from '../../../../components/report/display-report';
 import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
 
@@ -24,7 +24,7 @@ const TotalCustomersReport = ({ordersCount,ordersTotalAmount, isFetching})=>{
 const ordersState = rootReducerState =>({
     ordersCount:selectOrderCount(rootReducerState),
     ordersTotalAmount:selectOrdersTotalAmount(rootReducerState),
-    isFetching: selectIsFetching(rootReducerState)
+    isFetching: selectIsFetchingOrders(rootReducerState)
 })
 
 export default connect(ordersState)(TotalCustomersReport);

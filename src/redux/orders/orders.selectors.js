@@ -1,25 +1,32 @@
 import {createSelector} from 'reselect'
-import { numberWithCommas } from '../../helpers/helper';
+import { numberWithCommas, capitalizeFirstLetter } from '../../helpers/helper';
 import moment from 'moment';
 
 
 const selectOrderState = state => state.orders;
 const selectCurrencyState = state => state.currencies;
+const selectCitiesState = state => state.cities;
 const selectCurrencies = createSelector(
     [selectCurrencyState],
     currencies => currencies.currencies
 )
-const selectOrders = createSelector(
-    [selectOrderState, selectCurrencies],
-    (orders, currencies) => orders.orders.map(order=>(
+const selectCities = createSelector(
+    [selectCitiesState],
+    cities => cities.cities
+)
+
+export const selectOrders = createSelector(
+    [selectOrderState, selectCurrencies, selectCities],
+    (orders, currencies, cities) => orders.orders.map(order=>(
         {...order,
-            currencyIn:currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyIn.split("/")[3]))[0],
-            currencyOut:currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyOut.split("/")[3]))[0]
+            currencyIn:typeof(order.currencyIn) !== 'object'? currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyIn.split("/")[3]))[0]:order.currencyIn,
+            currencyOut:typeof(order.currencyOut) !== 'object'? currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyOut.split("/")[3]))[0]:order.currencyOut,
+            customer: typeof(order.customer) !== 'object'? {...order.customer, fkCity: cities.filter(city=>parseInt(city.id)===parseInt(order.customer.fkCity.split("/")[3]))[0]}:{...order.customer, firstName:capitalizeFirstLetter(order.customer.firstName), lastName: order.customer.lastName.toUpperCase()}
         }
     ))
 )
 
-export const selectIsFetching = createSelector(
+export const selectIsFetchingOrders = createSelector(
     [selectOrderState],
     orders => orders.isFetching
 )
@@ -129,9 +136,6 @@ export const selectPendingOrdersAmount = createSelector(
 export const selectOrdersTableData = createSelector(
     [selectOrders,selectCurrencies],
     (orders,currencies)=>orders.map(order=>({...order,
-        customer:`${order.customer.firstName} ${order.customer.lastName.toUpperCase()}`, 
-        status:order.status.statusLabel,
-        statusClass:order.status.className,
         datec:moment(order.datec).format("DD - MMM - YYYY"),
         amountIn:numberWithCommas(order.amountIn),
         amountOut:numberWithCommas(order.amountOut)

@@ -8,9 +8,9 @@ const selectCustomers = createSelector(
     customers => customers.customers
 )
 
-export const selectIsFetching = createSelector(
+export const selectIsFetchingCustomers = createSelector(
     [selectCustomersState],
-    customers => customers.isFetching
+    customers => customers.isFetchingCustomers
 )
 
 // Total Customers Selectors

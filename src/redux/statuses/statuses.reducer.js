@@ -7,7 +7,7 @@ const INITIAL_STATE = {
     error:null
 }
 
-const StatusesReducer = (state=INITIAL_STATE,action)=>{
+const statusesReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
         case StatusesActionTypes.STATUSES_FETCHING_SUCCESS:
             return{
@@ -34,4 +34,4 @@ const StatusesReducer = (state=INITIAL_STATE,action)=>{
     }
 }
 
-export default StatusesReducer;
+export default statusesReducer;
