@@ -1,5 +1,4 @@
-import OrderActionTypes from "./orders.types";
-import OrdersActionTypes from "../../layout/content/orders/orders.types";
+import OrdersActionTypes from "./orders.types";
 
 
 const INITIAL_STATE = {
@@ -10,25 +9,25 @@ const INITIAL_STATE = {
 
 const ordersReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
-        case OrderActionTypes.CREATE_ORDER:
+        case OrdersActionTypes.CREATE_ORDER:
             return{
                 ...state,
                 orders: [...state.orders,action.order]
             }
-        case OrdersActionTypes.FETCH_ORDERS_SUCCESS:
+        case OrdersActionTypes.ORDERS_FETCHING_SUCCESS:
             return{
                 ...state,
                 isFetching:false,
                 orders: action.orders
             }
         
-        case OrdersActionTypes.FETCH_ORDERS_START:
+        case OrdersActionTypes.ORDERS_FETCHING_START:
             return{
                 ...state,
                 isFetching:true
             }
 
-        case OrdersActionTypes.FETCH_ORDERS_FAILURE:
+        case OrdersActionTypes.ORDERS_FETCHING_FAILURE:
             return{
                 ...state,
                 isFetching:false,

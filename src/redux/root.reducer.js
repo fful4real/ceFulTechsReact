@@ -8,6 +8,7 @@ import userReducer from './user/user.reducer'
 import customersReducer from './customers/customers.reducer'
 import CurrenciesReducer from './currencies/currencies.reducer'
 import CitiesReducer from './cities/cities.reducer'
+import statusesReducer from './statuses/statuses.reducer'
 
 export default combineReducers({
     accounts:accountsReducer,
@@ -17,5 +18,6 @@ export default combineReducers({
     orders: ordersReducer,
     form: LoginFormReducer,
     auth: authReducer,
-    user: userReducer
+    user: userReducer,
+    statuses: statusesReducer
 })

@@ -11,10 +11,19 @@ const selectCurrencies = createSelector(
 )
 export const selectAccounts = createSelector(
     [selectAccountState, selectCurrencies],
+<<<<<<< HEAD
     (accounts,currencies) => accounts.accounts.map(account=>({
         ...account,
         currency:currencies.filter(currency=>parseInt(currency.id)===parseInt(account.currency.split("/")[3]))[0]
     }))
+=======
+    (accounts,currencies) => accounts.accounts.map(account=>{
+        // console.log("Currency: ",currencies)
+        return({
+        ...account,
+        currency:typeof account.currency === 'string'?currencies.filter(currency=>parseInt(currency.id)===parseInt(account.currency.split("/")[3]))[0]:account.currency
+    })})
+>>>>>>> b17fb8b
 )
 
 export const selectIsFetchingAccounts = createSelector(
@@ -35,6 +44,10 @@ export const selectAccountsTotalAmount = createSelector(
 
        return numberWithCommas(amount)
     }
+<<<<<<< HEAD
 )
 
 
+=======
+)
+>>>>>>> b17fb8b

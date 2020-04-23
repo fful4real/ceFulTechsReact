@@ -1,10 +1,18 @@
 import React from 'react'
 import { Form, Col, InputGroup, Button } from 'react-bootstrap'
 import { capitalizeFirstLetter } from '../../../../helpers/helper'
+<<<<<<< HEAD
 import { isSubmitting } from 'redux-form'
 
 const OrderItemCustomerForm = ({order})=> {
     const customerName = `${capitalizeFirstLetter(order.customer.firstName)} ${order.customer.lastName.toUpperCase()}`
+=======
+
+const OrderItemCustomerForm = ({order})=> {
+    const customerName = `${capitalizeFirstLetter(order.customer.firstName)} ${order.customer.lastName.toUpperCase()}`
+    // const customerName="Felix FUL CHI"
+    console.log("Order: ", order)
+>>>>>>> b17fb8b
     return (
         <Form>
             <Form.Row>
@@ -113,4 +121,8 @@ const OrderItemCustomerForm = ({order})=> {
     )
 }
 
+<<<<<<< HEAD
 export default OrderItemCustomerForm
+=======
+export default OrderItemCustomerForm
+>>>>>>> b17fb8b

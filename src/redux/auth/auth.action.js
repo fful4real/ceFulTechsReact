@@ -21,10 +21,7 @@ export const userSetAuth = ({token,userId}) =>({
     type: authActionTypes.USER_SET_AUTH,
     token,
     userId
-
 })
-
-
 
 export const userDestroyAuth = () =>({
     type: authActionTypes.USER_DESTROY_AUTH
@@ -54,4 +51,14 @@ export const userLoginAttempt = (username, password)=>{
             }
         })
     }
+}
+
+// App Finihsed Loading
+
+export const appFinishedLoading = () =>({
+    type: authActionTypes.APP_FINISHED_LOADING
+})
+
+export const appFinishedLoadingAttempt = ()=>{
+    return dispatch => {dispatch(appFinishedLoading())}
 }

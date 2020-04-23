@@ -23,10 +23,22 @@ const AccountsReducer = (state=INITIAL_STATE,action)=>{
             }
 
         case AccountsActionTypes.ACCOUNTS_FETCHING_FAILURE:
+<<<<<<< HEAD
             return{
                 ...state,
                 isFetchingAccounts:false,
                 error: action.error
+=======
+            return{
+                ...state,
+                isFetchingAccounts:false,
+                error: action.error
+            }
+        case AccountsActionTypes.UPDATE_ACCOUNTS:
+            return{
+                ...state,
+                accounts:action.accounts
+>>>>>>> b17fb8b
             }
     
         default:

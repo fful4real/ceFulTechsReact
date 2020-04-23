@@ -7,9 +7,9 @@ import Spinner from '../../../../components/spinner/spinner';
 
 const AuthenticationMenu = ({user})=> {
     let firstName=null, lastName =null
-    if(user.userData!==null){
-        lastName = user.userData.lastName
-        firstName = user.userData.firstName
+    if(user.user!==null){
+        lastName = user.user.lastName
+        firstName = user.user.firstName
     }
 
     return (

@@ -27,4 +27,21 @@ export const fetchAccountsAsync = ()=>{
             console.error(err.message)
         })
     }
+<<<<<<< HEAD
+=======
+}
+
+// Update Order after processing
+
+export const updateAccount = accounts =>({
+    type: AccountsActionTypes.UPDATE_ACCOUNTS,
+    accounts
+})
+
+export const updateAccountAsync = (accounts) =>{
+
+    return dispatch =>{
+        dispatch(updateAccount(accounts));
+    }
+>>>>>>> b17fb8b
 }

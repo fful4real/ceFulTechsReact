@@ -7,7 +7,8 @@ const INITIAL_STATE = {
     isLogging: false,
     error:null,
     isAuthenticated:false,
-    loginFailed:false
+    loginFailed:false,
+    appIsLoading:true
 }
 
 const authReducer = (state=INITIAL_STATE,action)=>{
@@ -43,6 +44,12 @@ const authReducer = (state=INITIAL_STATE,action)=>{
                 error:action.error,
                 loginFailed:true
 
+            }
+        
+        case authActionTypes.APP_FINISHED_LOADING:
+            return{
+                ...state,
+                appIsLoading:false
             }
         
         case authActionTypes.USER_DESTROY_AUTH:

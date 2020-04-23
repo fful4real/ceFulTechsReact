@@ -11,8 +11,13 @@ import OrdersList from './pages/orders-list'
 import OrdersItem from './pages/orders-item'
 import Spinner from '../../../components/spinner/spinner'
 
+<<<<<<< HEAD
 const OrdersPage = ({fetchOrdersAsync,ordersCount, isFetchingOrders}) =>{
     // Similar to componentDidMount and componentDidUpdate:
+=======
+const OrdersPage = ({fetchOrdersAsync,ordersCount}) =>{
+    
+>>>>>>> b17fb8b
   useEffect(() => {
     !ordersCount && fetchOrdersAsync();
   });
@@ -34,9 +39,9 @@ const OrdersPage = ({fetchOrdersAsync,ordersCount, isFetchingOrders}) =>{
     
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchOrdersAsync: ()=>dispatch(fetchOrdersAsync())
-})
+const mapDispatchToProps = {
+    fetchOrdersAsync
+}
 
 const ordersState = createStructuredSelector({
     ordersCount:selectOrderCount,
