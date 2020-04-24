@@ -25,6 +25,10 @@ export const addCustomersOrder = customers =>({
     customers
 })
 
+export const addCustomerToState = customer =>{
+    return dispatch =>dispatch(addCustomer(customer))
+}
+
 export const addOrderToCustomer = (customers, order)=>{
     return dispatch=>{
 

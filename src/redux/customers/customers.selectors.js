@@ -1,11 +1,13 @@
 import {createSelector} from 'reselect'
-import { numberWithCommas } from '../../helpers/helper';
-
+import { numberWithCommas, capitalizeFirstLetter } from '../../helpers/helper';
 
 const selectCustomersState = state => state.customers;
-const selectCustomers = createSelector(
+export const selectCustomers = createSelector(
     [selectCustomersState],
-    customers => customers.customers
+    customers => customers.customers.map(customer=>({...customer,
+        firstName:capitalizeFirstLetter(customer.firstName),
+        lastName:customer.lastName.toUpperCase()
+    }))
 )
 
 export const selectIsFetchingCustomers = createSelector(

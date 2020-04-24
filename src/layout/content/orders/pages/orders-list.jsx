@@ -12,7 +12,6 @@ const  OrdersList = ({selectOrdersTableData,selectIsFetchingOrders})=> {
     const [itemPage, setItemPage] = useState(false)
     const handleSearch = value => setSearchString(value)
     const handleRowClick = row => {
-        // console.log(row)
         setItemPage(row)
     }
     const data = selectOrdersTableData.filter(item=>

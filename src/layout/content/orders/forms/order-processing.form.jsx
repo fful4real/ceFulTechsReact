@@ -98,8 +98,6 @@ const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync
 
                                             updateOrderAsync(orders)
                                             updateAccountAsync(accounts)
-
-                                            console.log("Orders : ", orders)
                                             resetForm()
                                             setFieldValue('processingAmount',orderResp.pendingAmount)
                                             setFieldValue('pendingAmount',orderResp.pendingAmount )

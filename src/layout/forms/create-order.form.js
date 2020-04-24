@@ -11,15 +11,22 @@ import API_ROUTES from '../../api-route';
 import AxiosAgent from '../../axios-agent';
 import Alert from '../../components/alert/alert';
 import { addOrderToState } from '../../redux/orders/orders.actions';
-import { addOrderToCustomer } from '../../redux/customers/customers.action';
+import { addOrderToCustomer, addCustomerToState } from '../../redux/customers/customers.action';
+import { createStructuredSelector } from 'reselect';
+import { selectCustomers } from '../../redux/customers/customers.selectors';
+import { selectCurrencies } from '../../redux/currencies/currencies.selectors';
+import { selectCities } from '../../redux/cities/cities.selectors';
+import { sanitizeString } from '../../helpers/helper';
 
-const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrderToCustomer})=>{
-    const customerData = customers.customers;
-    const currencyData = currencies.currencies
-    const cityData = cities.cities
+const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer})=>{
+    const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
+    const currencyOutObj = currencies.filter(currency=>currency.currencyCode==="XAF")[0]
     const [searchString, setSearchString] = useState('');
     const [showDropdown, setShowDropdown] = useState('hide');
     const [showSuccess, setShowSuccess] = useState('hide');
+    const isNewCustomer = (newCustomer)=>{
+        return customers.find(customer=>customer.id===newCustomer.id)?false:true
+    }
     const handleCustomer = customer=>{
         return customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1 ||
                 customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1||
@@ -30,12 +37,13 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
         customerNumber:'',
         amountIn:'',
         amountOut:'',
-        currencyIn:!currencies.isFetchingCurrencies?`/api/currencies/${currencyData[0].id}`:'/api/currencis/1',
-        currencyOut: !currencies.isFetchingCurrencies?`/api/currencies/${currencyData[1].id}`:'/api/currencis/1',
+        currencyIn:`/api/currencies/${currencyInObj.id}`,
+        currencyOut: `/api/currencies/${currencyOutObj.id}`,
         firstName:'',
         lastName:'',
         customerAddress:'',
-        customerTown:!cities.isFetchingCities?`${cityData[0].code}`:'',
+        customerTown:cities[0].code,
+        orderNote:''
 
     }
 
@@ -81,20 +89,18 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                     firstName:values.firstName,
                                     lastName:values.lastName,
                                     city:values.customerTown,
-                                    address: values.customerAddress
-                                } 
+                                    address: values.customerAddress,
+                                    note:sanitizeString(values.orderNote)
+                                }
+                                
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
                                         const newOrder = resp.data
                                         setStatus({success: false})
                                         setShowSuccess('show')
-                                        addOrderToState({...newOrder, 
-                                            customer:{firstName:orderValues.firstName, 
-                                                lastName:orderValues.lastName.toUpperCase()
-                                            },
-                                            status:{statusCode:"NEW", statusLabel:"New", className:"primary"}
-                                        })
-                                        addOrderToCustomer(customerData, newOrder)
+                                        isNewCustomer(newOrder.customer)&&addCustomerToState(newOrder.customer)
+                                        addOrderToState(newOrder)
+                                        addOrderToCustomer(customers, newOrder)
                                         setSubmitting(false)
                                         resetForm()
                                         setTimeout(()=>{
@@ -170,7 +176,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                             <div>
                                                 <OrderCustomerItemStyle>
                                                     {
-                                                        customerData
+                                                        customers
                                                         .filter(customer=>handleCustomer(customer))
                                                         .map(({...customerItem})=>(
                                                                 <OrderCustomerItem toggleShow={toggleShow} handleCustomerClick={handleCustomerClick} key={`transaction-item-${uid({...customerItem})}`} {...customerItem} />
@@ -199,26 +205,12 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                                 value={values.amountIn}
                                                 disabled={isSubmitting}
                                                 onBlur={handleBlur}
+                                                autoComplete="off"
                                             />
                                             <InputGroup.Append>
-                                            <InputGroup.Append>
-                                                <select 
-                                                    className="form-control" 
-                                                    onChange={handleChange} 
-                                                    id="currencyIn" 
-                                                    name="currencyIn"
-                                                    disabled={isSubmitting}
-                                                    value={values.currencyIn}
-                                                >
-
-                                                    {
-                                                        currencyData
-                                                        .map(({currencyCode, id})=>(
-                                                            <option key={`currency-${uid({id})}`} value={`/api/currencies/${id}`}>{currencyCode}</option>
-                                                            ))
-                                                    }
-                                                </select>
-                                            </InputGroup.Append>
+                                            <InputGroup.Text>
+                                                <span>{currencyInObj.currencyCode}</span>
+                                            </InputGroup.Text>
                                             </InputGroup.Append>
                                     </InputGroup>
                                     {touched.amountIn&&errors.amountIn&&
@@ -244,24 +236,12 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                                 value={values.amountOut}
                                                 disabled={isSubmitting}
                                                 onBlur={handleBlur}
+                                                autoComplete="off"
                                             />
                                             <InputGroup.Append>
-                                            <InputGroup.Append>
-                                                <select 
-                                                    className="form-control" 
-                                                    name="currencyOut" 
-                                                    onChange={handleChange} 
-                                                    disabled={isSubmitting}
-                                                    value={values.currencyOut}
-                                                >
-                                                    {
-                                                        currencyData
-                                                        .map(({currencyCode, id})=>(
-                                                            <option key={`currency-${uid({id})}`} value={`/api/currencies/${id}`}>{currencyCode}</option>
-                                                            ))
-                                                    }
-                                                </select>
-                                            </InputGroup.Append>
+                                                <InputGroup.Text>
+                                                    <span>{currencyOutObj.currencyCode}</span>
+                                                </InputGroup.Text>
                                             </InputGroup.Append>
                                     </InputGroup>
                                     {touched.amountOut&&errors.amountOut&&
@@ -276,7 +256,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
 
                                     
                             <Form.Row  className="mb-lg-15 mb-md-10 mb-sm-5">
-                                <Form.Group as={Col} controlId="validationFirstName">
+                                <Form.Group as={Col}  md="4" controlId="validationFirstName">
                                 <Form.Label>
                                     First Name
                                 </Form.Label>
@@ -303,7 +283,7 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                 </InputGroup>
                                 </Form.Group>
                                     
-                                <Form.Group as={Col} controlId="validateionLastName">
+                                <Form.Group as={Col}  md="4" controlId="validateionLastName">
                                     <Form.Label>Last Name</Form.Label>
                                     <InputGroup>
                                         <InputGroup.Prepend>
@@ -322,47 +302,68 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
                                         />
                                     </InputGroup>
                                 </Form.Group>
+                                
+                                <Form.Group as={Col} md="4" controlId="validationAddress">
+                                        <Form.Label>Address</Form.Label>
+                                        <InputGroup>
+                                            <InputGroup.Prepend>
+                                                <InputGroup.Text>
+                                                <i className="icon-location-pin"></i>
+                                            </InputGroup.Text>
+                                            </InputGroup.Prepend>
+                                            <Form.Control 
+                                                onChange={handleChange} 
+                                                value={values.customerAddress} 
+                                                name="customerAddress" 
+                                                type="text" 
+                                                placeholder="Address"
+                                                disabled={isSubmitting}
+                                                onBlur={handleBlur}
+                                            />
+                                            <InputGroup.Append>
+                                                <select 
+                                                    id="customerTown" 
+                                                    onChange={handleChange} 
+                                                    className="form-control" 
+                                                    value={values.customerTown}
+                                                    name="customerTown"
+                                                    disabled={isSubmitting}
+                                                >
+                                                    {
+                                                        cities
+                                                        .map(({code, id})=>(
+                                                            <option key={`currency-${uid({id})}`} value={code}>{code}</option>
+                                                            ))
+                                                    }
+                                                </select>
+                                            </InputGroup.Append>
+                                        </InputGroup>
+                                    </Form.Group>
                             </Form.Row>
 
                             
                             <Form.Row className="mb-25">
-                        <Form.Group as={Col} controlId="validationAddress">
-                            <Form.Label>Address</Form.Label>
-                            <InputGroup>
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text>
-                                    <i className="icon-location-pin"></i>
-                                </InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <Form.Control 
-                                    onChange={handleChange} 
-                                    value={values.customerAddress} 
-                                    name="customerAddress" 
-                                    type="text" 
-                                    placeholder="Address"
-                                    disabled={isSubmitting}
-                                    onBlur={handleBlur}
-                                />
-                                <InputGroup.Append>
-                                    <select 
-                                        id="customerTown" 
-                                        onChange={handleChange} 
-                                        className="form-control" 
-                                        value={values.customerTown}
-                                        name="customerTown"
-                                        disabled={isSubmitting}
-                                    >
-                                        {
-                                            cityData
-                                            .map(({code, id})=>(
-                                                <option key={`currency-${uid({id})}`} value={code}>{code}</option>
-                                                ))
-                                        }
-                                    </select>
-                                </InputGroup.Append>
-                            </InputGroup>
-                        </Form.Group>
-                    </Form.Row>
+                                <Form.Group as={Col} controlId="validationOrderNote">
+                                    <Form.Label>Note</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>
+                                            <i className="icon-notebook"></i>
+                                        </InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <Form.Control 
+                                            as="textarea" 
+                                            rows="3"
+                                            name="orderNote"
+                                            value={values.orderNote}
+                                            onBlur={handleBlur}
+                                            disabled={isSubmitting}
+                                            onChange={handleChange} 
+                                        />
+                                    </InputGroup>
+                                </Form.Group>
+                    
+                            </Form.Row>
 
                             
                             <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
@@ -383,13 +384,14 @@ const CreateOrderForm = ({customers, currencies, cities, addOrderToState, addOrd
 
 const mapDispatchToProps = {
     addOrderToState,
-    addOrderToCustomer
+    addOrderToCustomer,
+    addCustomerToState
   }
-
-const mapStateToProps = rootReducerState =>({
-    customers:rootReducerState.customers,
-    currencies:rootReducerState.currencies,
-    cities:rootReducerState.cities,
-  });
+  
+  const mapStateToProps = createStructuredSelector({
+    customers:selectCustomers,
+    currencies:selectCurrencies,
+    cities:selectCities
+  })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderForm)

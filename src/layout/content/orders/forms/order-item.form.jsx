@@ -6,7 +6,7 @@ import OrderProcessingForm from './order-processing.form'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { selectUser } from '../../../../redux/user/user.selectors'
-import OrderModificationForm from './order.modification.form'
+import OrderModificationForm from './order-modification.form'
 
 const OrderItemForm = ({order, handleModal, selectUser})=> {
     const [showModal, setShowModal] = useState({show:false, formEl:'',modalHeading:''})

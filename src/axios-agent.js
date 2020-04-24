@@ -16,10 +16,12 @@ const AxiosAgent = {
   setToken: token => axios.interceptors.request.use(
     config => {
     console.log(`${config.method.toUpperCase()} request sent to ${config.url}`);
+    const contentType = config.method.toUpperCase()==='PATCH'?'application/merge-patch+json':'application/json'
     return {
       ...config,
       headers: {
-        Authorization:`Bearer ${token}`
+        Authorization:`Bearer ${token}`,
+        "content-type":contentType
       }
     }
     },

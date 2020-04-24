@@ -21,7 +21,11 @@ export const selectOrders = createSelector(
         {...order,
             currencyIn:typeof(order.currencyIn) !== 'object'? currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyIn.split("/")[3]))[0]:order.currencyIn,
             currencyOut:typeof(order.currencyOut) !== 'object'? currencies.filter(currency=>parseInt(currency.id)===parseInt(order.currencyOut.split("/")[3]))[0]:order.currencyOut,
-            customer: typeof(order.customer) !== 'object'? {...order.customer, fkCity: cities.filter(city=>parseInt(city.id)===parseInt(order.customer.fkCity.split("/")[3]))[0]}:{...order.customer, firstName:capitalizeFirstLetter(order.customer.firstName), lastName: order.customer.lastName.toUpperCase()}
+            customer: {...order.customer,
+                 fkCity:typeof(order.customer.fkCity) !== 'object'? cities.filter(city=>parseInt(city.id)===parseInt(order.customer.fkCity.split("/")[3]))[0]:order.customer.fkCity,
+                 firstName:capitalizeFirstLetter(order.customer.firstName), 
+                 lastName: order.customer.lastName.toUpperCase()
+                }
         }
     ))
 )

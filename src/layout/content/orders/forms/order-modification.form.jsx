@@ -11,36 +11,32 @@ import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
 import { selectAccounts } from '../../../../redux/accounts/accounts.selector';
 import { selectOrders } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
-import { uid } from 'react-uid';
-import { updateAccountAsync } from '../../../../redux/accounts/accounts.action';
-import { selectStatuses } from '../../../../redux/statuses/statuses.selectors';
 import { sanitizeString } from '../../../../helpers/helper';
 
-const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsync,updateAccountAsync, accounts})=>{
-    const accountData = accounts.filter(account=>{ return (account.currency.currencyCode===order.currencyOut.currencyCode)&&parseInt(account.balance)>0});
-    const [showSuccess, setShowSuccess] = useState({show:"hide", className:"success", message:"Order processed successfully"});
-    // console.log(statuses)
+const OrderModificationForm = ({order,orders, updateOrderAsync, accounts})=>{
+    const [showSuccess, setShowSuccess] = useState({show:"hide",alertIcon:"check-circle", className:"success", message:"Order processed successfully"});
     let initialVals = {
         customerNumber:order.customer.mobileNumber,
-        pendingAmount:order.pendingAmount,
-        processingAmount:order.pendingAmount,
+        amountOut:order.amountOut,
+        amountIn:order.amountIn,
         currencyIn:order.currencyIn.currencyCode,
         currencyOut: order.currencyOut.currencyCode,
         firstName:order.customer.firstName,
         lastName:order.customer.lastName,
-        customerAddress:order.customer.address,
-        fromAccount:'',
+        processedAmount:order.processedAmount,
+        orderRef:order.orderRef,
         orderId:order.id,
-        orderNote:''
+        orderNote:order.note
 
     }
 
     const validationSchema = Yup.object().shape({
-        processingAmount:Yup.string()
+        amountIn:Yup.string()
                         .required('Please enter amount')
                         .matches(/^[0-9]+$/, 'Only Numbers accepted'),
-        fromAccount:Yup.string()
-                        .required('Please select account')
+        amountOut:Yup.string()
+                        .required('Please enter amount')
+                        .matches(/^[0-9]+$/, 'Only Numbers accepted')
     });
 
     return (
@@ -51,69 +47,58 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
                     validationSchema={validationSchema}
                     onSubmit={
                         (values, {setSubmitting,setErrors, error, resetForm, setStatus, setFieldValue})=>{
-                                if(values.processingAmount>values.pendingAmount){
-                                    setErrors({processingAmount: 'Amount greated than pending amount'})
+                                if(parseInt(values.amountIn)>parseInt(values.amountOut)){
+                                    setErrors({amountIn: 'Amount greated than amount out'})
                                     return false
                                 }
-                                if(values.processingAmount<=1){
-                                    setErrors({processingAmount: 'Amount must be greater than zero'})
+                                if(values.amountIn<=1){
+                                    setErrors({amountIn: 'Amount must be greater than zero'})
                                     return false
                                 }
-                                const fromAccountVal = values.fromAccount.split("/")
-                                if(parseInt(values.processingAmount)>parseInt(fromAccountVal[0])){
-                                    console.log(fromAccountVal[0])
-                                    setErrors({processingAmount: 'Amount greated than account balance'})
+                                if (parseInt(values.amountOut)<parseInt(values.processedAmount)) {
+                                    setErrors({amountOut:'Amount out less than processed amount'})
                                     return false
                                 }
                                 
-                                const orderNote = sanitizeString(values.orderNote)
+                                const note = sanitizeString(values.orderNote)
                                 const processValues = {
-                                    processAmount:values.processingAmount,
-                                    fromAccount:fromAccountVal[1],
-                                    orderNote
+                                    amountIn:parseInt(values.amountIn),
+                                    amountOut:parseInt(values.amountOut),
+                                    note
                                 }
                                 
-                                AxiosAgent.request('put', API_ROUTES.orders(values.orderId), null, processValues)
+                                AxiosAgent.request('patch', API_ROUTES.orders(values.orderId), null, processValues)
                                         .then(resp=>{
                                             const orderResp = resp.data;
-                                            console.log(resp.data)
+                                            console.log("Patched Order: ",orderResp)
                                             setStatus({success: false})
                                             orders = orders.map(mapOrder=>mapOrder.id===order.id?
                                                     {...mapOrder,
-                                                        processedAmount:orderResp.processedAmount,
-                                                        pendingAmount:orderResp.pendingAmount,
-                                                        status:orderResp.processedAmount===orderResp.amountOut?statuses.filter(status=>status.statusCode==="OK")[0]:statuses.filter(status=>status.statusCode==="PTL")[0]
+                                                        amountIn:orderResp.amountIn,
+                                                        amountOut:orderResp.amountOut,
+                                                        note:orderResp.note
                                                     }:
                                                 mapOrder
                                                 )
-                                            accounts = accounts.map(mapAccount=>mapAccount.id===parseInt(fromAccountVal[1])?
-                                                {...mapAccount,
-                                                    balance:mapAccount.balance-parseInt(values.processingAmount)
-                                                }:
-                                                mapAccount
-                                            )
-                                            
-                                            setShowSuccess({show:"show", className:"success", message:"Order processed successfully"})
+
                                             setSubmitting(false)
-
-                                            updateOrderAsync(orders)
-                                            updateAccountAsync(accounts)
-
-                                            console.log("Orders : ", orders)
+                                            setShowSuccess({...showSuccess, show:"show", className:"success",alertIcon:"check-circle", message:"Order processed successfully"})
                                             resetForm()
-                                            setFieldValue('processingAmount',orderResp.pendingAmount)
-                                            setFieldValue('pendingAmount',orderResp.pendingAmount )
+                                            updateOrderAsync(orders)
+                                            setFieldValue('amountIn',orderResp.amountIn)
+                                            setFieldValue('amountOut',orderResp.amountOut )
+                                            setFieldValue('orderNote',orderResp.note )
+                                            
                                             setTimeout(()=>{
-                                                setShowSuccess({show:"hide", className:"success", message:"Order processed successfully"})
-                                                orderResp.pendingAmount===0&&closeModal()
+                                                setShowSuccess({show:"hide",alertIcon:"block", className:"success", message:"Order processed successfully"})
                                             },2000)
                                         })
                                         .catch(error=>{
                                             setSubmitting(false)
-                                            setShowSuccess({show:"show", className:"danger", message:"Error Processing Order"})
+                                            setShowSuccess({...showSuccess, show:"show", className:"danger",alertIcon:"block", message:"Error Processing Order"})
                                             
                                             setTimeout(()=>{
-                                                setShowSuccess({show:"hide", className:"success", message:"Order processed successfully"})
+                                                setShowSuccess({show:"hide",alertIcon:"block", className:"success", message:"Order processed successfully"})
                                             },2000)
                                             console.error(error.message)
                                         })
@@ -128,7 +113,7 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
                         <Form 
                             onSubmit={handleSubmit}
                         >
-                        {showSuccess.show!=='hide'&&<Alert alertIcon='check-circle' alertText={showSuccess.message} alertType={showSuccess.className} show={showSuccess.show}/>}
+                        {showSuccess.show!=='hide'&&<Alert alertIcon={showSuccess.alertIcon} alertText={showSuccess.message} alertType={showSuccess.className} show={showSuccess.show}/>}
                             <Form.Row>
                                 <Form.Group as={Col} md="4" controlId="validationCustomerNumber">
                                     <Form.Label>Phone Number</Form.Label>
@@ -148,7 +133,7 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
                                     </InputGroup>
                                 </Form.Group>
                                 <Form.Group as={Col} md="4" controlId="validationProcessingAmount">
-                                    <Form.Label>Enter Amount</Form.Label>
+                                    <Form.Label>Amount In</Form.Label>
                                     <InputGroup>
                                             <InputGroup.Prepend>
                                                 <InputGroup.Text>
@@ -156,30 +141,30 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
                                             </InputGroup.Text>
                                             </InputGroup.Prepend>
                                             <Form.Control 
-                                                name="processingAmount" 
+                                                name="amountIn" 
                                                 onChange={handleChange}
                                                 type="text" 
-                                                placeholder="Enter Amount"
-                                                value={values.processingAmount}
+                                                placeholder="Enter In"
+                                                value={values.amountIn}
                                                 disabled={isSubmitting}
                                                 onBlur={handleBlur}
                                                 autoComplete="off"
                                             />
                                             <InputGroup.Append>
                                                 <InputGroup.Text>
-                                                    {values.currencyOut}
+                                                    {values.currencyIn}
                                                 </InputGroup.Text>
                                             </InputGroup.Append>
                                     </InputGroup>
-                                    {touched.processingAmount&&errors.processingAmount&&
+                                    {touched.amountIn&&errors.amountIn&&
                                         <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                            {errors.processingAmount}
+                                            {errors.amountIn}
                                         </Form.Control.Feedback>
                                     }
                                 </Form.Group>
                             
                                 <Form.Group as={Col} md="4" controlId="validationAmountOut">
-                                    <Form.Label>Pending Amount</Form.Label>
+                                    <Form.Label>Amount Out</Form.Label>
                                     <InputGroup>
                                             <InputGroup.Prepend>
                                                 <InputGroup.Text>
@@ -189,8 +174,9 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
                                             <Form.Control 
                                                 name="amountOut"
                                                 type="text"
-                                                value={values.pendingAmount}
-                                                disabled={true}
+                                                value={values.amountOut}
+                                                disabled={isSubmitting}
+                                                onChange={handleChange}
                                             />
                                             <InputGroup.Append>
                                             <InputGroup.Append>
@@ -226,39 +212,31 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
                                             value={`${values.firstName} ${values.lastName}`} 
                                             type="text" 
                                             disabled={true}
+                                            onChange={handleBlur}
                                         />
                                     </InputGroup>
                                 </Form.Group>
                                 
-                                <Form.Group as={Col} controlId="validationFromAccount">
+                                <Form.Group as={Col} controlId="validationOrderRef">
                                     <Form.Label>
-                                        Select Account
+                                        OrderRef
                                     </Form.Label>
                                     <InputGroup>
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>
-                                            <i className="icon-wallet"></i>
+                                                <i className="icon-wallet"></i>
                                             </InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <select 
-                                            className="form-control" 
-                                            onChange={handleChange} 
-                                            name="fromAccount"
-                                            disabled={isSubmitting}
-                                            value={values.fromAccount}
-                                        >
-                                            <option value=''>Select account</option>
-                                            {
-                                                accountData
-                                                .map(({code, balance, currency, id})=>(
-                                                    <option key={`currency-${uid({id})}`} value={`${balance}/${id}`}>{`${code} - ${balance} ${currency.currencyCode}`}</option>
-                                                    ))
-                                            }
-                                        </select>
+                                        <Form.Control 
+                                            name="orderRef" 
+                                            value={values.orderRef} 
+                                            type="text" 
+                                            disabled={true}
+                                        />
                                     </InputGroup>
-                                    {touched.fromAccount&&errors.fromAccount&&
+                                    {touched.orderRef&&errors.orderRef&&
                                         <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                            {errors.fromAccount}
+                                            {errors.orderRef}
                                         </Form.Control.Feedback>
                                     }
                                 </Form.Group>
@@ -303,14 +281,12 @@ const OrderModificationForm = ({order,closeModal,orders,statuses, updateOrderAsy
 }
 
 const mapDispatchToProps = {
-    updateOrderAsync,
-    updateAccountAsync
+    updateOrderAsync
 }
 
 const mapStateToProps = createStructuredSelector({
     accounts:selectAccounts,
-    orders: selectOrders,
-    statuses: selectStatuses
+    orders: selectOrders
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderModificationForm)
