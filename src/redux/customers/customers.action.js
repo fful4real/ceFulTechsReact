@@ -37,6 +37,8 @@ export const addOrderToCustomer = (customers, order)=>{
             {...customer, CustomersOrder:customer.CustomersOrders.push(`/api/ce_orders/${order.id}`)}:customer
         })
 
+        console.log('Customers: ',customers)
+
         const hasCustomer = customers.filter(customer=>parseInt(customer.mobileNumber) === parseInt(order.receiverNumber))
         if(!hasCustomer.length){
             AxiosAgent.request('get',API_ROUTES.customerNumber(order.receiverNumber),null,null)

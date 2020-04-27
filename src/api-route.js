@@ -6,6 +6,7 @@ const API_ROUTES = {
     user: id=>id?`users/${id}`:'users',
     customers:id => id?`customers/${id}`:'customers',
     customerNumber:number => `customers?mobileNumber=${number}`,
+    orderItemOrderEntries:orderIdApiRoute => `order_entries?ceOrder=${orderIdApiRoute}`,
     currencies:id => id?`currencies/${id}`:'currencies',
     accounts:id => id?`cd_accounts/${id}`:'ce_accounts',
     cities:id => id?`cities/${id}`:'cities',

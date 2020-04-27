@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { selectOrdersTableData, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors'
-import DataTable from 'react-data-table-component'
 import SearchForm from '../../../../components/form/search-form'
 import { OrderListFormStyle } from './styles/order-list.style'
 import { Redirect } from 'react-router-dom'
+import ListItems from '../../../../components/list/list-items'
 const  OrdersList = ({selectOrdersTableData,selectIsFetchingOrders})=> {
-    // console.log(selectOrdersTableData)
+    console.log("selectOrdersTableData : ", selectOrdersTableData)
     const [searchString, setSearchString] = useState('')
     const [itemPage, setItemPage] = useState(false)
     const handleSearch = value => setSearchString(value)
@@ -82,27 +82,7 @@ const  OrdersList = ({selectOrdersTableData,selectIsFetchingOrders})=> {
                     <OrderListFormStyle>
                         <SearchForm handleSearch={handleSearch} searchPlaceHolder="Search customer" />
                     </OrderListFormStyle>
-                    <div className="row">
-                        <div className="col-sm">
-                            <div className="table-wrap" id="orderTable">
-                                <DataTable
-                                    columns={columns}
-                                    data={data}
-                                    highlightOnHover={true}
-                                    striped={true}
-                                    pointerOnHover={true}
-                                    responsive={true}
-                                    progressPending={selectIsFetchingOrders}
-                                    pagination={true}
-                                    when={row=>alert(row)}
-                                    fixedHeader={true}
-                                    fixedHeaderScrollHeight="100vh"
-                                    expandableRows={true}
-                                    onRowClicked={handleRowClick}
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <ListItems columns={columns} data={data} isFetchingData={selectIsFetchingOrders} handleRowClick={handleRowClick} />
                 </div>
             </div>
         </div>

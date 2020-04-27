@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from '../../../../helpers/helper'
 const OrderItemCustomerForm = ({order})=> {
     const customerName = `${capitalizeFirstLetter(order.customer.firstName)} ${order.customer.lastName.toUpperCase()}`
     // const customerName="Felix FUL CHI"
-    console.log("Order: ", order)
+    console.log("Order - OrderItemCustomerForm: ", order)
     return (
         <Form>
             <Form.Row>
@@ -32,7 +32,7 @@ const OrderItemCustomerForm = ({order})=> {
                     <InputGroup>
                         <InputGroup.Prepend>
                             <InputGroup.Text>
-                            <i className="icon-user text-info"></i>
+                            <i className="icon-user"></i>
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <Form.Control 
@@ -50,7 +50,7 @@ const OrderItemCustomerForm = ({order})=> {
                     <InputGroup>
                         <InputGroup.Prepend>
                             <InputGroup.Text>
-                            <i className="icon-location-pin text-info"></i>
+                            <i className="icon-location-pin"></i>
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <Form.Control 
@@ -73,13 +73,13 @@ const OrderItemCustomerForm = ({order})=> {
                     <InputGroup>
                         <InputGroup.Prepend>
                             <InputGroup.Text>
-                            <i className="zmdi zmdi-check text-danger"></i>
+                            <i className="icon-user"></i>
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <Form.Control 
                             name="sentBy" 
                             type="text" 
-                            value={order.sentBy===null? '':order.sentBy.firstName}
+                            value={order.sentBy&&order.sentBy.firstName}
                             readOnly
                             className="text-muted text-capitalized"
                         />

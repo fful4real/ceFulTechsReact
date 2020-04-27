@@ -7,16 +7,15 @@ import { connect } from 'react-redux';
 import API_ROUTES from '../../../../api-route';
 import AxiosAgent from '../../../../axios-agent';
 import Alert from '../../../../components/alert/alert'
-import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
+import {updateOrderAsync, fetchOrderItemLatestOrderEntryAsync } from '../../../../redux/orders/orders.actions'
 import { selectAccounts } from '../../../../redux/accounts/accounts.selector';
 import { selectOrders } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { uid } from 'react-uid';
 import { updateAccountAsync } from '../../../../redux/accounts/accounts.action';
-import { selectStatuses } from '../../../../redux/statuses/statuses.selectors';
-import { sanitizeString } from '../../../../helpers/helper';
+import { sanitizeString, numberWithCommas } from '../../../../helpers/helper';
 
-const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync,updateAccountAsync, accounts})=>{
+const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOrderAsync,updateAccountAsync, accounts})=>{
     const accountData = accounts.filter(account=>{ return (account.currency.currencyCode===order.currencyOut.currencyCode)&&parseInt(account.balance)>0});
     const [showSuccess, setShowSuccess] = useState({show:"hide", className:"success", message:"Order processed successfully"});
     // console.log(statuses)
@@ -78,12 +77,13 @@ const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync
                                             const orderResp = resp.data;
                                             console.log(resp.data)
                                             setStatus({success: false})
-                                            orders = orders.map(mapOrder=>mapOrder.id===order.id?
-                                                    {...mapOrder,
-                                                        processedAmount:orderResp.processedAmount,
-                                                        pendingAmount:orderResp.pendingAmount,
-                                                        status:orderResp.processedAmount===orderResp.amountOut?statuses.filter(status=>status.statusCode==="OK")[0]:statuses.filter(status=>status.statusCode==="PTL")[0]
-                                                    }:
+                                            const updatedOrder = {...order,
+                                                    processedAmount:orderResp.processedAmount,
+                                                    pendingAmount:orderResp.pendingAmount,
+                                                    status:orderResp.status,
+                                                }
+                                            orders = orders.map(mapOrder=>mapOrder.id===updatedOrder.id?
+                                                updatedOrder:
                                                 mapOrder
                                                 )
                                             accounts = accounts.map(mapAccount=>mapAccount.id===parseInt(fromAccountVal[1])?
@@ -98,6 +98,7 @@ const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync
 
                                             updateOrderAsync(orders)
                                             updateAccountAsync(accounts)
+                                            order.hasFetchedOrderEntries&&updateOrderEntry(updatedOrder)
                                             resetForm()
                                             setFieldValue('processingAmount',orderResp.pendingAmount)
                                             setFieldValue('pendingAmount',orderResp.pendingAmount )
@@ -249,7 +250,7 @@ const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync
                                             {
                                                 accountData
                                                 .map(({code, balance, currency, id})=>(
-                                                    <option key={`currency-${uid({id})}`} value={`${balance}/${id}`}>{`${code} - ${balance} ${currency.currencyCode}`}</option>
+                                                    <option key={`currency-${uid({id})}`} value={`${balance}/${id}`}>{`${code} - ${numberWithCommas(balance)} ${currency.currencyCode}`}</option>
                                                     ))
                                             }
                                         </select>
@@ -265,34 +266,41 @@ const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync
 
                             
                             <Form.Row className="mb-25">
-                        <Form.Group as={Col} controlId="validationOrderNote">
-                            <Form.Label>Note</Form.Label>
-                            <InputGroup>
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text>
-                                    <i className="icon-notebook"></i>
-                                </InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <Form.Control 
-                                    as="textarea" 
-                                    rows="3"
-                                    name="orderNote"
-                                    value={values.orderNote}
-                                    onBlur={handleBlur}
-                                    disabled={isSubmitting}
-                                    onChange={handleChange} 
-                                />
-                            </InputGroup>
-                        </Form.Group>
-                    </Form.Row>
-
-                            
-                            <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
-                                {
-                                    isSubmitting? <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>: "Process"
-                                }
-                            </Button>
-                        </Form>
+                                <Form.Group as={Col} controlId="validationOrderNote">
+                                    <Form.Label>Note</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>
+                                            <i className="icon-notebook"></i>
+                                        </InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <Form.Control 
+                                            as="textarea" 
+                                            rows="3"
+                                            name="orderNote"
+                                            value={values.orderNote}
+                                            onBlur={handleBlur}
+                                            disabled={isSubmitting}
+                                            onChange={handleChange} 
+                                        />
+                                    </InputGroup>
+                                </Form.Group>
+                            </Form.Row>
+                            <Form.Row>
+                                <Form.Group as={Col} md="6" className="mb-0" controlId="validationSubmitForm">
+                                    <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
+                                        {
+                                            isSubmitting? <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>: "Process"
+                                        }
+                                    </Button>
+                                </Form.Group>
+                                <Form.Group as={Col} md="6" className="mb-0" controlId="validationCancel">
+                                    <Button className="btn-block" onClick={closeModal} disabled={isSubmitting} variant="secondary" size="lg" type="button">
+                                        Close
+                                    </Button>
+                                </Form.Group>
+                            </Form.Row>
+                    </Form>
                     )}}
                 </Formik>
             </Row>
@@ -302,13 +310,13 @@ const OrderProcessingForm = ({order,closeModal,orders,statuses, updateOrderAsync
 
 const mapDispatchToProps = {
     updateOrderAsync,
-    updateAccountAsync
+    updateAccountAsync,
+    updateOrderEntry: fetchOrderItemLatestOrderEntryAsync
 }
 
 const mapStateToProps = createStructuredSelector({
     accounts:selectAccounts,
-    orders: selectOrders,
-    statuses: selectStatuses
+    orders: selectOrders
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderProcessingForm)

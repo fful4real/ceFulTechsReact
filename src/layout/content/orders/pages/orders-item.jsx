@@ -6,9 +6,12 @@ import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import OrderItemForm from '../forms/order-item.form.jsx'
 import OrderItemCustomerForm from '../forms/order-item-customer.form'
+import OrderItemEntries from './order-item-entries'
+import { fetchOrderItemOrderEntriesAsync } from '../../../../redux/orders/orders.actions'
 
-const  OrdersItem = ({orders, match}) =>{
+const  OrdersItem = ({orders, match, fetchOrderEntries}) =>{
     const order = orders.filter(order=>parseInt(order.id)===parseInt(match.params.id))[0]
+    !order.hasFetchedOrderEntries&&fetchOrderEntries(order)
     console.log(order)
     return (
         <div className="row">
@@ -51,9 +54,8 @@ const  OrdersItem = ({orders, match}) =>{
             </div>
             <div className="col-xl-12">
                 <section className="hk-sec-wrapper">
-                    <h5 className="hk-sec-title mb-20">
-                        Order Entries
-                    </h5>
+                    <h5 className="hk-sec-title">Order Entries</h5>
+                        {order.hasFetchedOrderEntries?<OrderItemEntries order={order} />:<div>Loading..</div>}
                 </section>
             </div>
         </div>
@@ -65,4 +67,8 @@ const ordersState = createStructuredSelector({
     orders: selectOrders,
 })
 
-export default withRouter(connect(ordersState)(OrdersItem))
+const mapDistpatchToProps = ({
+    fetchOrderEntries:fetchOrderItemOrderEntriesAsync
+})
+
+export default withRouter(connect(ordersState, mapDistpatchToProps)(OrdersItem))

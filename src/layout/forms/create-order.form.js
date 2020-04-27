@@ -22,7 +22,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
     const currencyOutObj = currencies.filter(currency=>currency.currencyCode==="XAF")[0]
     const [searchString, setSearchString] = useState('');
-    const [showDropdown, setShowDropdown] = useState('hide');
+    const [showDropdown, setShowDropdown] = useState({phoneNumber:'hide',sentBy:'hide'});
     const [showSuccess, setShowSuccess] = useState('hide');
     const isNewCustomer = (newCustomer)=>{
         return customers.find(customer=>customer.id===newCustomer.id)?false:true
@@ -43,7 +43,9 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
         lastName:'',
         customerAddress:'',
         customerTown:cities[0].code,
-        orderNote:''
+        orderNote:'',
+        sentByName:'',
+        sentBy:''
 
     }
 
@@ -80,7 +82,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                     setErrors({amountIn: 'Currency In must be different from Currency Out'})
                                     return false
                                 }
-                                const orderValues = {
+                                let orderValues = {
                                     amountIn: parseInt(values.amountIn),
                                     amountOut: parseInt(values.amountOut),
                                     receiverNumber: values.customerNumber,
@@ -93,12 +95,26 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                     note:sanitizeString(values.orderNote)
                                 }
                                 
+                                orderValues = values.sentByName&&values.sentBy?{...orderValues,sentBy:values.sentBy}:orderValues
+
+                                console.log('OrderValues', orderValues)
+                                
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
-                                        const newOrder = resp.data
+                                        let newOrder = resp.data
+                                        console.log("New Order: ",newOrder)
                                         setStatus({success: false})
                                         setShowSuccess('show')
-                                        isNewCustomer(newOrder.customer)&&addCustomerToState(newOrder.customer)
+                                        if(isNewCustomer){
+                                            newOrder = {...newOrder,
+                                                    customer:{
+                                                        ...newOrder.customer,
+                                                        CustomersOrders:[`/api/ce_orders/${newOrder.id}`]
+                                                    }
+                                                }
+                                        }
+                                        
+                                        console.log("createOrderForm Customers: ",customers)
                                         addOrderToState(newOrder)
                                         addOrderToCustomer(customers, newOrder)
                                         setSubmitting(false)
@@ -124,6 +140,10 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                             setFieldValue('customerAddress',address)
                             setFieldValue('customerTown',fkCity.code)
                         }
+                        const handleSentByClick = ({firstName, lastName, id})=>{
+                            setFieldValue('sentByName', `${firstName} ${lastName}`)
+                            setFieldValue('sentBy', `/api/customers/${id}`)
+                        }
                     
                         return (
                         <Form 
@@ -131,7 +151,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                         >
                         {showSuccess!=='hide'&&<Alert alertIcon='check-circle' show={showSuccess}/>}
                             <Form.Row>
-                                <Form.Group as={Col} md="4" controlId="validationPhoneNumber" onBlur={()=>setTimeout(()=>setShowDropdown('hide',),150)}>
+                                <Form.Group as={Col} md="4" controlId="validationPhoneNumber" onBlur={()=>setTimeout(()=>setShowDropdown({...showDropdown,phoneNumber:'hide'},),150)}>
                                     <Form.Label>Phone Number</Form.Label>
                                     <InputGroup>
                                     <InputGroup.Prepend>
@@ -144,7 +164,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                         placeholder="Phone Number"
                                         aria-describedby="inputGroupPrepend"
                                         name="customerNumber"
-                                        onChange={e=>{setShowDropdown('show');handleChange(e); setSearchString(e.target.value)}}
+                                        onChange={e=>{setShowDropdown({...showDropdown,phoneNumber:'show'});handleChange(e); setSearchString(e.target.value)}}
                                         value={values.customerNumber}
                                         disabled={isSubmitting}
                                         className="dropdown"
@@ -166,7 +186,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                             willChange:"transform",
                                             width:'95%'
                                         }}
-                                        className={`dropdown-menu ${showDropdown}`}
+                                        className={`dropdown-menu ${showDropdown.phoneNumber}`}
                                     >
                                         {
                                             customers.isFetchingCustomers?
@@ -255,7 +275,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
 
 
                                     
-                            <Form.Row  className="mb-lg-15 mb-md-10 mb-sm-5">
+                            <Form.Row  className="form-row">
                                 <Form.Group as={Col}  md="4" controlId="validationFirstName">
                                 <Form.Label>
                                     First Name
@@ -294,7 +314,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                         <Form.Control 
                                             name="lastName" 
                                             value={values.lastName} 
-                                            onChange={handleChange} 
+                                            onChange={handleChange}
                                             type="text" 
                                             placeholder="Last Name"
                                             disabled={isSubmitting}
@@ -302,8 +322,74 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                         />
                                     </InputGroup>
                                 </Form.Group>
+                                <Form.Control 
+                                    name="sentBy" 
+                                    value={values.sentBy} 
+                                    type="hidden" 
+                                />
                                 
-                                <Form.Group as={Col} md="4" controlId="validationAddress">
+                                <Form.Group as={Col} md="4" controlId="validationSentBy" onBlur={()=>setTimeout(()=>setShowDropdown({...showDropdown,sentBy:'hide'},),150)}>
+                                    <Form.Label>Sent By</Form.Label>
+                                    <InputGroup>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>
+                                        <i className="icon-user"></i>
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Sent By"
+                                        aria-describedby="inputGroupPrepend"
+                                        name="sentByName"
+                                        onChange={e=>{setShowDropdown({...showDropdown, sentBy:'show'});handleChange(e); setSearchString(e.target.value)}}
+                                        value={values.sentByName}
+                                        disabled={isSubmitting}
+                                        className="dropdown"
+                                        autoComplete="off"
+                                    />
+                                    {touched.sentByName&&errors.sentByName&&
+                                        <Form.Control.Feedback type="invalid" style={{display:'block'}}>
+                                            {errors.sentByName}
+                                        </Form.Control.Feedback>
+                                    }
+                                    </InputGroup>
+                                    <div x-placement="bottom-start" 
+                                        aria-labelledby="dropdown-basic"
+                                        style={{
+                                            position:'absolute',
+                                            top:'73px',
+                                            left:'7px',
+                                            transform:"translate3d(0px, 0px, 0px)",
+                                            willChange:"transform",
+                                            width:'95%'
+                                        }}
+                                        className={`dropdown-menu ${showDropdown.sentBy}`}
+                                    >
+                                        {
+                                            customers.isFetchingCustomers?
+                                            <div className="media-body">
+                                                <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>
+                                            </div>:
+                                            <div>
+                                                <OrderCustomerItemStyle>
+                                                    {
+                                                        customers
+                                                        .filter(customer=>handleCustomer(customer))
+                                                        .map(({...customerItem})=>(
+                                                                <OrderCustomerItem toggleShow={toggleShow} handleSentByClick={handleSentByClick} key={`transaction-item-${uid({...customerItem})}`} {...customerItem} />
+                                                            ))
+                                                    }
+                                                </OrderCustomerItemStyle>
+                                            </div>
+                                        }
+                                    
+                                    </div>
+                                
+                                </Form.Group>
+                                
+                            </Form.Row>
+                            <Form.Row  className="form-row">
+                                    <Form.Group as={Col} controlId="validationAddress">
                                         <Form.Label>Address</Form.Label>
                                         <InputGroup>
                                             <InputGroup.Prepend>
@@ -339,10 +425,10 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                             </InputGroup.Append>
                                         </InputGroup>
                                     </Form.Group>
-                            </Form.Row>
-
                             
-                            <Form.Row className="mb-25">
+                            </Form.Row>
+                            
+                            <Form.Row className="form-row">
                                 <Form.Group as={Col} controlId="validationOrderNote">
                                     <Form.Label>Note</Form.Label>
                                     <InputGroup>

@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { selectUser } from '../../../../redux/user/user.selectors'
 import OrderModificationForm from './order-modification.form'
+import OrderAbandonForm from './order-abandon.form'
+import { numberWithCommas } from '../../../../helpers/helper'
 
 const OrderItemForm = ({order, handleModal, selectUser})=> {
     const [showModal, setShowModal] = useState({show:false, formEl:'',modalHeading:''})
@@ -25,6 +27,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
             <ModalComponent showModal={showModal.show} closeModal={closeModal} modalHeading={showModal.modalHeading}>
                 {showModal.formEl==="Processing"&&<OrderProcessingForm order={order} closeModal={closeModal} />}
                 {showModal.formEl==="Modifying"&&<OrderModificationForm order={order} closeModal={closeModal} />}
+                {showModal.formEl==="Abandon"&&<OrderAbandonForm order={order} closeModal={closeModal} />}
             </ModalComponent>
             <Form>
                 <Form.Row>
@@ -40,7 +43,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                                 name="amountIn"
                                 type="text" 
                                 placeholder="Amount In"
-                                value={order.amountIn}
+                                value={numberWithCommas(order.amountIn)}
                                 disabled={true}
                             />
                         <InputGroup.Append>
@@ -66,7 +69,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                                 name="amountOut"
                                 type="text" 
                                 placeholder="Amount Out"
-                                value={order.amountOut}
+                                value={numberWithCommas(order.amountOut)}
                                 disabled={true}
                             />
                             <InputGroup.Append>
@@ -92,7 +95,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                                 name="amountOut"
                                 type="text" 
                                 placeholder="Amount Processed"
-                                value={order.processedAmount}
+                                value={numberWithCommas(order.processedAmount)}
                                 disabled={true}
                             />
                             <InputGroup.Append>
@@ -118,7 +121,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                                 name="pendingAmount"
                                 type="text" 
                                 placeholder="Amount Pending"
-                                value={order.pendingAmount}
+                                value={numberWithCommas(order.pendingAmount)}
                                 disabled={true}
                             />
                             <InputGroup.Append>
@@ -161,6 +164,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                             disabled={!canProcess} 
                             size="lg"
                             type="button"
+                            onClick={()=>handleProcessing('Abandon', 'Abandon Order')}
                         >
                             Abandon
                         </Button>

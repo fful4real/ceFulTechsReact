@@ -55,6 +55,11 @@ export const selectLastTenOrders = createSelector(
     orders => orders.slice(0,10)
 )
 
+export const isFechingOrderItemOrderEntries = createSelector(
+    [selectOrderState],
+    orders => orders.isFechingOrderItemOrderEntries
+)
+
 
 // Count Orders Of The Month Selectors
 export const selectOrderCountOfMonth = createSelector(
