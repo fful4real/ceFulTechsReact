@@ -14,7 +14,7 @@ const  ListItems = ({columns,data, isFetchingData, handleRowClick, expandableRow
                         striped={true}
                         pointerOnHover={true}
                         responsive={true}
-                        progressPending={isFetchingData}
+                        progressPending={isFetchingData?true:false}
                         pagination={true}
                         when={row=>alert(row)}
                         fixedHeader={true}
