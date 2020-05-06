@@ -1,4 +1,4 @@
-const BASE_URL = 'htthttp://127.0.0.1:8000/api';
+const BASE_URL = 'http://127.0.0.1:8000/api';
 
 const API_ROUTES = {
     base_url: BASE_URL,

@@ -4,8 +4,7 @@ import { capitalizeFirstLetter } from '../../../../helpers/helper'
 
 const OrderItemCustomerForm = ({order})=> {
     const customerName = `${capitalizeFirstLetter(order.customer.firstName)} ${order.customer.lastName.toUpperCase()}`
-    // const customerName="Felix FUL CHI"
-    console.log("Order - OrderItemCustomerForm: ", order)
+    // console.log("Order - OrderItemCustomerForm: ", order)
     return (
         <Form>
             <Form.Row>

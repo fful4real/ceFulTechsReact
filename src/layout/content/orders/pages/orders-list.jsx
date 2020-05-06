@@ -9,7 +9,7 @@ import { selectStatuses } from '../../../../redux/statuses/statuses.selectors'
 import { connect } from 'react-redux'
 import { uid } from 'react-uid'
 const  OrdersList = ({data,isFetchingData, listTitle,statuses})=> {
-    console.log("data : ", data)
+    // console.log("data : ", data)
     const [searchString, setSearchString] = useState('')
     const [itemPage, setItemPage] = useState(false)
     const [searchStatus, setSearchStatus] = useState('')
@@ -19,13 +19,13 @@ const  OrdersList = ({data,isFetchingData, listTitle,statuses})=> {
     }
     
     const handleStatus = statusCode =>{
-        console.log("statusCode: ", statusCode)
+        // console.log("statusCode: ", statusCode)
         setSearchStatus(statusCode)
     }
     data = searchStatus?data.filter(item=>
             (item.status.statusCode.toLowerCase()===searchStatus.toLowerCase())
         ):data
-    console.log("Second Data: ", searchStatus)
+    // console.log("Second Data: ", searchStatus)
     data = data.filter(item=>
             (item.customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
             (item.customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)

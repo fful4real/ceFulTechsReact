@@ -12,7 +12,7 @@ import { fetchOrderItemOrderEntriesAsync } from '../../../../redux/orders/orders
 const  OrdersItem = ({orders, match, fetchOrderEntries}) =>{
     const order = orders.filter(order=>parseInt(order.id)===parseInt(match.params.id))[0]
     !order.hasFetchedOrderEntries&&fetchOrderEntries(order)
-    console.log(order)
+    // console.log(order)
     return (
         <div className="row">
             <div className="col-xl-12">
