@@ -4,7 +4,7 @@ const API_ROUTES = {
     base_url: BASE_URL,
     login:`login_check`,
     user: id=>id?`users/${id}`:'users',
-    customers:id => id?`customers/${id}`:'customers',
+    customers:id => id?`customers/${id}`:'customers?pagination=0',
     customerNumber:number => `customers?mobileNumber=${number}`,
     orderItemOrderEntries:orderIdApiRoute => `order_entries?ceOrder=${orderIdApiRoute}`,
     currencies:id => id?`currencies/${id}`:'currencies',

@@ -2,6 +2,9 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import { uid } from 'react-uid'
 import Caret from './menu-nav.styles';
+import { createStructuredSelector } from 'reselect';
+import { selectActivePage } from '../../../redux/defaults/default.selectors';
+import { connect } from 'react-redux';
 
 const HorizontalSubMenu = ({subMenuLabel,subMenuUrl})=>(
     <li className="nav-item">
@@ -11,13 +14,13 @@ const HorizontalSubMenu = ({subMenuLabel,subMenuUrl})=>(
     </li>
 )
 
-const MenuNavItem = ({hasSubmenu,menuItemIco,menuItemLabel,menuItemUrl,menuItemSubmenus})=>{
+const MenuNavItem = ({activeMenu,hasSubmenu,menuItemIco,menuItemLabel,menuItemUrl,menuItemSubmenus})=>{
 
     
     // const MenuItem = components[menuItemIco];
 
     return hasSubmenu ? (
-        <li className="nav-item">
+        <li className={`nav-item${activeMenu.toLowerCase()===menuItemLabel.toLowerCase()?' active':''}`}>
             <Link to={menuItemUrl} className="nav-link" data-target="#dash_drp">
                 <i className={`ion ion-ios-${menuItemIco}`}></i>
                 <span className="nav-link-text">{menuItemLabel}</span>
@@ -32,7 +35,7 @@ const MenuNavItem = ({hasSubmenu,menuItemIco,menuItemLabel,menuItemUrl,menuItemS
             </ul>
         </li>
     ):(
-        <li className="nav-item">
+        <li className={`nav-item${activeMenu.toLowerCase()===menuItemLabel.toLowerCase()?' active':''}`}>
             <Link to={menuItemUrl} className="nav-link" data-target="#dash_drp">
             <i className={`ion ion-ios-${menuItemIco}`}></i>
                 <span className="nav-link-text">{menuItemLabel}</span>
@@ -40,7 +43,9 @@ const MenuNavItem = ({hasSubmenu,menuItemIco,menuItemLabel,menuItemUrl,menuItemS
         </li>
     );
 }
-    
-;
 
-export default MenuNavItem;
+const mapStateToProps = createStructuredSelector({
+    activeMenu: selectActivePage
+})
+
+export default connect(mapStateToProps)(MenuNavItem);

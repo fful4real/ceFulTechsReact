@@ -1,114 +1,37 @@
-import React, { useState } from 'react'
-import SearchForm from '../../../../components/form/search-form'
-import { OrderListFormStyle } from './styles/order-list.style'
-import { Redirect, Link } from 'react-router-dom'
-import ListItems from '../../../../components/list/list-items'
-import { numberWithCommas } from '../../../../helpers/helper'
+import React from 'react'
+import ListOrders from '../../../../components/list/ListOrders'
 import { createStructuredSelector } from 'reselect'
-import { selectStatuses } from '../../../../redux/statuses/statuses.selectors'
+import { selectOrders, selectOrdersCurrentPage, selectIsFetchingOrdersPage, selectShouldFetchOrderPage, selectOdersTotalPages, selectOrdersPerPage } from '../../../../redux/orders/orders.selectors'
 import { connect } from 'react-redux'
-import { uid } from 'react-uid'
-const  OrdersList = ({data,isFetchingData, listTitle,statuses})=> {
-    // console.log("data : ", data)
-    const [searchString, setSearchString] = useState('')
-    const [itemPage, setItemPage] = useState(false)
-    const [searchStatus, setSearchStatus] = useState('')
-    const handleSearch = value => setSearchString(value)
-    const handleRowClick = row => {
-        setItemPage(row)
-    }
+import PaginatorDefault from '../../../../components/pagination/pagination.default'
+import { setOrdersCurrentPageAsync, fetchOrdersPageAsync, setShouldFetchOrderPageAsync } from '../../../../redux/orders/orders.actions'
+
+const OrdersList = ({orders,
+    pageCount, 
+    fetchPage,
+    setPage,
+    startFetchPage,
+    isFetching, 
+    currentPage, 
+    shouldFetchPage,
+    ordersPerPage
+})=> {
     
-    const handleStatus = statusCode =>{
-        // console.log("statusCode: ", statusCode)
-        setSearchStatus(statusCode)
+    if (!ordersPerPage[`page_${currentPage}`]) {
+        !shouldFetchPage&&startFetchPage(true)
+        shouldFetchPage&&fetchPage(currentPage)
+        isFetching=true
+    }else{
+        isFetching=false
     }
-    data = searchStatus?data.filter(item=>
-            (item.status.statusCode.toLowerCase()===searchStatus.toLowerCase())
-        ):data
-    // console.log("Second Data: ", searchStatus)
-    data = data.filter(item=>
-            (item.customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
-            (item.customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
-        )
-    const columns = [
-        {
-            name:'Ref',
-            selector: 'orderRef',
-            sortable:true
-        },
-        {
-            name:'Customer',
-            selector: 'customer',
-            sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}>
-                            <i className="icon-user font-11 text-primary mr-5"></i>
-                            <span className="text-capitalize-">{row.customer.firstName}</span>
-                            <span className="text-uppercase-">&nbsp;{row.customer.lastName}</span>
-                        </div>
-        },
-        {
-            name:'Amount In',
-            selector: 'amountIn',
-            sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}>
-                            <i className="icon-arrow-down font-11 text-success mr-5"></i>{`${numberWithCommas(row.amountIn)} ${row.currencyIn.currencyCode}`}
-                        </div>
-        },
-        {
-            name:'Amount Out',
-            selector: 'amountOut',
-            sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}>
-                            <i className="icon-arrow-up font-11 text-danger mr-5"></i>{`${numberWithCommas(row.amountOut)} ${row.currencyOut.currencyCode}`}
-                        </div>
-        },
-        {
-            name:'Pending',
-            selector: 'pendingAmount',
-            sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}>
-                            <span>{`${numberWithCommas(row.pendingAmount)} ${row.currencyOut.currencyCode}`}</span>
-                        </div>
-        },
-        {
-            name:'Status',
-            selector: 'status',
-            sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}><span className={`badge badge-soft-${row.status.className}`}>{row.status.statusLabel}</span></div>
-        },
-        {
-            name:'Created Date',
-            selector: 'datec',
-            sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}><span className="text-muted"><i className="icon-clock font-13"></i> {row.datec}</span></div>
-        }
-    ]
-    return itemPage? 
-    (<Redirect to={`/orders/${itemPage.id}`}/>)
-    :
-     (
+    orders = ordersPerPage[`page_${currentPage}`]
+    return (
         <div className="row">
             <div className="col-xl-12">
                 <div className="hk-sec-wrapper">
-                    <h5 className="hk-sec-title">{listTitle}</h5>
-                    <OrderListFormStyle>
-                        <div className="select-orders d-flex align-items-center card-action-wrap">
-                            <div className="inline-block dropdown">
-                                <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
-                                    <i className="ion ion-ios-analytics"></i>
-                                </span>
-                                <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", transform: "translate3d(13px, 21px, 0px)", top: "0px", left: "0px", willChange: "transform"}}>
-                                    {statuses.map(status=>
-                                        (<Link key={`status-${uid(status.id)}`} to="#" className={`dropdown-item ${searchStatus===status.statusCode?"text-success":''}`} onClick={e=>handleStatus(status.statusCode)}>{status.statusLabel}</Link>)
-                                    )}
-                                    <div className="dropdown-divider"></div>
-                                    <Link className="dropdown-item" to="#" onClick={e=>handleStatus('')}>View all Orders</Link>
-                                </div>
-                            </div>
-                        </div>
-                        <SearchForm handleSearch={handleSearch} searchPlaceHolder="Search customer" />
-                    </OrderListFormStyle>
-                    <ListItems columns={columns} data={data} isFetchingData={isFetchingData} handleRowClick={handleRowClick} />
+                    <h5 className="hk-sec-title">List of Orders</h5>
+                    <ListOrders tableData={orders} isFetching={isFetching} />
+                    <PaginatorDefault currentPage={currentPage} pageCount={pageCount} setPage={setPage} />
                 </div>
             </div>
         </div>
@@ -116,7 +39,19 @@ const  OrdersList = ({data,isFetchingData, listTitle,statuses})=> {
 }
 
 const mapStateToProps = createStructuredSelector({
-    statuses:selectStatuses
+    orders:selectOrders,
+    currentPage: selectOrdersCurrentPage,
+    isFetching: selectIsFetchingOrdersPage,
+    shouldFetchPage: selectShouldFetchOrderPage,
+    pageCount: selectOdersTotalPages,
+    ordersPerPage: selectOrdersPerPage
 })
 
-export default connect(mapStateToProps)(OrdersList)
+
+const mapDispatchToProps = {
+    setPage: setOrdersCurrentPageAsync,
+    fetchPage: fetchOrdersPageAsync,
+    startFetchPage:setShouldFetchOrderPageAsync
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersList)

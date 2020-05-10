@@ -16,7 +16,7 @@ export const selectIsFetchingCustomers = createSelector(
 )
 
 // Total Customers Selectors
-export const selectOrderCount = createSelector(
+export const selectTotalCustomers = createSelector(
     [selectCustomers],
     customers =>  customers.length
 );

@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { selectOrderCount, selectOrdersTotalAmount, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors';
+import { selectTotalOrders, selectOrdersTotalAmount, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors';
 import DisplayReport from '../../../../components/report/display-report';
 import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
+import { createStructuredSelector } from 'reselect';
 
 const TotalCustomersReport = ({ordersCount,ordersTotalAmount, isFetching})=>{
     
@@ -21,10 +22,10 @@ const TotalCustomersReport = ({ordersCount,ordersTotalAmount, isFetching})=>{
     )
 }
 
-const ordersState = rootReducerState =>({
-    ordersCount:selectOrderCount(rootReducerState),
-    ordersTotalAmount:selectOrdersTotalAmount(rootReducerState),
-    isFetching: selectIsFetchingOrders(rootReducerState)
+const ordersState = createStructuredSelector({
+    ordersCount:selectTotalOrders,
+    ordersTotalAmount:selectOrdersTotalAmount,
+    isFetching: selectIsFetchingOrders
 })
 
 export default connect(ordersState)(TotalCustomersReport);

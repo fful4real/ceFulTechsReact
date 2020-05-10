@@ -96,7 +96,7 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
                                             setShowSuccess({show:"show", className:"success", message:"Order processed successfully"})
                                             setSubmitting(false)
 
-                                            updateOrderAsync(orders)
+                                            updateOrderAsync(updatedOrder)
                                             updateAccountAsync(accounts)
                                             order.hasFetchedOrderEntries&&updateOrderEntry(updatedOrder)
                                             resetForm()

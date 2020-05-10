@@ -97,12 +97,12 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                 
                                 orderValues = values.sentByName&&values.sentBy?{...orderValues,sentBy:values.sentBy}:orderValues
 
-                                console.log('OrderValues', orderValues)
+                                
                                 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
                                         let newOrder = resp.data
-                                        console.log("New Order: ",newOrder)
+                                        
                                         setStatus({success: false})
                                         setShowSuccess('show')
                                         if(isNewCustomer){
@@ -114,7 +114,6 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                                 }
                                         }
                                         
-                                        console.log("createOrderForm Customers: ",customers)
                                         addOrderToState(newOrder)
                                         addOrderToCustomer(customers, newOrder)
                                         setSubmitting(false)

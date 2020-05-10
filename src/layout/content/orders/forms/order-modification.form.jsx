@@ -75,20 +75,17 @@ const OrderModificationForm = ({order,orders, updateOrderAsync, accounts, closeM
                                             const orderResp = resp.data;
                                             console.log("Patched Order: ",orderResp)
                                             setStatus({success: false})
-                                            orders = orders.map(mapOrder=>mapOrder.id===order.id?
-                                                    {...mapOrder,
-                                                        amountIn:orderResp.amountIn,
-                                                        amountOut:orderResp.amountOut,
-                                                        note:orderResp.note,
-                                                        pendingAmount:orderResp.pendingAmount
-                                                    }:
-                                                mapOrder
-                                                )
+                                            const updatedOrder = {...order,
+                                                    amountIn:orderResp.amountIn,
+                                                    amountOut:orderResp.amountOut,
+                                                    note:orderResp.note,
+                                                    pendingAmount:orderResp.pendingAmount
+                                                }
 
                                             setSubmitting(false)
                                             setShowSuccess({...showSuccess, show:"show", className:"success",alertIcon:"check-circle", message:"Order processed successfully"})
                                             resetForm()
-                                            updateOrderAsync(orders)
+                                            updateOrderAsync(updatedOrder)
                                             setFieldValue('amountIn',orderResp.amountIn)
                                             setFieldValue('amountOut',orderResp.amountOut )
                                             setFieldValue('orderNote',orderResp.note )

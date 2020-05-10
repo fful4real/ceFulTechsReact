@@ -1,14 +1,15 @@
 import React from 'react'
-import { selectIsFetchingOrders, selectProcessedOrdersCount, selectProcessedOrdersAmount } from '../../../../redux/orders/orders.selectors'
+import { selectProcessedOrdersCount, selectProcessedOrdersAmount, selectIsFetchingProcessedOrders } from '../../../../redux/orders/orders.selectors'
 import { connect } from 'react-redux'
 import DisplayReport from '../../../../components/report/display-report'
 import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay'
+import { createStructuredSelector } from 'reselect'
 
 const ProcessedOrdersReport = ({isFetching,ordersCount, processOrderAmount})=>{
 
     return isFetching?
         (
-            <SpinnerDisplay title="Total Orders" />
+            <SpinnerDisplay title="Processed Orders" />
         ):(
             <DisplayReport
                 title = "Processed Orders"
@@ -21,10 +22,10 @@ const ProcessedOrdersReport = ({isFetching,ordersCount, processOrderAmount})=>{
     )
 }
 
-const ordersState = rootReducerState =>({
-    ordersCount:selectProcessedOrdersCount(rootReducerState),
-    processOrderAmount:selectProcessedOrdersAmount(rootReducerState),
-    isFetching: selectIsFetchingOrders(rootReducerState)
+const ordersState = createStructuredSelector({
+    ordersCount:selectProcessedOrdersCount,
+    processOrderAmount:selectProcessedOrdersAmount,
+    isFetching: selectIsFetchingProcessedOrders
 })
 
 export default connect(ordersState)(ProcessedOrdersReport);

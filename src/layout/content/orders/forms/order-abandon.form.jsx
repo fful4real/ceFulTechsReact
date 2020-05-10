@@ -49,17 +49,14 @@ const OrderAbandonForm = ({order,statuses,orders, updateOrderAsync, closeModal})
                                             const orderResp = resp.data;
                                             console.log("Patched Order: ",orderResp)
                                             setStatus({success: false})
-                                            orders = orders.map(mapOrder=>mapOrder.id===order.id?
-                                                    {...mapOrder,
-                                                        status:orderResp.status
-                                                    }:
-                                                mapOrder
-                                                )
+                                            const updatedOrder = {...order,
+                                                    status:orderResp.status
+                                                }
 
                                             setSubmitting(false)
                                             setShowSuccess({...showSuccess, show:"show", className:"success",alertIcon:"check-circle", message:"Order abandoned"})
                                             resetForm()
-                                            updateOrderAsync(orders)
+                                            updateOrderAsync(updatedOrder)
                                             
                                             setTimeout(()=>{
                                                 setShowSuccess({show:"hide",alertIcon:"block", className:"success", message:"Order processed successfully"})

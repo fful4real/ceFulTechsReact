@@ -14,7 +14,7 @@ import { fetchCustomersAsync } from './redux/customers/customers.action';
 import { fetchCurrenciesAsync } from './redux/currencies/currencies.action';
 import { fetchCitiesAsync } from './redux/cities/cities.actions';
 import { fetchStatusesAsync } from './redux/statuses/statuses.actions';
-import { fetchOrdersAsync } from './redux/orders/orders.actions';
+import { fetchOrdersAsync, fetchAllOrdersAsync } from './redux/orders/orders.actions';
 import { fetchAccountsAsync } from './redux/accounts/accounts.action';
 import { selectAuth } from './redux/auth/auth.selectors';
 import { createStructuredSelector } from 'reselect'
@@ -39,6 +39,7 @@ class App extends React.Component{
     this.props.fetchCitiesAsync()
     this.props.fetchStatusesAsync()
     this.props.fetchAccountsAsync()
+    this.props.fetchAllOrdersAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -97,7 +98,8 @@ const mapDispatchToProps = {
   fetchCurrenciesAsync,
   fetchCitiesAsync,
   fetchStatusesAsync,
-  fetchAccountsAsync
+  fetchAccountsAsync,
+  fetchAllOrdersAsync
 }
 
 

@@ -7,6 +7,10 @@ const FulTechsStyle = createGlobalStyle`
   }
 }
 
+.cursor-pointer{
+  cursor: pointer !important;
+}
+
 
 table.list-table{
   tr{
