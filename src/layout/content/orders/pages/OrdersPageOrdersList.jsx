@@ -22,7 +22,8 @@ const OrdersPageOrdersList = ({orders,
     ordersPerPage,
     statuses,
     allOrders,
-    isFetchingAllOrders
+    isFetchingAllOrders,
+    pagefilter
 })=> {
     
     if (!ordersPerPage[`page_${currentPage}`]) {
@@ -33,7 +34,10 @@ const OrdersPageOrdersList = ({orders,
         isFetching=false
     }
     const [searchString, setSearchString] = useState('')
-    const [status, setStatus] = useState('')
+    if (pagefilter) {
+        pagefilter = statuses.filter(status_i=>status_i.statusCode===pagefilter)[0]
+    }
+    const [status, setStatus] = useState(pagefilter)
     orders = ordersPerPage[`page_${currentPage}`]
     const handleSearch = value => setSearchString(value)
     const handleSetPage = page => {
@@ -43,12 +47,9 @@ const OrdersPageOrdersList = ({orders,
     }
 
     if (orders) {
-        if (status||searchString) {
-            orders = allOrders
-            isFetching = isFetchingAllOrders
-        }
+        orders = status||searchString?allOrders:orders
         orders = status?orders.filter(item=>
-            (item.status.className.toLowerCase()===status.toLowerCase())
+            (item.status.className.toLowerCase()===status.className.toLowerCase())
         ):orders
 
         orders = orders.filter(item=>
@@ -57,8 +58,9 @@ const OrdersPageOrdersList = ({orders,
         )
         
     }
-    const statusClassName = 'text-'+status;
-    // console.log(statusClassName)
+    const statusClassName = status?'text-'+status.className:'';
+    const fetching = isFetching&&!isFetchingAllOrders
+    // console.log(status)
     return (
         <div className="row">
             <div className="col-xl-12">
@@ -74,7 +76,7 @@ const OrdersPageOrdersList = ({orders,
                                         </span>
                                         <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", transform: "translate3d(13px, 21px, 0px)", top: "0px", left: "0px", willChange: "transform"}}>
                                         {statuses.map(statusMap=>
-                                                (<Link key={`status-${uid(statusMap.id)}`} to="#" className={`dropdown-item ${status===statusMap.className?"text-success":''}`} onClick={()=>setStatus(statusMap.className)}>{statusMap.statusLabel}</Link>)
+                                                (<Link key={`status-${uid(statusMap.id)}`} to="#" className={`dropdown-item ${status?status.className===statusMap.className?"text-success":'':''}`} onClick={()=>setStatus(statusMap)}>{statusMap.statusLabel}</Link>)
                                             )
                                         }
                                             <div className="dropdown-divider"></div>
@@ -86,7 +88,7 @@ const OrdersPageOrdersList = ({orders,
                             </div>
                         </OrderListFormStyle>
                     </div>
-                    <ListOrders tableData={orders} isFetching={isFetching} />
+                    <ListOrders tableData={orders} isFetching={fetching} />
                     <PaginatorDefault currentPage={currentPage} pageCount={pageCount} setPage={page=>handleSetPage(page)} />
                 </div>
             </div>

@@ -18,6 +18,7 @@ const ProcessedOrdersReport = ({isFetching,ordersCount, processOrderAmount})=>{
                 subTitle=" processed"
                 incrementValue="+13"
                 incrementClass="warning"
+                linkTo = "/orders/processed"
             />
     )
 }

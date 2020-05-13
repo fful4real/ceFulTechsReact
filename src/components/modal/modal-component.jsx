@@ -1,10 +1,10 @@
 import React from 'react'
 import {Modal } from 'react-bootstrap'
 
-const ModalComponent = ({showModal,modalHeading, closeModal, modalSize="lg", children})=> {
+const ModalComponent = ({showModal=false, modalHeading, closeModal, modalSize="lg", children})=> {
     // console.log(children)
     return (
-        <Modal size={modalSize} show={showModal} onHide={closeModal}>
+      <Modal size={modalSize} show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>{modalHeading}</Modal.Title>
         </Modal.Header>

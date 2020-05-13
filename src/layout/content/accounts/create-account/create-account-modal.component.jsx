@@ -6,7 +6,7 @@ const  CreateAccountModal =(props)=>{
       <Modal size="lg" {...props} aria-labelledby="contained-modal-title-vcenter">
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Create New Order
+            Create Order
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

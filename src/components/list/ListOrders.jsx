@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { numberWithCommas } from '../../helpers/helper'
 import ListItems from './list-items'
 import { Redirect } from 'react-router-dom'
+import moment from 'moment'
 
 const ListOrders = ({tableData, isFetching}) =>{
     const [itemPage, setItemPage] = useState(false)
@@ -58,8 +59,16 @@ const ListOrders = ({tableData, isFetching}) =>{
             name:'Created Date',
             selector: 'datec',
             sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}><span className="text-muted"><i className="icon-clock font-13"></i> {row.datec}</span></div>
-        }
+            cell: row => <div onClick={()=>handleRowClick(row)}><span className="text-muted"><i className="icon-clock font-13"></i> {moment(row.datec).format("DD - MMM - YYYY")}</span></div>
+        },
+        {
+            name:'Created By',
+            selector: 'createdBy',
+            sortable:true,
+            cell: row => <div onClick={()=>handleRowClick(row)}>
+                            <span className="text-capitalize-">{row.createdBy.firstName}</span>
+                            <span className="text-uppercase-">&nbsp;{row.createdBy.lastName}</span>
+                        </div>}
     ]
     return itemPage? 
     (<Redirect to={`/orders/${itemPage.id}`}/>)

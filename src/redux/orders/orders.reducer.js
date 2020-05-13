@@ -1,5 +1,5 @@
 import OrdersActionTypes from "./orders.types";
-import { capitalizeFirstLetter, formatDate, addAttribute } from "../../helpers/helper";
+import { capitalizeFirstLetter, formatDate, addAttribute, paginateResult } from "../../helpers/helper";
 
 
 const INITIAL_STATE = {
@@ -24,6 +24,7 @@ const INITIAL_STATE = {
     processedOrders: [],
     newOrders: [],
     ordersPerPage:{},
+    orderCountPerPage:10,
     allOrders:[]
 }
 
@@ -45,7 +46,14 @@ const fixOrderCustomerNames = order =>({
     }
 })
 
-let orders =[], allOrders =[]
+let orders =[], 
+    allOrders =[], 
+    ordersPerPage = {},
+    newOrders = [],
+    pendingOrders = [],
+    processedOrders = [],
+    totalPages = null,
+    totalOrders
 
 const ordersReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
@@ -57,7 +65,8 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
                 ...state,
                 orders: [actionOrder,...state.orders],
                 ordersPerPage:{'page_1':formatDate(myFirstPage, 'datec')},
-                currentPage:1
+                currentPage:1,
+                newOrders: [...state.newOrders, actionOrder]
             }
         case OrdersActionTypes.SET_ORDERS_PAGE:
             return{
@@ -74,15 +83,16 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
             const total_Pages = action.orders['hydra:view']['hydra:last']
             const totalPageStringLenth = total_Pages.length
             const indexOfValue = total_Pages.indexOf('=')+1
-            const totalOrderPages = total_Pages.substr(indexOfValue,totalPageStringLenth-indexOfValue)
+            totalPages = parseInt(total_Pages.substr(indexOfValue,totalPageStringLenth-indexOfValue))
             const page_1_orders= fixOrdersCustomerNames(action.orders['hydra:member'])
             // console.log(totalOrderPages)
+            totalOrders = action.orders['hydra:totalItems']
             return{
                 ...state,
                 isFetching:false,
                 orders: action.orders['hydra:member'],
-                totalOrders:action.orders['hydra:totalItems'],
-                totalPages: parseInt(totalOrderPages),
+                totalOrders,
+                totalPages,
                 ordersPerPage:{page_1: formatDate(page_1_orders, 'datec')}
             }
         
@@ -109,11 +119,24 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
     case OrdersActionTypes.ALL_ORDERS_FETCHING_SUCCESS:
         allOrders = addAttribute(action.orders,'hasFetchedOrderEntries',false)
         allOrders = fixOrdersCustomerNames(allOrders)
+        ordersPerPage = paginateResult(allOrders, INITIAL_STATE.orderCountPerPage)
+        newOrders = allOrders.filter(item=>item.status.statusCode==="NEW")
+        processedOrders = allOrders.filter(item=>item.status.statusCode==="OK")
+        pendingOrders = allOrders.filter(item=>item.status.statusCode==="PTL")
+        totalPages = Math.ceil(allOrders.length/ state.orderCountPerPage)
+        totalOrders = allOrders.length
+        orders = allOrders
     return{
         ...state,
         isFetchingAllOrders:false,
         allOrders,
-        orders:action.orders
+        orders,
+        ordersPerPage,
+        newOrders,
+        processedOrders,
+        pendingOrders,
+        totalPages,
+        totalOrders
     }
 
     case OrdersActionTypes.ALL_ORDERS_FETCHING_FAILURE:
@@ -216,12 +239,13 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
         case OrdersActionTypes.UPDATE_ORDERS:
             orders = state.orders.map(order=>order.id===action.order.id?action.order:order)
             allOrders = state.allOrders.map(order=>order.id===action.order.id?action.order:order)
+            ordersPerPage = paginateResult(allOrders)
             return{
                 ...state,
                 orders,
-                ordersPerPage: { 'page_1': formatDate(orders.slice(0,10), 'datec')},
+                ordersPerPage,
                 currentPage: 1,
-                allOrders
+                allOrders,
             }
         
         case OrdersActionTypes.ORDER_ITEM_ORDER_ENTRIES_FETCHING_START:

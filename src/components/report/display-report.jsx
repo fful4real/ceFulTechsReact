@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 
-export default function DisplayReport({title,value1,value2,subTitle,incrementValue, incrementClass}) {
-    return (
-        <div className="col-lg-3 col-md-6">
+export default function DisplayReport({displayClassName="col-lg-3 col-md-6",title,value1,value2,subTitle,incrementValue, incrementClass, linkTo}) {
+    const [redirectPage, setrediRectPage] = useState('')
+    return redirectPage?
+        <Redirect to={redirectPage} /> : (
+        <div className={displayClassName}>
                 <div className="card card-sm">
-                    <div className="card-body">
+                    <div className={`card-body${linkTo?" cursor-pointer":''}`} onClick={()=>setrediRectPage(linkTo)}>
                         <div className="d-flex justify-content-between mb-5">
                             <div>
                                 <span className="d-block font-15 text-dark font-weight-500">{title}</span>

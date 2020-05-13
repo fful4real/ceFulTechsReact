@@ -10,6 +10,7 @@ import CurrenciesReducer from './currencies/currencies.reducer'
 import CitiesReducer from './cities/cities.reducer'
 import statusesReducer from './statuses/statuses.reducer'
 import DefaultParamsReducer from './defaults/default.reducer'
+import FultechsReducer from './fultechs/FultechsReducer'
 
 export default combineReducers({
     accounts:accountsReducer,
@@ -21,5 +22,6 @@ export default combineReducers({
     auth: authReducer,
     user: userReducer,
     statuses: statusesReducer,
-    defaultParams: DefaultParamsReducer
+    defaultParams: DefaultParamsReducer,
+    fultechs: FultechsReducer
 })

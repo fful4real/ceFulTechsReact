@@ -1,10 +1,6 @@
 import React from 'react';
-import HeaderContainer from './layout/header/header-container.component';
 import FulTechs from './assets/js/fultechs'
 import './app.styles.scss'
-import ContentContainer from './layout/content/content-container';
-import FulTechsStyle from './global-style.styles';
-import FooterContent from './layout/footer/footer.component';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import AxiosAgent from './axios-agent';
@@ -24,22 +20,32 @@ import { selectIsFetchingCustomers } from './redux/customers/customers.selectors
 import { selectIsFetchingCities } from './redux/cities/cities.selectors';
 import { selectIsFetchingCurrencies } from './redux/currencies/currencies.selectors';
 import { selectIsFetchingStatuses } from './redux/statuses/statuses.selectors';
-import LoadingApp from './layout/content/loading-app';
+import CashExpress from './layout/CashExpress';
 
 class App extends React.Component{
   compReady = false;
   componentDidMount() {
     FulTechs();
+    const {
+      fetchAllOrdersAsync, 
+      userFetchingAttempt,
+      fetchOrdersAsync,
+      fetchCustomersAsync,
+      fetchCurrenciesAsync,
+      fetchCitiesAsync,
+      fetchStatusesAsync,
+      fetchAccountsAsync
+    } = this.props
     this.compReady = true;
     const userId = window.localStorage.getItem('userId');
-    this.props.userFetchingAttempt(userId)
-    this.props.fetchOrdersAsync()
-    this.props.fetchCustomersAsync()
-    this.props.fetchCurrenciesAsync()
-    this.props.fetchCitiesAsync()
-    this.props.fetchStatusesAsync()
-    this.props.fetchAccountsAsync()
-    this.props.fetchAllOrdersAsync()
+    userFetchingAttempt(userId)
+    fetchOrdersAsync()
+    fetchCustomersAsync()
+    fetchCurrenciesAsync()
+    fetchCitiesAsync()
+    fetchStatusesAsync()
+    fetchAccountsAsync()
+    fetchAllOrdersAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -48,13 +54,15 @@ class App extends React.Component{
   }
 
   componentDidUpdate(prevprops){
+    
   }
   
 
   render(){
     
     const {auth}=this.props
-    let {token} = auth
+    let {token, isUserAuthenticated} = auth
+    // console.log(isUserAuthenticated)
     if(!token){
       token = window.localStorage.getItem('token');
       token&&AxiosAgent.setToken(token)
@@ -69,14 +77,10 @@ class App extends React.Component{
                         !this.props.selectIsFetchingStatuses;
                         
 
-    return !token ? <Redirect to='/login'  /> : (
-      <div className="hk-wrapper hk-horizontal-nav">
-        <FulTechsStyle/>
-        <HeaderContainer />
-        {!finishedLoadingApp ? <LoadingApp />: <ContentContainer/>}
-        <FooterContent />
-      </div>
-    );
+    return !token||!isUserAuthenticated ? 
+      <Redirect to='/login'  /> : 
+      <CashExpress loadApp = {finishedLoadingApp}/>
+    
   }
 }
 

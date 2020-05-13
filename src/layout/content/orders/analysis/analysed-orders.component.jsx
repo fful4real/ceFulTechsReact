@@ -6,7 +6,7 @@ import './analysed-orders.styles.scss'
 const AnalysedOrders = ()=>{
 
     return(
-        <div className="col-lg-6">
+        <div className="col-lg-6" style={{display:'none'}}>
             <div className="card card-refresh">
                 <div className="refresh-container">
                     <div className="loader-pendulums"></div>

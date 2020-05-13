@@ -2,6 +2,7 @@ import API_ROUTES from '../../api-route';
 import authActionTypes from "./auth.types";
 import AxiosAgent from '../../axios-agent';
 import { SubmissionError } from 'redux-form';
+import { destroyUserDetails } from '../user/user.action';
 
 export const userLoginStart = ()=>({
     type: authActionTypes.USER_LOGIN_START,
@@ -22,10 +23,16 @@ export const userSetAuth = ({token,userId}) =>({
     token,
     userId
 })
-
+// Destroy User Authentication
 export const userDestroyAuth = () =>({
     type: authActionTypes.USER_DESTROY_AUTH
 })
+export const userDestroyAuthAttemp = () =>{
+    return dispatch => {
+        dispatch(userDestroyAuth())
+        dispatch(destroyUserDetails())
+    }
+}
 
 export const userLoginAttempt = (username, password)=>{
     const userCredentials = {username, password}

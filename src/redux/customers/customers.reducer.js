@@ -4,7 +4,17 @@ import CustomersActionTypes from "./customers.types";
 const INITIAL_STATE = {
     customers:[],
     isFetchingCustomers:false,
-    error:null
+    isFetchingAllCustomers:false,
+    isFetchingCustomersPage:false,
+    error:null,
+    currentPage:1,
+    totalPages:null,
+    customersPerPage:{},
+    customerCountPerPage:10,
+    allCustomers:[],
+    totalCustomers:null,
+    customerModal: '',
+    showCustomerModal: false
 }
 
 const customersReducer = (state=INITIAL_STATE,action)=>{
@@ -23,7 +33,27 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 isFetchingCustomers:false,
-                customers: action.customers
+                customers: action.customers['hydra:member'],
+                totalCustomers: action.customers['hydra:totalItems'],
+            }
+        case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_START:
+            return{
+                ...state,
+                isFetchingAllCustomers: true
+            }
+        case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_SUCCESS:
+            // console.log(action.customers)
+            return{
+                ...state,
+                isFetchingAllCustomers: false,
+                customers: action.customers,
+                totalCustomers: action.customers.length,
+            }
+
+        case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_FAILURE:
+            return{
+                ...state,
+                isFetchingAllCustomers: false,
             }
         
         case CustomersActionTypes.CUSTOMERS_FETCHING_START:
@@ -37,6 +67,17 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
                 ...state,
                 isFetchingCustomers:false,
                 error: action.error
+            }
+        case CustomersActionTypes.SET_CUSTOMER_MODAL:
+            return{
+                ...state,
+                customerModal: action.modal,
+                showCustomerModal: true
+            }
+        case CustomersActionTypes.CLOSE_CUSTOMER_MODAL:
+            return{
+                ...state,
+                showCustomerModal: false
             }
     
         default:

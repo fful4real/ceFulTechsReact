@@ -1,9 +1,9 @@
 import {createSelector} from 'reselect'
-import { numberWithCommas, capitalizeFirstLetter, formatDate } from '../../helpers/helper';
+import { numberWithCommas, capitalizeFirstLetter} from '../../helpers/helper';
 import moment from 'moment';
 
 
-const selectOrderState = state => state.orders;
+export const selectOrderState = state => state.orders;
 const selectCitiesState = state => state.cities;
 const selectCities = createSelector(
     [selectCitiesState],
@@ -39,7 +39,7 @@ export const selectTotalOrders = createSelector(
 // All orders selector
 export const selectAllOrders = createSelector(
     [selectOrderState],
-    orderState =>  orderState.allOrders.map(order=>formatDate(order,'datec'))
+    orderState =>  orderState.allOrders
 );
 
 // Orders Count
@@ -60,7 +60,6 @@ export const selectOrdersTotalAmount = createSelector(
 export const selectLastTenOrders = createSelector(
     [selectOrders],
     orders => orders.slice(0,10).map(order=>({...order,
-        datec:moment(order.datec).format("DD - MMM - YYYY"),
         amountIn:numberWithCommas(order.amountIn)
     }))
     
@@ -72,55 +71,27 @@ export const isFechingOrderItemOrderEntries = createSelector(
     orders => orders.isFechingOrderItemOrderEntries
 )
 
+export const selectMonthsOrders = createSelector(
+    [selectAllOrders],
+    orders => orders.filter(order=>{
+        const orderDate = new Date(order.datec);
+        const currentDate = new Date();
+
+        return (orderDate.getMonth()===currentDate.getMonth())
+        && (orderDate.getYear()===currentDate.getYear())
+    })
+)
 
 // Count Orders Of The Month Selectors
 export const selectOrderCountOfMonth = createSelector(
-    [selectOrders],
-    orders => {
-        const numberOfOrdersForMonth = orders.reduce(
-            (totalOrders,order)=>{
-                const orderDate = new Date(order.datec);
-                const currentDate = new Date();
+    [selectMonthsOrders],
+    orders => orders.length
+)
 
-                if((orderDate.getMonth()===currentDate.getMonth())
-                    && (orderDate.getYear()===currentDate.getYear())
-                    ){
-                    // console.log("Order ID: ",order.id)
-                    return totalOrders+1;
-                }
-
-                return totalOrders;
-            }
-            
-            ,0);
- 
-        return numberOfOrdersForMonth
-     }
-);
-
-// Ampunt for Orders Of The Month Selectors
+// Amount for Orders Of The Month Selectors
 export const selectAmountForMonthOrders = createSelector(
-    [selectOrders],
-    orders => {
-        const amountOfOrdersForMonth = orders.reduce(
-            (totalAmount,order)=>{
-                const orderDate = new Date(order.datec);
-                const currentDate = new Date();
-
-                if((orderDate.getMonth()===currentDate.getMonth())
-                    && (orderDate.getYear()===currentDate.getYear())
-                    ){
-                    // console.log("Order ID: ",order.id)
-                    return totalAmount+order.amountOut;
-                }
-
-                return totalAmount;
-            }
-            
-            ,0);
- 
-        return numberWithCommas(amountOfOrdersForMonth)
-     }
+    [selectMonthsOrders],
+    orders => orders.reduce((totalAmount, order)=>totalAmount+order.amountOut,0)
 );
 
 // Selectors for Pending orders
@@ -128,10 +99,16 @@ export const selectIsFetchingPendingOrders = createSelector(
     [selectOrderState],
     ordersState => ordersState.isFetchingPendingOrders
 )
-export const selectPendingOrdersCount = createSelector(
+export const selectPendingOrders = createSelector(
     [selectOrderState],
-    ordersState => ordersState.pendingOrders.length
+    orders => orders.pendingOrders
 )
+export const selectPendingOrdersCount = createSelector(
+    [selectPendingOrders],
+    pendingOrders => pendingOrders.length
+)
+
+
 
 export const selectHasFetchedPendingOrders = createSelector(
     [selectOrderState],
@@ -176,9 +153,14 @@ export const selectIsFetchingNewOrders = createSelector(
     [selectOrderState],
     ordersState => ordersState.isFetchingNewOrders
 )
-export const selectNewOrdersCount = createSelector(
+
+export const selectNewOrders = createSelector(
     [selectOrderState],
-    ordersState => ordersState.newOrders.length
+    orderState => orderState.newOrders
+)
+export const selectNewOrdersCount = createSelector(
+    [selectNewOrders],
+    newOrders => newOrders.length
 )
 
 export const selectHasFetchedNewOrders = createSelector(
@@ -242,5 +224,23 @@ export const selectOrdersPerPage = createSelector(
 export const selectIsFetchingAllOrders = createSelector(
     [selectOrderState],
     ordersState => ordersState.isFetchingAllOrders
+)
+
+// Select Not Completeed orders
+export const selectNotCompletedOrders = createSelector(
+    [selectPendingOrders, selectNewOrders],
+    (pendingOrders, newOrders)=>[...pendingOrders, ...newOrders]
+)
+
+// Select Not Completed Orders Count
+export const selectNotCompletedOrdersCount = createSelector(
+    [selectNotCompletedOrders],
+    orders => orders.length
+)
+
+// Select Not Completed Orders Amount
+export const selectNotCompletedOrdersAmount = createSelector(
+    [selectNotCompletedOrders],
+    orders => orders.reduce((totalAmount, order)=>totalAmount+order.pendingAmount,0)
 )
 

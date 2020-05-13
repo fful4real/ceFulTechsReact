@@ -21,6 +21,9 @@ class OrdersPage extends Component {
                     <OrdersHeader/>
                     <Switch>
                         <Route path="/orders/list" component={OrdersPageOrdersList} />
+                        <Route path="/orders/new" component={()=><OrdersPageOrdersList pagefilter = "NEW"/>} />
+                        <Route path="/orders/pending" component={()=><OrdersPageOrdersList pagefilter = "PTL"/>} />
+                        <Route path="/orders/processed" component={()=><OrdersPageOrdersList pagefilter = "OK"/>} />
                         <Route path="/orders/:id" component={OrdersItem} />
                         <Route path="/orders" component={OrdersDashboard} />
                     </Switch>

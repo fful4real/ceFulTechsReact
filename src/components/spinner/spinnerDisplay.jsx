@@ -1,9 +1,9 @@
 import React from 'react'
 import Spinner from './spinner'
 
-export default function SpinnerDisplay({title}) {
+export default function SpinnerDisplay({title, displayClassName="col-lg-3 col-md-6"}) {
     return (
-        <div className="col-lg-3 col-md-6">
+        <div className={displayClassName}>
             <div className="card card-sm">
                 <div className="card-body position-relative">
                     <div className="d-flex justify-content-between mb-5">

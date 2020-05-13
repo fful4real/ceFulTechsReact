@@ -5,22 +5,23 @@ import PendingOrdersReportComponent from './reports/pending-orders-report.compon
 import { fetchPendingOrdersAsync, fetchProcessedOrdersAsync, fetchNewOrdersAsync } from '../../../redux/orders/orders.actions';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectHasFetchedPendingOrders, selectHasFetchedProcessedOrders, selectHasFetchedNewOrders } from '../../../redux/orders/orders.selectors';
+import { selectPendingOrdersCount } from '../../../redux/orders/orders.selectors';
 import NewOrdersReportComponent from './reports/new-orders-report.component';
 
 const OrdersReports = ({
     fetchPendingOrders, 
-    hasFetchedPendingOrders,
     fetchProcessedOrders,
-    hasFetchedProcessedOrders,
     fetchNewOrders,
-    hasFetchedNewOrders
+    pendingOrders
 })=>{
     
+    
     useEffect(() => {
-        !hasFetchedPendingOrders&&fetchPendingOrders()
-        !hasFetchedProcessedOrders&&fetchProcessedOrders()
-        !hasFetchedNewOrders&&fetchNewOrders()
+        if (!pendingOrders) {
+            fetchPendingOrders()
+            fetchProcessedOrders()
+            fetchNewOrders()
+        }
     })
 
     return(
@@ -36,14 +37,12 @@ const OrdersReports = ({
 const mapDispatchToProps = {
     fetchPendingOrders: fetchPendingOrdersAsync,
     fetchProcessedOrders: fetchProcessedOrdersAsync,
-    fetchNewOrders: fetchNewOrdersAsync
+    fetchNewOrders: fetchNewOrdersAsync,
 }
 
 
 const mapStateToProps = createStructuredSelector({
-    hasFetchedPendingOrders: selectHasFetchedPendingOrders,
-    hasFetchedProcessedOrders: selectHasFetchedProcessedOrders,
-    hasFetchedNewOrders: selectHasFetchedNewOrders
+    pendingOrders: selectPendingOrdersCount
 })
 
 

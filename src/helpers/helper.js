@@ -38,3 +38,25 @@ export const addAttribute = (arrayObj, attr, val)=>{
     }
 }
 
+// Paginate results
+
+export const paginateResult = (result, perpage)=>{
+    
+        let paginated = {}
+        for (let i = 1; (result.length >= perpage*i)||(perpage*i-result.length < 10); i++) {
+            if (i===1) {
+                paginated = {
+                    ...paginated,
+                    [`page_${i}`]: result.slice(0,10)
+                }
+            }else{
+                paginated = {
+                    ...paginated,
+                    [`page_${i}`]: result.slice((i-1)*perpage, i*perpage)
+                }
+            }
+        }
+    
+        return paginated
+}
+

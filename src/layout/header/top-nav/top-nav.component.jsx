@@ -6,8 +6,11 @@ import Nav from 'react-bootstrap/Nav'
 import {Link} from 'react-router-dom'
 import Notifications from './notifications/notifications.component'
 import AuthenticationMenu from './authentication-menu/authentication-menu.layout'
+import { createStructuredSelector } from 'reselect'
+import { selectIsRefreshingFultechs } from '../../../redux/fultechs/FultechsSelectors'
+import { connect } from 'react-redux'
 
-const TopNavigation = ()=>(
+const TopNavigation = ({refresh})=>(
 
         <React.Fragment>
             <Navbar collapseOnSelect expand="xl" className="hk-navbar" variant="dark" fixed="top">
@@ -15,7 +18,7 @@ const TopNavigation = ()=>(
                     <i className="ion ion-ios-menu"></i>
                 </Link>
                 <Navbar.Brand href="/">
-                    <img className="brand-img d-inline-block mr-5" src={Logo} alt="brand" />FulTechs-
+                    <img className={`brand-img d-inline-block mr-5${refresh?' rotate':''}`} src={Logo} alt="brand" />FulTechs
                 </Navbar.Brand>
                 <ul className="navbar-nav hk-navbar-content">
                     <li className="nav-item">
@@ -30,4 +33,8 @@ const TopNavigation = ()=>(
         </React.Fragment>
     )
 
-    export default TopNavigation;
+    const mapStateToProps = createStructuredSelector({
+        refresh: selectIsRefreshingFultechs
+    })
+
+    export default connect(mapStateToProps)(TopNavigation);

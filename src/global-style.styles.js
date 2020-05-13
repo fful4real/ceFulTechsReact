@@ -63,6 +63,25 @@ form.search-form{
     }
 }
 
+.header-reloading{
+  font-size: 0.4em;
+  right: -55px;
+  bottom: 4px;
+  position: absolute;
+}
+
+@keyframes rotating  {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.rotate {
+  display:inline-block;
+  animation: rotating 2s linear infinite;
+}
 `;
 
 export default FulTechsStyle;

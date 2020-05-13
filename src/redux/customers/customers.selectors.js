@@ -1,7 +1,8 @@
 import {createSelector} from 'reselect'
 import { numberWithCommas, capitalizeFirstLetter } from '../../helpers/helper';
+import { selectMonthsOrders, selectNotCompletedOrders } from '../orders/orders.selectors';
 
-const selectCustomersState = state => state.customers;
+export const selectCustomersState = state => state.customers;
 export const selectCustomers = createSelector(
     [selectCustomersState],
     customers => customers.customers.map(customer=>({...customer,
@@ -17,8 +18,8 @@ export const selectIsFetchingCustomers = createSelector(
 
 // Total Customers Selectors
 export const selectTotalCustomers = createSelector(
-    [selectCustomers],
-    customers =>  customers.length
+    [selectCustomersState],
+    customers =>  customers.totalCustomers
 );
 
 export const selectCustomersTotalAmount = createSelector(
@@ -29,7 +30,6 @@ export const selectCustomersTotalAmount = createSelector(
        return numberWithCommas(amount)
     }
 )
-
 
 // Count Customers Of The Month Selectors
 export const selectOrderCountOfMonth = createSelector(
@@ -56,30 +56,40 @@ export const selectOrderCountOfMonth = createSelector(
      }
 );
 
-// Ampunt for Customers Of The Month Selectors
-export const selectAmountForMonthCustomers = createSelector(
+
+
+// Customers of the month
+export const selectCustomersOfTheMonth = createSelector(
     [selectCustomers],
-    customers => {
-        const amountOfCustomersForMonth = customers.reduce(
-            (totalAmount,order)=>{
-                const orderDate = new Date(order.datec);
-                const currentDate = new Date();
+    customers => customers.filter(customer=>{
+        const customerDate = new Date(customer.datec);
+        const currentDate = new Date();
+        if((customerDate.getMonth()===currentDate.getMonth())
+            && (customerDate.getYear()===currentDate.getYear())
+            ){
+            return true;
+        }
+        return false
+    })
+)
 
-                if((orderDate.getMonth()===currentDate.getMonth())
-                    && (orderDate.getYear()===currentDate.getYear())
-                    ){
-                    // console.log("Order ID: ",order.id)
-                    return totalAmount+order.amountOut;
-                }
+// Customers of the month count
+export const selectCustomersOfTheMonthCount = createSelector(
+    [selectCustomersOfTheMonth],
+    customers => customers.length
+)
 
-                return totalAmount;
-            }
-            
-            ,0);
- 
-        return numberWithCommas(amountOfCustomersForMonth)
-     }
-);
+// Amount sent by customers of the month
+export const selectAmountForMonthsCustomers = createSelector(
+    [selectCustomersOfTheMonth,selectMonthsOrders],
+    (customers, orders)=>customers.reduce((totalAmount, customer)=>{
+        const amountForCustomer = orders.reduce((orderAmount, order)=>
+            order.customer.id === customer.id?order.amountOut+orderAmount:orderAmount
+        ,0)
+
+        return amountForCustomer+totalAmount
+    },0)
+)
 
 // Selectr for processed customers
 export const selectProcessedCustomersCount = createSelector(
@@ -96,12 +106,29 @@ export const selectProcessedCustomersAmount = createSelector(
     }
 );
 
-// Selectors for Pending customers
+// Selectors for Customers Pending Orders
 
-export const selectPendingCustomersCount = createSelector(
-    [selectCustomers],
-    customers=>customers.reduce((pendingCount,order)=>parseInt(order.pendingAmount)>0 ?pendingCount+1:pendingCount,0)
+export const selectCustomersPendingOrders = createSelector(
+    [selectNotCompletedOrders],
+    (pendingOrders) => {
+        let theCustomersIds = [], theCustomers =[]
+        pendingOrders.map(order=>{
+            if (!theCustomersIds.includes(order.customer.id)) {
+              theCustomersIds.push(order.customer.id)
+              theCustomers.push(order.customer)
+            }
+            return true
+        })
+        // console.log(theCustomers)
+        return theCustomers
+    }
 );
+
+// Select Customers Pending Orders Count
+export const selectCustomersPendingOrdersCount = createSelector(
+    [selectCustomersPendingOrders],
+    customers => customers.length
+)
 
 export const selectPendingCustomersAmount = createSelector(
     [selectCustomers],
@@ -111,4 +138,24 @@ export const selectPendingCustomersAmount = createSelector(
         return numberWithCommas(amountPending)
     }
 );
+
+// Select is fetching all customers
+export const selectIsFetchingAllCustomers = createSelector(
+    [selectCustomersState],
+    customersState => customersState.isFetchingAllCustomers
+)
+
+// Select the modal to show
+export const selectCustomerModal = createSelector(
+    [selectCustomersState],
+    customersState => customersState.customerModal
+)
+
+// Select Show customer modal bolean
+export const selectShowCustomerModal = createSelector(
+    [selectCustomersState],
+    customersState => customersState.showCustomerModal
+)
+
+
 

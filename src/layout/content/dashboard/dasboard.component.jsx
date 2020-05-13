@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 class DashBoard extends Component {
     
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.props.setActivePage('dashboard')
     }
 

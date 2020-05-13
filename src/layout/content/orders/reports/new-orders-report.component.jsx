@@ -12,13 +12,13 @@ const NewOrdersReport = ({isFetching,newOrdersCount, newOrdersAmount})=>{
             <SpinnerDisplay title="New Orders"/>
         ):(
             <DisplayReport 
-            title = "New Orders"
-            value1={newOrdersCount}
-            value2={newOrdersAmount}
-            subTitle="Worth"
-            incrementValue="-30"
-            incrementClass="danger"
-            
+                title = "New Orders"
+                value1={newOrdersCount}
+                value2={newOrdersAmount}
+                subTitle="Worth"
+                incrementValue="-30"
+                incrementClass="danger"
+                linkTo = "/orders/new"
             />
             )
 }

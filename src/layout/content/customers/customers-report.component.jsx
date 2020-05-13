@@ -1,15 +1,15 @@
 import React from 'react'
-import MonthsCustomerReport from './report/months-customer-report.component'
-import ReferredCustomersReport from './report/referrer-customers-report.component';
-import OrdersCustomersReport from './report/orders-customers-report.component';
+import MonthsCustomerReport from './report/MonthsCustomersReport'
+import TotalCustomersReport from './report/TotalCustomersReport';
+import CustomersPendingOrdersReport from './report/CustomersPendingOrdersReport';
 
 const CustomersReports = ()=>{
 
     return(
         <div className="hk-row">
+            <TotalCustomersReport />
             <MonthsCustomerReport/>
-            <ReferredCustomersReport/>
-            <OrdersCustomersReport/>
+            <CustomersPendingOrdersReport />
         </div>
     )
 }

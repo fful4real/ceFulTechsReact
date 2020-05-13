@@ -57,10 +57,61 @@ export const fetchCustomersAsync = ()=>{
         dispatch(fetchCustomersStart());
         AxiosAgent.request('get',API_ROUTES.customers(null), null, null)
         .then(resp => {
-            dispatch(fetchCustomersSuccess(resp.data['hydra:member']))
+            // console.log(resp.data)
+            dispatch(fetchCustomersSuccess(resp.data))
         })
         .catch(err => {
             console.error(err.message)
         })
+    }
+}
+
+
+// Fetch All Customers
+export const fetchAllCustomersStart = ()=>({
+    type:CustomersActionTypes.ALL_CUSTOMERS_FETCHING_START
+})
+export const fetchAllCustomersSuccess = customers =>({
+    type: CustomersActionTypes.ALL_CUSTOMERS_FETCHING_SUCCESS,
+    customers
+})
+export const fetchAllCustomersFailure = err =>({
+    type: CustomersActionTypes.ALL_CUSTOMERS_FETCHING_FAILURE,
+    payload: err
+})
+
+export const fetchAllCustomersAsync = ()=>{
+
+    return dispatch =>{
+        dispatch(fetchAllCustomersStart());
+        AxiosAgent.request('get','customers?pagination=0', null, null)
+        .then(resp => {
+            // console.log(resp.data)
+            dispatch(fetchAllCustomersSuccess(resp.data['hydra:member']))
+        })
+        .catch(err => {
+            console.error(err.message)
+        })
+    }
+}
+
+// Set customer page modal to display
+export const setCustomerModal = modal =>({
+    type:CustomersActionTypes.SET_CUSTOMER_MODAL,
+    modal
+})
+export const setCustomerModalAsync = modal =>{
+    return dispatch =>{
+        dispatch(setCustomerModal(modal))
+    }
+}
+
+// Set closing customer modal
+export const closeCustomerModal = () =>({
+    type:CustomersActionTypes.CLOSE_CUSTOMER_MODAL,
+})
+export const setCloseCustomerModal = () =>{
+    return dispatch =>{
+        dispatch(closeCustomerModal())
     }
 }

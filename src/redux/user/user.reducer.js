@@ -28,6 +28,12 @@ const userReducer = (state=INITIAL_STATE,action)=>{
                 user:null,
                 userError: action.error
             }
+        case userActionTypes.DESTROY_USER:
+            return{
+                ...state,
+                isFetchingUser:false,
+                user:null,
+            }
     
         default:
             return state;

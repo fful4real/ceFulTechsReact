@@ -4,8 +4,9 @@ import {Link} from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import { connect } from 'react-redux';
 import Spinner from '../../../../components/spinner/spinner';
+import { userDestroyAuthAttemp } from '../../../../redux/auth/auth.action';
 
-const AuthenticationMenu = ({user})=> {
+const AuthenticationMenu = ({user, signOut})=> {
     let firstName=null, lastName =null
     if(user.user!==null){
         lastName = user.user.lastName
@@ -48,7 +49,7 @@ const AuthenticationMenu = ({user})=> {
                     </div>
                 </div>
                 <div className="dropdown-divider"></div>
-                <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-power"></i><span>Log out</span></Link>
+                <Link className="dropdown-item" to="#" onClick={()=>signOut()}><i className="dropdown-icon zmdi zmdi-power"></i><span>Log out</span></Link>
             </div>
         </li>)
     
@@ -59,4 +60,8 @@ const mapStateToProps = rootReducerState =>({
     auth:rootReducerState.aut
 });
 
-export default connect(mapStateToProps)(AuthenticationMenu);
+const mapDispatchToProps = {
+    signOut:userDestroyAuthAttemp
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthenticationMenu);

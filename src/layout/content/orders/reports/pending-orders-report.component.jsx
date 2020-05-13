@@ -18,6 +18,7 @@ const PendingOrdersReport = ({isFetching, theTitle="Pending Orders", ordersCount
                 subTitle=" pending"
                 incrementValue="+77"
                 incrementClass="info"
+                linkTo = "/orders/pending"
             />
     )
 }

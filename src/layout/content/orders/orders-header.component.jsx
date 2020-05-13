@@ -6,16 +6,17 @@ import { Button } from 'react-bootstrap';
 import CreateOrderModal from './create-order/create-order-modal.component'
 import { Link } from 'react-router-dom';
 
-const OrdersHeader = ({addOrderToState})=>{
+const OrdersHeader = ()=>{
     const [modalShow, setModalShow] = useState(false);
     return(
         <div className="hk-pg-header mb-10">
             <div>
-                <h4 className="hk-pg-title">
+                <h4 className="hk-pg-title position-relative">
                     <span className="pg-title-icon">
                         <span className="feather-icon">
                         </span>
                     </span> <IosPaperOutline fontSize="30px" color="#c1c6c8"/>&nbsp;Orders
+                    
                 </h4>
             </div>
             <div className="d-flex">
@@ -26,7 +27,7 @@ const OrdersHeader = ({addOrderToState})=>{
                     </Link>
                 </Button>
                 <Button variant="primary" size="sm" className="order-new" onClick={() => setModalShow(true)}>
-                    <IosAddCircleOutline color="#fff" /> Create New Order&nbsp;
+                    <IosAddCircleOutline color="#fff" /> Create Order&nbsp;
                 </Button>
                 <CreateOrderModal show={modalShow} onHide={() => setModalShow(false)}/>
             </div>
