@@ -1,37 +1,37 @@
 import React from 'react'
 import { createStructuredSelector } from 'reselect';
-import { selectCustomersPendingOrdersCount } from '../../../../redux/customers/customers.selectors';
+import { selectCustomersPendingOrdersCount, selectIsFetchingCustomers } from '../../../../redux/customers/customers.selectors';
 import { connect } from 'react-redux';
-import { selectNotCompletedOrdersAmount } from '../../../../redux/orders/orders.selectors';
+import { selectNotCompletedOrdersAmount, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors';
 import { numberWithCommas } from '../../../../helpers/helper';
+import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
+import DisplayReport from '../../../../components/report/display-report';
 
-const CustomersPendingOrdersReport = ({pendingCustomers, pendingAmount})=>{
+const CustomersPendingOrdersReport = ({isFetching, isFetchingOrders, pendingCustomers, pendingAmount})=>{
 
-    return(
-        <div className="col-lg-4 col-md-6">
-                <div className="card card-sm">
-                    <div className="card-body">
-                        <div className="d-flex justify-content-between mb-5">
-                            <div>
-                                <span className="d-block font-15 text-dark font-weight-500">Customers Pending Orders</span>
-                            </div>
-                            <div>
-                                <span className="text-danger font-14 font-weight-500">-10%</span>
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <span className="d-block display-4 text-dark mb-5">{pendingCustomers}</span>
-                            <small className="d-block"><span className="counter-anim">{numberWithCommas(pendingAmount)}</span> to be paid</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    return isFetching||isFetchingOrders?
+    (
+        <SpinnerDisplay title="Months Customers" displayClassName="col-lg-4 col-md-6"/>
+    ):
+        (
+        <DisplayReport
+            title = "Customers Pending Orders"
+            value1={pendingCustomers}
+            value2={numberWithCommas(pendingAmount)}
+            subTitle="to be paid"
+            incrementValue="+10"
+            incrementClass="danger"
+            linkTo = "/orders/pending"
+            displayClassName="col-lg-4 col-md-6"
+        />
     )
 }
 
 const mapStateToProps = createStructuredSelector({
     pendingCustomers: selectCustomersPendingOrdersCount,
-    pendingAmount: selectNotCompletedOrdersAmount
+    pendingAmount: selectNotCompletedOrdersAmount,
+    isFetching: selectIsFetchingCustomers,
+    isFetchingOrders: selectIsFetchingOrders,
 })
 
 export default connect(mapStateToProps)(CustomersPendingOrdersReport);

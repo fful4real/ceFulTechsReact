@@ -28,3 +28,9 @@ export const selectFultechsRefreshTimeInterval = createSelector(
     [selectFultechsState],
     ftstate => ftstate.refreshTimeInterval
 )
+
+// Select refresh time interval
+export const selectModalAlert = createSelector(
+    [selectFultechsState],
+    ftstate => ftstate.modalAlert
+)

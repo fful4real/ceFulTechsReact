@@ -1,7 +1,7 @@
 import React from 'react'
 import DataTable from 'react-data-table-component'
 
-const  ListItems = ({columns,data, isFetchingData, handleRowClick, expandableRows})=> {
+const  ListItems = ({columns,data, pagination=false, isFetchingData, handleRowClick, expandableRows})=> {
     
     return (
         <div className="row">
@@ -15,7 +15,7 @@ const  ListItems = ({columns,data, isFetchingData, handleRowClick, expandableRow
                         pointerOnHover={true}
                         responsive={true}
                         progressPending={isFetchingData?true:false}
-                        pagination={true}
+                        pagination={pagination?pagination:false}
                         when={row=>alert(row)}
                         fixedHeader={true}
                         fixedHeaderScrollHeight="100vh"

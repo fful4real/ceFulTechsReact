@@ -14,8 +14,7 @@ const OrdersReports = ({
     fetchNewOrders,
     pendingOrders
 })=>{
-    
-    
+     
     useEffect(() => {
         if (!pendingOrders) {
             fetchPendingOrders()

@@ -5,10 +5,12 @@ import { selectMonthsOrders, selectNotCompletedOrders } from '../orders/orders.s
 export const selectCustomersState = state => state.customers;
 export const selectCustomers = createSelector(
     [selectCustomersState],
-    customers => customers.customers.map(customer=>({...customer,
+    customersState => {
+        // console.log(customersState.customers)
+        return customersState.customers.map(customer=>({...customer,
         firstName:capitalizeFirstLetter(customer.firstName),
         lastName:customer.lastName.toUpperCase()
-    }))
+    }))}
 )
 
 export const selectIsFetchingCustomers = createSelector(
@@ -18,8 +20,8 @@ export const selectIsFetchingCustomers = createSelector(
 
 // Total Customers Selectors
 export const selectTotalCustomers = createSelector(
-    [selectCustomersState],
-    customers =>  customers.totalCustomers
+    [selectCustomers],
+    customers =>  customers.length
 );
 
 export const selectCustomersTotalAmount = createSelector(
@@ -155,6 +157,12 @@ export const selectCustomerModal = createSelector(
 export const selectShowCustomerModal = createSelector(
     [selectCustomersState],
     customersState => customersState.showCustomerModal
+)
+
+// Select last ten customers
+export const selectLastTenCustomers = createSelector(
+    [selectCustomers],
+    customers => customers.slice(0,10)
 )
 
 

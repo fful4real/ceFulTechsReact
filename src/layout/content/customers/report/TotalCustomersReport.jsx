@@ -20,7 +20,7 @@ const TotalCustomersReport = ({totalCustomers, isFetching})=>{
                 incrementClass="success"
                 linkTo = "/customers/list"
                 displayClassName="col-lg-4 col-md-6"
-            />
+            /> 
         )
 }
 

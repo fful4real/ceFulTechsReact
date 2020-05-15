@@ -11,13 +11,21 @@ import { selectFultechsRefreshTimeInterval } from '../redux/fultechs/FultechsSel
 import { fetchAllCustomersAsync } from '../redux/customers/customers.action';
 
 class CashExpress extends Component {
-
+    constructor(props){
+        super(props)
+        this.state = {
+            refreshInterval:''
+        }
+    }
     componentDidMount() {
         const {refreshTime, fetchAllCustomers,fetchAllOrders}= this.props
-        setInterval(() => {
-            fetchAllOrders()
-            fetchAllCustomers()
-        }, refreshTime);
+        this.setState({
+            ...this.state,
+            refreshInterval: setInterval(() => {
+                fetchAllOrders()
+                fetchAllCustomers()
+            }, refreshTime)
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -26,6 +34,10 @@ class CashExpress extends Component {
 
     componentDidUpdate(prevProps, prevState) {
 
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.refreshInterval)
     }
 
     render() {

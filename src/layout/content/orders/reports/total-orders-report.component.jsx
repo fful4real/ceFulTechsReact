@@ -18,6 +18,7 @@ const TotalCustomersReport = ({ordersCount,ordersTotalAmount, isFetching})=>{
                 subTitle="for all orders"
                 incrementValue="+50"
                 incrementClass="success"
+                linkTo="/orders/list"
             />
     )
 }

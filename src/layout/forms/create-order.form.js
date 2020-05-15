@@ -155,7 +155,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                     <InputGroup>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>
-                                        <i className="icon-phone"></i>
+                                            <i className="icon-phone"></i>
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control 

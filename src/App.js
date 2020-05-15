@@ -12,7 +12,7 @@ import { fetchCitiesAsync } from './redux/cities/cities.actions';
 import { fetchStatusesAsync } from './redux/statuses/statuses.actions';
 import { fetchOrdersAsync, fetchAllOrdersAsync } from './redux/orders/orders.actions';
 import { fetchAccountsAsync } from './redux/accounts/accounts.action';
-import { selectAuth } from './redux/auth/auth.selectors';
+import { selectAuthState } from './redux/auth/auth.selectors';
 import { createStructuredSelector } from 'reselect'
 import { selectIsFetchingOrders } from './redux/orders/orders.selectors';
 import { selectIsFetchingAccounts } from './redux/accounts/accounts.selector';
@@ -85,7 +85,7 @@ class App extends React.Component{
 }
 
 const mapStateToProps = createStructuredSelector({
-  auth:selectAuth,
+  auth:selectAuthState,
   selectIsFetchingOrders,
   selectIsFetchingAccounts,
   selectIsFetchingCustomers,

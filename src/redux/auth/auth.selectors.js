@@ -1,14 +1,14 @@
 import {createSelector} from 'reselect'
 
 
-export const selectAuth = state => state.auth;
+export const selectAuthState = state => state.auth;
 
 export const selectIsFetchingAuth = createSelector(
-    [selectAuth],
+    [selectAuthState],
     auth => auth.isFetchingAuth
 )
 
 export const selectIsUserAuthenticated = createSelector(
-    [selectAuth],
+    [selectAuthState],
     authState => authState.isUserAuthenticated
 )

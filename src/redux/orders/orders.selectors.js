@@ -101,7 +101,7 @@ export const selectIsFetchingPendingOrders = createSelector(
 )
 export const selectPendingOrders = createSelector(
     [selectOrderState],
-    orders => orders.pendingOrders
+    orderState => orderState.pendingOrders
 )
 export const selectPendingOrdersCount = createSelector(
     [selectPendingOrders],
@@ -116,9 +116,9 @@ export const selectHasFetchedPendingOrders = createSelector(
 )
 
 export const selectPendingOrdersAmount = createSelector(
-    [selectOrderState],
-    ordersState=>{
-        const amountPending = ordersState.pendingOrders.reduce((pendingAmount,order)=>pendingAmount+=parseInt(order.pendingAmount),0)
+    [selectPendingOrders],
+    pendingOrders=>{
+        const amountPending = pendingOrders.reduce((pendingAmount,order)=>pendingAmount+=parseInt(order.pendingAmount),0)
 
         return numberWithCommas(amountPending)
     }

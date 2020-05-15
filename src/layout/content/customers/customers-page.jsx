@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import CustomersHeader from './customers-header.component'
-import CustomersRepors from './customers-report.component'
 import './customers.styles.scss'
-import CustomersList from './customers-list.component'
 import { connect } from 'react-redux'
 import { setActivePageAttempt } from '../../../redux/defaults/default.action'
 import ModalComponent from '../../../components/modal/modal-component'
@@ -10,6 +8,10 @@ import { createStructuredSelector } from 'reselect'
 import { selectCustomerModal, selectShowCustomerModal } from '../../../redux/customers/customers.selectors'
 import { setCloseCustomerModal } from '../../../redux/customers/customers.action'
 import CreateCustomerForm from './forms/CreateCustomerForm'
+import { Switch, Route } from 'react-router-dom'
+import CustomersDashboard from './CustomersDashboard'
+import CustomersList from './CustomersList'
+import ModalAlert from '../../../components/alert/ModalAlert'
 
 
 
@@ -27,15 +29,15 @@ class CustomersPage extends Component {
             <div className="hk-pg-wrapper">
                 <div className="container mt-xl-30 mt-sm-20 mt-15">
                     <CustomersHeader/>
-                    <ModalComponent showModal={showModal} closeModal={closeModal}>
-                        {customerModal==='create'&&<CreateCustomerForm closeModal={closeModal} modalHeading="Add Customer" />}
+                    <ModalComponent showModal={showModal} closeModal={closeModal} modalHeading="Add Customer">
+                    <ModalAlert />
+                        {customerModal==='create'&&<CreateCustomerForm closeModal={closeModal}  />}
                     </ModalComponent>
-                    <div className="row">
-                        <div className="col-xl-12">
-                            <CustomersRepors />
-                            <CustomersList />
-                        </div>
-                    </div>
+
+                    <Switch>
+                        <Route path="/customers/list" component={CustomersList} />
+                        <Route path="/customers" component={CustomersDashboard} />
+                    </Switch>
                 </div>
             </div>
         )

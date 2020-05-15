@@ -4,6 +4,7 @@ import IosListBoxOutline from 'react-ionicons/lib/IosListBoxOutline'
 import IosPeople from 'react-ionicons/lib/IosPeople'
 import { setCustomerModalAsync } from '../../../redux/customers/customers.action';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const CustomersHeader = ({setModal})=>{
 
@@ -18,7 +19,7 @@ const CustomersHeader = ({setModal})=>{
                 </h4>
             </div>
             <div className="d-flex">
-                <button className="btn btn-info btn-sm"><IosListBoxOutline color="#fff" /> List Customers&nbsp;</button>
+                <Link to="/customers/list" type="button" className="btn btn-info btn-sm"><IosListBoxOutline color="#fff" />&nbsp;List Customers&nbsp;</Link>
                 <button className="btn btn-primary btn-sm order-new" onClick={()=>setModal('create')}><IosPersonAddOutline color="#fff" /> Add Customer&nbsp;</button>
             </div>
         </div>

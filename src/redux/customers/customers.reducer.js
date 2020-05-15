@@ -17,7 +17,12 @@ const INITIAL_STATE = {
     showCustomerModal: false
 }
 
+let allCustomers=[],
+    customers = [],
+    totalCustomers = null
+
 const customersReducer = (state=INITIAL_STATE,action)=>{
+
     switch (action.type) {
         case CustomersActionTypes.CUSTOMERS_ADD_CUSTOMER_ORDER:
             return{
@@ -42,12 +47,14 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
                 isFetchingAllCustomers: true
             }
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_SUCCESS:
-            // console.log(action.customers)
+            allCustomers = customers = action.customers
+            totalCustomers = customers.length
             return{
                 ...state,
                 isFetchingAllCustomers: false,
-                customers: action.customers,
-                totalCustomers: action.customers.length,
+                customers,
+                totalCustomers,
+                allCustomers
             }
 
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_FAILURE:
