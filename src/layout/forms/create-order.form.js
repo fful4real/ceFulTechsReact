@@ -16,7 +16,7 @@ import { createStructuredSelector } from 'reselect';
 import { selectCustomers } from '../../redux/customers/customers.selectors';
 import { selectCurrencies } from '../../redux/currencies/currencies.selectors';
 import { selectCities } from '../../redux/cities/cities.selectors';
-import { sanitizeString } from '../../helpers/helper';
+import { sanitizeString, customerExists } from '../../helpers/helper';
 
 const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer})=>{
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
@@ -24,9 +24,6 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
     const [searchString, setSearchString] = useState('');
     const [showDropdown, setShowDropdown] = useState({phoneNumber:'hide',sentBy:'hide'});
     const [showSuccess, setShowSuccess] = useState('hide');
-    const isNewCustomer = (newCustomer)=>{
-        return customers.find(customer=>customer.id===newCustomer.id)?false:true
-    }
     const handleCustomer = customer=>{
         return customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1 ||
                 customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1||
@@ -105,7 +102,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                         
                                         setStatus({success: false})
                                         setShowSuccess('show')
-                                        if(isNewCustomer){
+                                        if(customerExists(resp.data, customers)){
                                             newOrder = {...newOrder,
                                                     customer:{
                                                         ...newOrder.customer,

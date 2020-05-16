@@ -8,7 +8,7 @@ const ListCustomers = ({tableData, isFetching, expandableRows=false, pagination=
     // console.log(tableData)
     const [itemPage, setItemPage] = useState(false)
     const handleRowClick = row => {
-        // console.log(row)
+        console.log(row)
         setItemPage(row)
     }
     const columns = [

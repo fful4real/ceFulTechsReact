@@ -7,12 +7,13 @@ import { connect } from 'react-redux'
 import { uid } from 'react-uid'
 import Spinner from '../../../../components/spinner/spinner';
 import { Formik } from 'formik'
-import { sanitizeString } from '../../../../helpers/helper'
+import { sanitizeString, customerExists } from '../../../../helpers/helper'
 import AxiosAgent from '../../../../axios-agent'
 import { addCustomerToState } from '../../../../redux/customers/customers.action'
 import { showModalAlertAttempt } from '../../../../redux/fultechs/FulTechsActions'
+import { selectCustomers } from '../../../../redux/customers/customers.selectors'
 
-const CreateCustomerForm = ({cities, closeModal, addCustomer, showModalAlert})=> {
+const CreateCustomerForm = ({cities, customers, closeModal, addCustomer, showModalAlert})=> {
     let initialVals = {
         customerNumber:'',
         customerFirstName: '',
@@ -38,7 +39,11 @@ const CreateCustomerForm = ({cities, closeModal, addCustomer, showModalAlert})=>
         <Formik initialValues={initialVals} 
                 validationSchema={validationSchema}
                 onSubmit = {
-                    (values, {setSubmitting, resetForm})=>{
+                    (values, {setSubmitting, resetForm, setErrors})=>{
+                        if(customerExists(values.customerNumber, customers)){
+                            setErrors({customerNumber: 'This number already exists'})
+                            return false
+                        }
                         const firstName = sanitizeString(values.customerFirstName),
                               lastName = sanitizeString(values.customerLastName),
                               address = sanitizeString(values.customerAddress),
@@ -55,7 +60,6 @@ const CreateCustomerForm = ({cities, closeModal, addCustomer, showModalAlert})=>
                         
                         AxiosAgent.request('post','customers',null, processValues)
                                 .then(resp =>{
-                                        
                                         addCustomer(resp.data)
                                         showModalAlert('success', 'check-circle', 'Customer Added')
                                         resetForm()
@@ -63,7 +67,6 @@ const CreateCustomerForm = ({cities, closeModal, addCustomer, showModalAlert})=>
                                     }
                                 )
                                 .catch(err => {
-                                    console.log(err);
                                     showModalAlert('danger', 'block', 'There was an error adding customer')
                                     setSubmitting(false)
                                 }
@@ -227,7 +230,8 @@ const mapDispatchToProps = {
     showModalAlert: showModalAlertAttempt
 }
 const mapStateToProps = createStructuredSelector({
-    cities: selectCities
+    cities: selectCities,
+    customers: selectCustomers
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateCustomerForm)

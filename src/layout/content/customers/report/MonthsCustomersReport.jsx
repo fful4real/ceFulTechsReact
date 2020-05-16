@@ -20,7 +20,7 @@ const MonthsCustomerReport = ({isFetching,amount, monthCustomers, isFetchingOrde
                 subTitle="Worth"
                 incrementValue="-30"
                 incrementClass="success"
-                linkTo = "/customers/list"
+                linkTo = "/customers/ofmonth"
                 displayClassName="col-lg-4 col-md-6"
             />
         )

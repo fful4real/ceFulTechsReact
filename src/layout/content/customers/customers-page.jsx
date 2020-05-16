@@ -12,6 +12,7 @@ import { Switch, Route } from 'react-router-dom'
 import CustomersDashboard from './CustomersDashboard'
 import CustomersList from './CustomersList'
 import ModalAlert from '../../../components/alert/ModalAlert'
+import CustomerProfile from './CustomerProfile'
 
 
 
@@ -36,6 +37,9 @@ class CustomersPage extends Component {
 
                     <Switch>
                         <Route path="/customers/list" component={CustomersList} />
+                        <Route path="/customers/ofmonth" component={()=>(<CustomersList filterBy='ofmonth' />)} />
+                        <Route path="/customers/pendingorders" component={()=>(<CustomersList filterBy='pendingorders' />)} />
+                        <Route path="/customers/:id" component={CustomerProfile} />
                         <Route path="/customers" component={CustomersDashboard} />
                     </Switch>
                 </div>

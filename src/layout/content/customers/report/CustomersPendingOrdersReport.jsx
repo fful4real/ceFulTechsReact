@@ -21,7 +21,7 @@ const CustomersPendingOrdersReport = ({isFetching, isFetchingOrders, pendingCust
             subTitle="to be paid"
             incrementValue="+10"
             incrementClass="danger"
-            linkTo = "/orders/pending"
+            linkTo = "/customers/pendingorders"
             displayClassName="col-lg-4 col-md-6"
         />
     )

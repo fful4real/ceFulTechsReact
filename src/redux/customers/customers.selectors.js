@@ -111,13 +111,13 @@ export const selectProcessedCustomersAmount = createSelector(
 // Selectors for Customers Pending Orders
 
 export const selectCustomersPendingOrders = createSelector(
-    [selectNotCompletedOrders],
-    (pendingOrders) => {
+    [selectNotCompletedOrders, selectCustomers],
+    (pendingOrders, customers) => {
         let theCustomersIds = [], theCustomers =[]
         pendingOrders.map(order=>{
             if (!theCustomersIds.includes(order.customer.id)) {
               theCustomersIds.push(order.customer.id)
-              theCustomers.push(order.customer)
+              theCustomers.push(customers.filter(customer=>customer.id===order.customer.id)[0])
             }
             return true
         })

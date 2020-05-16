@@ -82,6 +82,11 @@ form.search-form{
   display:inline-block;
   animation: rotating 2s linear infinite;
 }
+
+.rdt_TableCell .text-center{
+  width:100% !important;
+  padding-right: 10px
+}
 `;
 
 export default FulTechsStyle;

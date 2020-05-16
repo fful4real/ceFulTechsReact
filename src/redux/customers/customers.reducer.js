@@ -17,8 +17,7 @@ const INITIAL_STATE = {
     showCustomerModal: false
 }
 
-let allCustomers=[],
-    customers = [],
+let customers = [],
     totalCustomers = null
 
 const customersReducer = (state=INITIAL_STATE,action)=>{
@@ -47,14 +46,14 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
                 isFetchingAllCustomers: true
             }
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_SUCCESS:
-            allCustomers = customers = action.customers
+            customers = action.customers
             totalCustomers = customers.length
             return{
                 ...state,
                 isFetchingAllCustomers: false,
                 customers,
-                totalCustomers,
-                allCustomers
+                allCustomers: action.customers,
+                totalCustomers
             }
 
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_FAILURE:

@@ -60,3 +60,16 @@ export const paginateResult = (result, perpage)=>{
         return paginated
 }
 
+// Check if customer exists
+export const customerExists = (cust, customers)=>{
+    if (typeof cust === 'string') {
+        return customers.find(customer=>customer.mobileNumber===cust)||
+               customers.find(customer=>customer.id===parseInt(cust))?true:false
+    }
+    if(typeof cust === 'object'){
+        return customers.find(customer=>customer.id===cust.id)?true:false
+    }
+    
+    return false
+}
+
