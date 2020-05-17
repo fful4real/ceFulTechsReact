@@ -37,7 +37,7 @@ export const addOrderToCustomer = (customers, order)=>{
             {...customer, CustomersOrder:customer.CustomersOrders.push(`/api/ce_orders/${order.id}`)}:customer
         })
 
-        console.log('Customers: ',customers)
+        // console.log('Customers: ',customers)
 
         const hasCustomer = customers.filter(customer=>parseInt(customer.mobileNumber) === parseInt(order.receiverNumber))
         if(!hasCustomer.length){
@@ -115,3 +115,37 @@ export const setCloseCustomerModal = () =>{
         dispatch(closeCustomerModal())
     }
 }
+
+// Set Current Customer
+export const setCurrentCustomer = (customerId) =>({
+    type:CustomersActionTypes.SET_CURRENT_CUSTOMER,
+    customerId
+})
+export const setCurrentCustomerAttempt = (customerId) =>{
+    return dispatch =>{
+        dispatch(setCurrentCustomer(customerId))
+    }
+}
+
+// Set Current Customer
+export const setCustomerModalHeading = (heading) =>({
+    type:CustomersActionTypes.SET_CUSTOMER_MODAL_HEADING,
+    heading
+})
+export const setCustomerModalHeadingAttempt = (heading) =>{
+    return dispatch =>{
+        dispatch(setCustomerModalHeading(heading))
+    }
+}
+
+// Update existing customer
+export const updateCustomer = customer =>({
+    type: CustomersActionTypes.UPDATE_CUSTOMER,
+    customer
+})
+
+export const updateCustomerAttempt = (customer) =>{
+        
+    return dispatch =>dispatch(updateCustomer(customer))
+}
+

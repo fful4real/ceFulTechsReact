@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { setActivePageAttempt } from '../../../redux/defaults/default.action'
 import ModalComponent from '../../../components/modal/modal-component'
 import { createStructuredSelector } from 'reselect'
-import { selectCustomerModal, selectShowCustomerModal } from '../../../redux/customers/customers.selectors'
+import { selectCustomerModal, selectShowCustomerModal, selectCustomerModalHeading } from '../../../redux/customers/customers.selectors'
 import { setCloseCustomerModal } from '../../../redux/customers/customers.action'
 import CreateCustomerForm from './forms/CreateCustomerForm'
 import { Switch, Route } from 'react-router-dom'
@@ -13,6 +13,7 @@ import CustomersDashboard from './CustomersDashboard'
 import CustomersList from './CustomersList'
 import ModalAlert from '../../../components/alert/ModalAlert'
 import CustomerProfile from './CustomerProfile'
+import ModifyCustomerForm from './forms/ModifyCustomerForm'
 
 
 
@@ -24,15 +25,16 @@ class CustomersPage extends Component {
     
     render() {
     
-    const {customerModal, showModal, closeModal} = this.props
+    const {customerModal, showModal,modalHeading,closeModal} = this.props
     // console.log(customerModal)
         return(
             <div className="hk-pg-wrapper">
                 <div className="container mt-xl-30 mt-sm-20 mt-15">
                     <CustomersHeader/>
-                    <ModalComponent showModal={showModal} closeModal={closeModal} modalHeading="Add Customer">
+                    <ModalComponent showModal={showModal} closeModal={closeModal} modalHeading={modalHeading}>
                     <ModalAlert />
                         {customerModal==='create'&&<CreateCustomerForm closeModal={closeModal}  />}
+                        {customerModal==='modify'&&<ModifyCustomerForm closeModal={closeModal}  />}
                     </ModalComponent>
 
                     <Switch>
@@ -55,7 +57,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = createStructuredSelector({
     showModal: selectShowCustomerModal,
-    customerModal: selectCustomerModal
+    customerModal: selectCustomerModal,
+    modalHeading: selectCustomerModalHeading
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(CustomersPage);

@@ -4,7 +4,7 @@ import ListItems from './list-items'
 import { Redirect } from 'react-router-dom'
 import moment from 'moment'
 
-const ListOrders = ({tableData, isFetching}) =>{
+const ListOrders = ({tableData, isFetching, receivedFrom=false}) =>{
     const [itemPage, setItemPage] = useState(false)
     const handleRowClick = row => {
         setItemPage(row)
@@ -16,12 +16,12 @@ const ListOrders = ({tableData, isFetching}) =>{
             sortable:true
         },
         {
-            name:'Customer',
-            selector: 'customer',
+            name:`${receivedFrom?'Sent By':'Customer'}`,
+            selector: `${receivedFrom?'sentBy':'customer'}`,
             sortable:true,
             cell: row => <div onClick={()=>handleRowClick(row)}>
                             <i className="icon-user font-11 text-primary mr-5"></i>
-                            <span className="text-capitalize-">{row.customer.firstName}</span>
+                            <span className="text-capitalize-">{receivedFrom?row.sentBy.firstName:row.customer.firstName}</span>
                             <span className="text-uppercase-">&nbsp;{row.customer.lastName}</span>
                         </div>
         },

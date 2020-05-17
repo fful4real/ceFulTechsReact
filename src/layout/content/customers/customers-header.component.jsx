@@ -27,6 +27,6 @@ const CustomersHeader = ({setModal})=>{
 }
 
 const mapDispatchToProps = {
-    setModal: setCustomerModalAsync
+    setModal: setCustomerModalAsync,
 }
 export default connect(null,mapDispatchToProps)(CustomersHeader);

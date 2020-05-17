@@ -3,11 +3,16 @@ import avatar1 from '../../../../assets/img/gallery/mankaa.jpeg'
 import { CustomerProfileStyle } from '../styles/CustomerProfileStyle'
 import { selectCustomers } from '../../../../redux/customers/customers.selectors'
 import { createStructuredSelector } from 'reselect'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProfileOrderDetail'
+import { setCustomerModalAsync, setCurrentCustomerAttempt } from '../../../../redux/customers/customers.action'
+import { useEffect } from 'react'
 
-const CustomerProfileHeader = ({customer}) => {
+const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
+    useEffect(() => {
+        setCustomer(customer.id)
+    }, [setCustomer,customer.id])
     let sent = {
         amountIn:0, 
         currencyIn:'',
@@ -164,7 +169,7 @@ const CustomerProfileHeader = ({customer}) => {
         bottomArrowClass: 'danger'
     }
     let newOrders = [...customer.ordersByCustomer, ...customer.CustomersOrders]
-    newOrders = newOrders.filter(pOrder=>pOrder.status.statusCode==='PTL')
+    newOrders = newOrders.filter(pOrder=>pOrder.status.statusCode==='OK')
     if(newOrders.length){
         newOrders.map(order=>{
             neworder = {
@@ -186,7 +191,24 @@ const CustomerProfileHeader = ({customer}) => {
                     <CustomerProfileStyle>
                         <div className="hk-row">
                             <div className="col-lg-4 d-flex justify-content-left">
-                                <div className="media align-items-center profile-cover-content">
+                                <div className="media position-relative align-items-center profile-cover-content">
+                                    <div className="modify-customer-profile position-absolute cursor-pointer">
+                                        <div className="inline-block dropdown">
+                                            <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
+                                                <i className="ion ion-ios-settings "></i>
+                                            </span>
+                                            <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+                                                <Link to="#" className="dropdown-item" onClick={()=>setModal('modify')}>
+                                                    <i className="dropdown-icon zmdi zmdi-edit"></i>
+                                                    <span>Modify</span>
+                                                </Link>
+                                                <Link to="#" className="dropdown-item">
+                                                    <i className="dropdown-icon zmdi zmdi-block text-danger"></i>
+                                                    <span>Delete</span>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className="media-img-wrap  d-flex">
                                         <div className="customer-avatar avatar">
                                             <img src={avatar1} alt="user" className="avatar-img rounded-circle"></img>
@@ -280,4 +302,9 @@ const ordersState = createStructuredSelector({
     customers: selectCustomers
 })
 
-export default withRouter(connect(ordersState)(CustomerProfileHeader))
+const mapDispatchToProps = {
+    setModal: setCustomerModalAsync,
+    setCustomer: setCurrentCustomerAttempt,
+}
+
+export default withRouter(connect(ordersState, mapDispatchToProps)(CustomerProfileHeader))

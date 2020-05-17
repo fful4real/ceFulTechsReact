@@ -165,5 +165,17 @@ export const selectLastTenCustomers = createSelector(
     customers => customers.slice(0,10)
 )
 
+// Select current customer
+export const selectCurrentCustomer = createSelector(
+    [selectCustomersState],
+    customersState => customersState.currentCustomer
+)
+
+// Select customer modal heading
+export const selectCustomerModalHeading = createSelector(
+    [selectCustomersState],
+    customersState => customersState.customerModalHeading
+)
+
 
 

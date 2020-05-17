@@ -16,7 +16,7 @@ const CustomerProfileOrders = ({orders})=> {
                             <h5 className="hk-sec-title">Orders
                                 <small className="text-muted pl-10">received</small>
                             </h5>
-                            <ListOrders tableData={orders.received} />
+                            <ListOrders tableData={orders.received} receivedFrom={true} />
                         </div>
                     </div>}
                     {hasSent&&

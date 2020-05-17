@@ -14,7 +14,9 @@ const INITIAL_STATE = {
     allCustomers:[],
     totalCustomers:null,
     customerModal: '',
-    showCustomerModal: false
+    showCustomerModal: false,
+    currentCustomer: null,
+    customerModalHeading:"Add Customer"
 }
 
 let customers = [],
@@ -84,6 +86,23 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 showCustomerModal: false
+            }
+        
+        case CustomersActionTypes.SET_CURRENT_CUSTOMER:
+            return{
+                ...state,
+                currentCustomer:action.customerId
+            }
+        case CustomersActionTypes.SET_CUSTOMER_MODAL_HEADING:
+            return{
+                ...state,
+                customerModalHeading:action.heading 
+            }
+        case CustomersActionTypes.UPDATE_CUSTOMER:
+            customers = state.customers.map(customer=>customer.id===action.customer.id?action.customer:customer)
+            return{
+                ...state,
+                customers
             }
     
         default:

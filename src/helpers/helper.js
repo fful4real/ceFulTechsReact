@@ -73,3 +73,9 @@ export const customerExists = (cust, customers)=>{
     return false
 }
 
+// Check if customer email exists
+
+export const customerEmailExists = (email, customers)=>{
+    return customers.find(customer=>customer.email===email)?true:false
+}
+
