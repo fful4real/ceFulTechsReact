@@ -7,8 +7,9 @@ import FooterContent from './footer/footer.component';
 import { connect } from 'react-redux';
 import { fetchAllOrdersAsync } from '../redux/orders/orders.actions';
 import { createStructuredSelector } from 'reselect';
-import { selectFultechsRefreshTimeInterval } from '../redux/fultechs/FultechsSelectors';
+import { selectFultechsRefreshTimeInterval, selectRedirectLink } from '../redux/fultechs/FultechsSelectors';
 import { fetchAllCustomersAsync } from '../redux/customers/customers.action';
+import { Redirect } from 'react-router-dom';
 
 class CashExpress extends Component {
     constructor(props){
@@ -33,7 +34,10 @@ class CashExpress extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-
+        const {redirectLink} = this.props
+        if (prevProps.redirectLink!==redirectLink) {
+            return <Redirect to='/customers'  />
+        }
     }
 
     componentWillUnmount() {
@@ -59,7 +63,8 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = createStructuredSelector({
-    refreshTime: selectFultechsRefreshTimeInterval
+    refreshTime: selectFultechsRefreshTimeInterval,
+    redirectLink: selectRedirectLink
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CashExpress);

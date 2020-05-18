@@ -15,7 +15,6 @@ export const selectOrders = createSelector(
     (orders, cities) => orders.orders.map(order=>(
         {...order,
             customer: {...order.customer,
-                 fkCity:typeof order.customer.fkCity !== 'object'? cities.filter(city=>parseInt(city.id)===parseInt(order.customer.fkCity.split("/")[3]))[0]:order.customer.fkCity,
                  firstName:capitalizeFirstLetter(order.customer.firstName), 
                  lastName: order.customer.lastName.toUpperCase()
                 }
@@ -242,5 +241,11 @@ export const selectNotCompletedOrdersCount = createSelector(
 export const selectNotCompletedOrdersAmount = createSelector(
     [selectNotCompletedOrders],
     orders => orders.reduce((totalAmount, order)=>totalAmount+order.pendingAmount,0)
+)
+
+// Select is order from customer
+export const selectIsOrderFromCustomer = createSelector(
+    [selectOrderState],
+    ordersState => ordersState.isOrderFromCustomer
 )
 

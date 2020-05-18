@@ -1,4 +1,5 @@
 import CustomersActionTypes from "./customers.types";
+import { getTotalPages, paginateResult } from "../../helpers/helper";
 
 
 const INITIAL_STATE = {
@@ -20,7 +21,10 @@ const INITIAL_STATE = {
 }
 
 let customers = [],
-    totalCustomers = null
+    totalCustomers = null,
+    allCustomers =[],
+    totalPages = null,
+    customersPerPage ={}
 
 const customersReducer = (state=INITIAL_STATE,action)=>{
 
@@ -36,11 +40,16 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
                 customers: [...state.customers,action.customer]
             }
         case CustomersActionTypes.CUSTOMERS_FETCHING_SUCCESS:
+            totalPages = getTotalPages(action.customers['hydra:view']['hydra:last'])
+            customers = action.customers['hydra:member']
+            customersPerPage = paginateResult(customers)
             return{
                 ...state,
                 isFetchingCustomers:false,
-                customers: action.customers['hydra:member'],
+                customers,
                 totalCustomers: action.customers['hydra:totalItems'],
+                totalPages,
+                customersPerPage
             }
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_START:
             return{
@@ -50,12 +59,15 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_SUCCESS:
             customers = action.customers
             totalCustomers = customers.length
+            allCustomers = action.customers
+            customersPerPage = paginateResult(customers)
             return{
                 ...state,
                 isFetchingAllCustomers: false,
                 customers,
-                allCustomers: action.customers,
-                totalCustomers
+                allCustomers,
+                totalCustomers,
+                customersPerPage
             }
 
         case CustomersActionTypes.ALL_CUSTOMERS_FETCHING_FAILURE:
@@ -100,6 +112,12 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
             }
         case CustomersActionTypes.UPDATE_CUSTOMER:
             customers = state.customers.map(customer=>customer.id===action.customer.id?action.customer:customer)
+            return{
+                ...state,
+                customers
+            }
+        case CustomersActionTypes.DELETE_CUSTOMER:
+            customers = state.customers.filter(customer=>customer.id!==action.customer.id)
             return{
                 ...state,
                 customers

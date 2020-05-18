@@ -1,18 +1,25 @@
 import React from 'react'
 import avatar1 from '../../../../assets/img/gallery/mankaa.jpeg'
 import { CustomerProfileStyle } from '../styles/CustomerProfileStyle'
-import { selectCustomers } from '../../../../redux/customers/customers.selectors'
+import { selectCustomers, selectCurrentCustomer } from '../../../../redux/customers/customers.selectors'
 import { createStructuredSelector } from 'reselect'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter, Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProfileOrderDetail'
-import { setCustomerModalAsync, setCurrentCustomerAttempt } from '../../../../redux/customers/customers.action'
+import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
 import { useEffect } from 'react'
 
-const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
+const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
+    
     useEffect(() => {
         setCustomer(customer.id)
     }, [setCustomer,customer.id])
+    if (currentCustomer&&!customer) {
+        customer = customers.filter(mapCustomer=>mapCustomer.id===currentCustomer)[0]
+    }
+    if (!customer) {
+        return <Redirect to="/customers" />
+    }
     let sent = {
         amountIn:0, 
         currencyIn:'',
@@ -56,12 +63,14 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
     }
     if(customer.CustomersOrders.length){
         customer.CustomersOrders.map(order=>{
-            received = {
-                ...received,
-                amountIn: received.amountIn+order.amountIn, 
-                amountOut: received.amountOut+order.amountOut, 
-                currencyIn:order.currencyIn.currencyCode,
-                currencyOut:order.currencyOut.currencyCode,
+            if (order.currencyOut||order.currencyIn) {
+                received = {
+                    ...received,
+                    amountIn: received.amountIn+order.amountIn, 
+                    amountOut: received.amountOut+order.amountOut, 
+                    currencyIn:order.currencyIn.currencyCode,
+                    currencyOut:order.currencyOut.currencyCode,
+                }
             }
             return order
         })
@@ -82,7 +91,12 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
         bottomArrowClass: 'danger'
     }
     let processedOrders = [...customer.ordersByCustomer, ...customer.CustomersOrders]
-    processedOrders = processedOrders.filter(pOrder=>pOrder.status.statusCode==='OK')
+    processedOrders = processedOrders.filter(pOrder=>{
+        if (pOrder.status) {
+            return pOrder.status.statusCode==='OK'
+        }
+        return false
+    })
     if(processedOrders.length){
         processedOrders.map(order=>{
             processed = {
@@ -111,7 +125,12 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
         bottomArrowClass: 'danger'
     }
     let abandonedOrders = [...customer.ordersByCustomer, ...customer.CustomersOrders]
-    abandonedOrders = abandonedOrders.filter(pOrder=>pOrder.status.statusCode==='ABN')
+    abandonedOrders = abandonedOrders.filter(pOrder=>{
+        if(pOrder.status){
+            return pOrder.status.statusCode==='ABN'
+        }
+        return false
+    })
     if(abandonedOrders.length){
         abandonedOrders.map(order=>{
             abandoned = {
@@ -140,7 +159,12 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
         bottomArrowClass: 'danger'
     }
     let pendingOrders = [...customer.ordersByCustomer, ...customer.CustomersOrders]
-    pendingOrders = pendingOrders.filter(pOrder=>pOrder.status.statusCode==='PTL')
+    pendingOrders = pendingOrders.filter(pOrder=>{
+        if(pOrder.status){
+            return pOrder.status.statusCode==='PTL'
+        }
+        return false
+    })
     if(pendingOrders.length){
         pendingOrders.map(order=>{
             pending = {
@@ -169,7 +193,12 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
         bottomArrowClass: 'danger'
     }
     let newOrders = [...customer.ordersByCustomer, ...customer.CustomersOrders]
-    newOrders = newOrders.filter(pOrder=>pOrder.status.statusCode==='OK')
+    newOrders = newOrders.filter(nOrder=>{
+        if(nOrder.status){
+            return nOrder.status.statusCode==='NEW'
+        }
+        return false
+    })
     if(newOrders.length){
         newOrders.map(order=>{
             neworder = {
@@ -183,6 +212,8 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
         })
         neworder = {...neworder, count:newOrders.length}
     }
+
+    const totalOrders = received.count+sent.count
     
     return (
         <div className="row">
@@ -202,7 +233,7 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
                                                     <i className="dropdown-icon zmdi zmdi-edit"></i>
                                                     <span>Modify</span>
                                                 </Link>
-                                                <Link to="#" className="dropdown-item">
+                                                <Link to="#" className="dropdown-item" onClick={()=>setModal('delete')}>
                                                     <i className="dropdown-icon zmdi zmdi-block text-danger"></i>
                                                     <span>Delete</span>
                                                 </Link>
@@ -248,7 +279,7 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
                             </div>
                             <div className="col-lg-8">
                                 <div className="card">
-                                    <h6 className="bg-light card-header text-center">Orders</h6>
+                                    <h6 className="bg-light card-header text-center">Total Orders {totalOrders}</h6>
                                     
                                     <div className="row">
                                         <div className="col-lg-6">
@@ -285,7 +316,7 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
                                     </div>
                                     <div className="row">
                                         <div className="col-lg-12">
-                                            <button className="btn btn-link btn-block">Place New Order</button>
+                                            <button className="btn btn-link btn-block" onClick={()=>{setModalHeading('Create Order');setModal('newCustomerOrder')}}>Place New Order</button>
                                         </div>
                                     </div>
                                 </div>
@@ -298,13 +329,15 @@ const CustomerProfileHeader = ({customer, setModal, setCustomer}) => {
     )
 }
 
-const ordersState = createStructuredSelector({
-    customers: selectCustomers
+const mapStateToProps = createStructuredSelector({
+    customers: selectCustomers,
+    currentCustomer: selectCurrentCustomer
 })
 
 const mapDispatchToProps = {
     setModal: setCustomerModalAsync,
     setCustomer: setCurrentCustomerAttempt,
+    setModalHeading: setCustomerModalHeadingAttempt
 }
 
-export default withRouter(connect(ordersState, mapDispatchToProps)(CustomerProfileHeader))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CustomerProfileHeader))

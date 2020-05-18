@@ -10,7 +10,7 @@ export default function OrderCustomerItem({firstName,id,toggleShow, lastName, mo
                     </div>
                     <div>
                         <div className="last-chat-time block">orders</div>
-                        <div className="badge badge-success badge-pill">{CustomersOrders.length&&CustomersOrders.length}</div>
+                        <div className="badge badge-success badge-pill">{CustomersOrders&&CustomersOrders.length}</div>
                     </div>
                 </div>
             </div>

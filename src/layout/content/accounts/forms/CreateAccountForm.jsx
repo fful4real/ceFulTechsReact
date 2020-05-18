@@ -1,22 +1,16 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import * as Yup from 'yup'
 import { Form, Col, InputGroup, Button } from 'react-bootstrap'
-import { createStructuredSelector } from 'reselect'
-import { selectCities } from '../../../../redux/cities/cities.selectors'
 import { connect } from 'react-redux'
-import { uid } from 'react-uid'
 import Spinner from '../../../../components/spinner/spinner';
 import { Formik } from 'formik'
 import { sanitizeString, customerExists } from '../../../../helpers/helper'
 import AxiosAgent from '../../../../axios-agent'
-import { addCustomerToState, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
-import { showModalAlertAttempt } from '../../../../redux/fultechs/FulTechsActions'
-import { selectCustomers, selectCustomerModalHeading } from '../../../../redux/customers/customers.selectors'
+import { setShowAccountsModalAttempt, setAccountsModalHeadingAttempt, closeAccountsModalAttempt } from '../../../../redux/accounts/accounts.action'
+import { createStructuredSelector } from 'reselect'
+import { selectAccountModalObject, selectAccounts } from '../../../../redux/accounts/accounts.selector'
 
-const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, closeModal, addCustomer, showModalAlert})=> {
-    useEffect(() => {
-        setModalHeading("Add Customer")
-    }, [setModalHeading,modalHeading])
+const CreateAccountForm = ({customers, closeModal, addCustomer, showModalAlert})=> {
     let initialVals = {
         customerNumber:'',
         customerFirstName: '',
@@ -161,52 +155,6 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
                         </Form.Group>
                     </Form.Row>
 
-                    <Form.Row  className="form-row">
-                        <Form.Group as={Col} controlId="customerValidateAddress">
-                            <Form.Label>Address</Form.Label>
-                            <InputGroup>
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text>
-                                    <i className="icon-location-pin"></i>
-                                </InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <Form.Control 
-                                    value={values.customerAddress}
-                                    name="customerAddress"
-                                    type="text" 
-                                    placeholder="Address"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    disabled={isSubmitting}
-                                />
-                                <InputGroup.Append>
-                                    <select 
-                                        id="fkCity" 
-                                        className="form-control" 
-                                        value={values.fkCity}
-                                        onChange={handleChange}
-                                        name="fkCity"
-                                        onBlur={handleBlur}
-                                        disabled={isSubmitting}
-                                    >
-                                        {
-                                            cities
-                                            .map(({code, id})=>(
-                                                <option key={`city-${uid({id})}`} value={`/api/cities/${id}`}>{code}</option>
-                                                ))
-                                        }
-                                    </select>
-                                </InputGroup.Append>
-                            </InputGroup>
-                            {touched.customerAddress&&errors.customerAddress&&
-                                <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                    {errors.customerAddress}
-                                </Form.Control.Feedback>
-                            }
-                        </Form.Group>
-                    
-                    </Form.Row>
-
                     <Form.Row>
                         <Form.Group as={Col} md="6" className="mb-md-0 mb-lg-0 mb-s-5" controlId="validationSubmitForm">
                             <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
@@ -230,14 +178,14 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
 }
 
 const mapDispatchToProps = {
-    addCustomer: addCustomerToState,
-    showModalAlert: showModalAlertAttempt,
-    setModalHeading: setCustomerModalHeadingAttempt,
+    showModalAlert: setShowAccountsModalAttempt,
+    setModalHeading: setAccountsModalHeadingAttempt,
+    closeModal: closeAccountsModalAttempt
 }
+
 const mapStateToProps = createStructuredSelector({
-    cities: selectCities,
-    customers: selectCustomers,
-    modalHeading: selectCustomerModalHeading
+    accountsModal: selectAccountModalObject,
+    accounts:selectAccounts,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateCustomerForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateAccountForm)

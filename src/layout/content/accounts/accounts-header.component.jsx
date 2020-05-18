@@ -1,14 +1,17 @@
-import React, {useState} from 'react';
+import React from 'react';
 import IosAddCircleOutline from 'react-ionicons/lib/IosAddCircleOutline'
 import IosListBoxOutline from 'react-ionicons/lib/IosListBoxOutline'
 import IosCalculator from 'react-ionicons/lib/IosCalculator'
 import { Button } from 'react-bootstrap';
-import CreateAccountModal from './create-account/create-account-modal.component';
+import { setShowAccountsModal, setAccountsModalbodyAttempt, setAccountsModalHeadingAttempt } from '../../../redux/accounts/accounts.action';
+import { connect } from 'react-redux';
 
-const AccountsHeader = ()=>{
-
-    const [modalShow, setModalShow] = useState(false);
-
+const AccountsHeader = ({setModalbody, setModalHeading, showModal})=>{
+    const handleClick = ()=>{
+        setModalbody('new')
+        setModalHeading('Add Account')
+        showModal(true)
+    }
     return(
         <div className="hk-pg-header mb-10">
             <div>
@@ -23,13 +26,17 @@ const AccountsHeader = ()=>{
                 <Button variant="info" size="sm">
                     <IosListBoxOutline color="#fff" /> List Accounts&nbsp;
                 </Button>
-                <Button variant="primary" size="sm" className="order-new" onClick={() => setModalShow(true)}>
-                    <IosAddCircleOutline color="#fff" /> Create New Account&nbsp;
+                <Button variant="primary" size="sm" className="order-new" onClick={handleClick}>
+                    <IosAddCircleOutline color="#fff" /> Add Account&nbsp;
                 </Button>
-                <CreateAccountModal show={modalShow} onHide={() => setModalShow(false)}/>
             </div>
         </div>
     )
 }
 
-export default AccountsHeader;
+const mapDispatchToProps = {
+    showModal: setShowAccountsModal,
+    setModalbody: setAccountsModalbodyAttempt,
+    setModalHeading: setAccountsModalHeadingAttempt
+}
+export default connect(null, mapDispatchToProps)(AccountsHeader);

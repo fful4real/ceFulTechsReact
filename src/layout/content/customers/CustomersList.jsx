@@ -1,25 +1,31 @@
 import React, { useState } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { selectIsFetchingCustomers, selectCustomers, selectCustomersPendingOrders, selectCustomersOfTheMonth } from '../../../redux/customers/customers.selectors'
+import { selectIsFetchingCustomers, selectCustomers, selectCustomersPendingOrders, selectCustomersOfTheMonth, selectCustomersPerPage } from '../../../redux/customers/customers.selectors'
 import ListCustomers from '../../../components/list/ListCustomers'
 import SearchForm from '../../../components/form/search-form'
+import { selectCurrentPage } from '../../../redux/fultechs/FultechsSelectors'
+import { Redirect } from 'react-router-dom'
 
-const CustomersList = ({customers, isFetching, filterBy, pendingOrders, ofMonth})=> {
-    // console.log("Last Ten Customers: ", customers)
+const CustomersList = ({customers, currentPage, customersPerPage, isFetching, filterBy, customersPendingOrders, customersOfTheMonth})=> {
+    
     const [searchString, setSearchString] = useState('')
     const handleSearch = value => setSearchString(value)
     const filterByText = {ofmonth:'of the month', pendingorders: 'pending orders'}
     switch (filterBy) {
         case 'ofmonth':
-            customers = ofMonth
+            customers = customersOfTheMonth
             break;
         case 'pendingorders':
-            customers = pendingOrders
+            customers = customersPendingOrders
             break;
     
         default:
             break;
+    }
+    
+    if (!customers) {
+        return <Redirect to="/customers"/>
     }
     // console.log(ofMonth,filterBy)
     customers = customers.filter(customer=>
@@ -47,8 +53,11 @@ const CustomersList = ({customers, isFetching, filterBy, pendingOrders, ofMonth}
 const mapStateToProps = createStructuredSelector({
     customers: selectCustomers,
     isFetching: selectIsFetchingCustomers,
-    pendingOrders: selectCustomersPendingOrders,
-    ofMonth: selectCustomersOfTheMonth
+    customersPendingOrders: selectCustomersPendingOrders,
+    customersOfTheMonth: selectCustomersOfTheMonth,
+    customersPerPage: selectCustomersPerPage,
+    currentPage: selectCurrentPage
+
 })
 
 export default connect(mapStateToProps)(CustomersList)

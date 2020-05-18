@@ -1,5 +1,7 @@
 import moment from "moment";
+import { FULTECHS_INITIAL_STATE } from "../redux/fultechs/FultechsReducer";
 
+const globalItemsPerPage = FULTECHS_INITIAL_STATE.itemsPerPage
 export const numberWithCommas= x=>{
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -40,19 +42,19 @@ export const addAttribute = (arrayObj, attr, val)=>{
 
 // Paginate results
 
-export const paginateResult = (result, perpage)=>{
-    
+export const paginateResult = (result)=>{
+        const itemsPerPage = FULTECHS_INITIAL_STATE.itemsPerPage
         let paginated = {}
-        for (let i = 1; (result.length >= perpage*i)||(perpage*i-result.length < 10); i++) {
+        for (let i = 1; (result.length >= itemsPerPage*i)||(itemsPerPage*i-result.length < itemsPerPage); i++) {
             if (i===1) {
                 paginated = {
                     ...paginated,
-                    [`page_${i}`]: result.slice(0,10)
+                    [`page_${i}`]: result.slice(0,itemsPerPage)
                 }
             }else{
                 paginated = {
                     ...paginated,
-                    [`page_${i}`]: result.slice((i-1)*perpage, i*perpage)
+                    [`page_${i}`]: result.slice((i-1)*itemsPerPage, i*itemsPerPage)
                 }
             }
         }
@@ -77,5 +79,30 @@ export const customerExists = (cust, customers)=>{
 
 export const customerEmailExists = (email, customers)=>{
     return customers.find(customer=>customer.email===email)?true:false
+}
+
+// Get total pages from hydra:total pages
+export const getTotalPages = pageString =>{
+        const totalPageStringLenth = pageString.length
+        const indexOfValue = pageString.indexOf('=')+1
+        
+        return parseInt(pageString.substr(indexOfValue,totalPageStringLenth-indexOfValue))
+        
+
+}
+
+// Get total pages and array of data
+export const getPageCount = data =>{
+    let dataLength = data.length,
+        pageCount = 1
+    if (dataLength<=globalItemsPerPage) {
+        return pageCount
+    }
+
+    while (dataLength>globalItemsPerPage) {
+        pageCount+=1
+        dataLength-=globalItemsPerPage
+    }
+    return pageCount
 }
 

@@ -1,12 +1,15 @@
-import React from 'react';
+import React from 'react'
 import IosPersonAddOutline from 'react-ionicons/lib/IosPersonAddOutline'
 import IosListBoxOutline from 'react-ionicons/lib/IosListBoxOutline'
 import IosPeople from 'react-ionicons/lib/IosPeople'
 import { setCustomerModalAsync } from '../../../redux/customers/customers.action';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const CustomersHeader = ({setModal})=>{
+    const handleClick = ()=>{
+        setModal('create');
+    }
 
     return(
         <div className="hk-pg-header mb-10">
@@ -20,7 +23,7 @@ const CustomersHeader = ({setModal})=>{
             </div>
             <div className="d-flex">
                 <Link to="/customers/list" type="button" className="btn btn-info btn-sm"><IosListBoxOutline color="#fff" />&nbsp;List Customers&nbsp;</Link>
-                <button className="btn btn-primary btn-sm order-new" onClick={()=>setModal('create')}><IosPersonAddOutline color="#fff" /> Add Customer&nbsp;</button>
+                <button className="btn btn-primary btn-sm order-new" onClick={handleClick}><IosPersonAddOutline color="#fff" /> Add Customer&nbsp;</button>
             </div>
         </div>
     )

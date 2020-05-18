@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import * as Yup from 'yup'
 import { Form, Col, InputGroup, Button } from 'react-bootstrap'
 import { createStructuredSelector } from 'reselect'
 import { selectCities } from '../../../../redux/cities/cities.selectors'
@@ -7,78 +6,57 @@ import { connect } from 'react-redux'
 import { uid } from 'react-uid'
 import Spinner from '../../../../components/spinner/spinner';
 import { Formik } from 'formik'
-import { sanitizeString, customerExists } from '../../../../helpers/helper'
-import AxiosAgent from '../../../../axios-agent'
-import { addCustomerToState, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
+import { addCustomerToState, setCustomerModalHeadingAttempt, deleteCustomerAttempt } from '../../../../redux/customers/customers.action'
 import { showModalAlertAttempt } from '../../../../redux/fultechs/FulTechsActions'
-import { selectCustomers, selectCustomerModalHeading } from '../../../../redux/customers/customers.selectors'
+import { selectCustomers, selectCustomerModalHeading, selectCurrentCustomer } from '../../../../redux/customers/customers.selectors'
+import Axios from 'axios'
+import { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 
-const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, closeModal, addCustomer, showModalAlert})=> {
+const DeleteCustomerForm = ({cities, deleteCustomer, modalHeading, setModalHeading, customers, closeModal, addCustomer, showModalAlert, currentCustomer})=> {
     useEffect(() => {
-        setModalHeading("Add Customer")
+        setModalHeading("Delete Customer")
     }, [setModalHeading,modalHeading])
+    const [redirectLink, setRedirectLink] = useState('')
+    const customer = customers.filter(mapCustomer=>mapCustomer.id===currentCustomer)[0]
+    // console.log(customer)
     let initialVals = {
-        customerNumber:'',
-        customerFirstName: '',
-        customerLastName: '',
-        customerAddress: '',
-        fkCity: '/api/cities/1'
+        customerNumber:customer.mobileNumber,
+        customerFirstName: customer.firstName,
+        customerLastName: customer.lastName,
+        customerAddress: customer.address,
+        fkCity: customer.fkCity.code
     }
-    const validationSchema = Yup.object().shape({
-        customerNumber: Yup.string()
-                        .min(9,'Minimum 9 characters')
-                        .required('Please enter number')
-                        .matches(/^[0-9]+$/, 'Only Numbers accepted'),
-     customerFirstName: Yup.string()
-                        .required('Please enter First Name'),
-          fkCity: Yup.string()
-                        .required('Please select town'),
-        customerAddress:Yup.string()
-                        .required('Enter Address')
-                        .max(255,'Must not exceed 255 characters')
-    });
 
-    return (
-        <Formik initialValues={initialVals} 
-                validationSchema={validationSchema}
+    return redirectLink? <Redirect to={redirectLink}/>: (
+        <Formik initialValues={initialVals}
                 onSubmit = {
-                    (values, {setSubmitting, resetForm, setErrors})=>{
-                        if(customerExists(values.customerNumber, customers)){
-                            setErrors({customerNumber: 'This number already exists'})
-                            return false
-                        }
-                        const firstName = sanitizeString(values.customerFirstName),
-                              lastName = sanitizeString(values.customerLastName),
-                              address = sanitizeString(values.customerAddress),
-                              mobileNumber = values.customerNumber,
-                              fkCity = values.fkCity
-                        const processValues = {
-                            firstName,
-                            lastName,
-                            mobileNumber,
-                            gender: "Male",
-                            fkCity,
-                            address
-                        }
+                    (values, {setSubmitting})=>{
                         
-                        AxiosAgent.request('post','customers',null, processValues)
+                        Axios.delete(`/customers/${customer.id}`)
                                 .then(resp =>{
-                                        addCustomer(resp.data)
-                                        showModalAlert('success', 'check-circle', 'Customer Added')
-                                        resetForm()
+                                        console.log(resp)
+                                        showModalAlert('success', 'block', 'Customer has been deleted')
+                                        setTimeout(() => {
+                                            closeModal()
+                                            setRedirectLink('/customers')
+                                        }, 500);
+                                        setTimeout(() => {
+                                            deleteCustomer(customer)
+                                        }, 750);
                                         setSubmitting(false)
                                     }
                                 )
                                 .catch(err => {
                                     console.log(err)
-                                    showModalAlert('danger', 'block', 'There was an error adding customer')
+                                    showModalAlert('danger', 'block', 'There was an error deleting customer')
                                     setSubmitting(false)
                                 }
                         );
                     }
                 }
         >
-        {({values,errors, touched, handleChange, handleSubmit, handleBlur, isSubmitting, setFieldValue})=>{
+        {({values, handleSubmit, handleBlur, isSubmitting, setFieldValue})=>{
             return(
                 <Form onSubmit={handleSubmit}>
                     <Form.Row>
@@ -96,17 +74,10 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
                                     name="customerNumber"
                                     value={values.customerNumber}
                                     placeholder="Phone Number"
-                                    onChange={handleChange}
                                     autoComplete="off"
-                                    onBlur={handleBlur}
-                                    disabled={isSubmitting}
+                                    disabled={true}
                                 />
                             </InputGroup>
-                            {touched.customerNumber&&errors.customerNumber&&
-                                <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                    {errors.customerNumber}
-                                </Form.Control.Feedback>
-                            }
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId="customerValidateFirstName">
                             <Form.Label>First Name</Form.Label>
@@ -122,16 +93,9 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
                                     name="customerFirstName"
                                     value={values.customerFirstName}
                                     placeholder="First Name"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    disabled={isSubmitting}
+                                    disabled={true}
                                 />
                             </InputGroup>
-                            {touched.customerFirstName&&errors.customerFirstName&&
-                                <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                    {errors.customerFirstName}
-                                </Form.Control.Feedback>
-                            }
                         </Form.Group>
                         
                         <Form.Group as={Col} md="4" controlId="customerValidateLastName">
@@ -148,16 +112,9 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
                                     name="customerLastName"
                                     value={values.customerLastName}
                                     placeholder="Last Name"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    disabled={isSubmitting}
+                                    disabled={true}
                                 />
                             </InputGroup>
-                            {touched.customerLastName&&errors.customerLastName&&
-                                <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                    {errors.customerLastName}
-                                </Form.Control.Feedback>
-                            }
                         </Form.Group>
                     </Form.Row>
 
@@ -175,19 +132,15 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
                                     name="customerAddress"
                                     type="text" 
                                     placeholder="Address"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    disabled={isSubmitting}
+                                    disabled={true}
                                 />
                                 <InputGroup.Append>
                                     <select 
                                         id="fkCity" 
                                         className="form-control" 
                                         value={values.fkCity}
-                                        onChange={handleChange}
                                         name="fkCity"
-                                        onBlur={handleBlur}
-                                        disabled={isSubmitting}
+                                        disabled={true}
                                     >
                                         {
                                             cities
@@ -198,20 +151,15 @@ const CreateCustomerForm = ({cities,modalHeading, setModalHeading, customers, cl
                                     </select>
                                 </InputGroup.Append>
                             </InputGroup>
-                            {touched.customerAddress&&errors.customerAddress&&
-                                <Form.Control.Feedback style={{display:'block'}} type='invalid'>
-                                    {errors.customerAddress}
-                                </Form.Control.Feedback>
-                            }
                         </Form.Group>
                     
                     </Form.Row>
 
                     <Form.Row>
                         <Form.Group as={Col} md="6" className="mb-md-0 mb-lg-0 mb-s-5" controlId="validationSubmitForm">
-                            <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
+                            <Button className="btn-block" disabled={isSubmitting} variant="danger" size="lg" type="submit">
                                 {
-                                    isSubmitting? <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>: "Add Customer"
+                                    isSubmitting? <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>: "Delete Customer"
                                 }
                             </Button>
                         </Form.Group>
@@ -233,11 +181,13 @@ const mapDispatchToProps = {
     addCustomer: addCustomerToState,
     showModalAlert: showModalAlertAttempt,
     setModalHeading: setCustomerModalHeadingAttempt,
+    deleteCustomer: deleteCustomerAttempt
 }
 const mapStateToProps = createStructuredSelector({
     cities: selectCities,
     customers: selectCustomers,
+    currentCustomer: selectCurrentCustomer,
     modalHeading: selectCustomerModalHeading
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateCustomerForm)
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteCustomerForm)

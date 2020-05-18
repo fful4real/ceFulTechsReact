@@ -33,3 +33,30 @@ export const showModalAlertAttempt = (variant, icon, message)=>{
     }
 }
 
+// set redirect link
+
+
+export const setRedirectLink = redirectLink =>({
+    type: FultechsActionTypes.SET_REDIRECT_LINK,
+    redirectLink
+})
+
+export const setRedirectLinkAttempt = redirectlink =>{
+    return dispatch =>{
+        dispatch(setRedirectLink(redirectlink));
+    }
+}
+// set active Page
+
+
+export const setCurrentPage = currentPage =>({
+    type: FultechsActionTypes.SET_CURRENT_PAGE,
+    currentPage
+})
+
+export const setCurrentPageAttempt = currentPage =>{
+    return dispatch =>{
+        dispatch(setCurrentPage(currentPage));
+    }
+}
+

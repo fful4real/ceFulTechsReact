@@ -3,20 +3,10 @@ import { numberWithCommas } from '../../helpers/helper';
 
 
 const selectAccountState = state => state.accounts;
-const selectCurrenciesState = state => state.currencies;
 
-const selectCurrencies = createSelector(
-    [selectCurrenciesState],
-    currencies => currencies.currencies
-)
 export const selectAccounts = createSelector(
-    [selectAccountState, selectCurrencies],
-    (accounts,currencies) => accounts.accounts.map(account=>{
-        // console.log("Currency: ",currencies)
-        return({
-        ...account,
-        currency:typeof account.currency === 'string'?currencies.filter(currency=>parseInt(currency.id)===parseInt(account.currency.split("/")[3]))[0]:account.currency
-    })})
+    [selectAccountState],
+    accountsState => accountsState.accounts
 )
 
 export const selectIsFetchingAccounts = createSelector(
@@ -37,4 +27,10 @@ export const selectAccountsTotalAmount = createSelector(
 
        return numberWithCommas(amount)
     }
+)
+
+//Seelect account modal
+export const selectAccountModalObject = createSelector(
+    [selectAccountState],
+    accountsState => accountsState.accountsModal
 )

@@ -178,4 +178,17 @@ export const selectCustomerModalHeading = createSelector(
 )
 
 
+// Select customer modal heading
+export const selectCustomersTotalPages = createSelector(
+    [selectCustomersState],
+    customersState => customersState.totalPages
+)
+
+// Select customers per page
+export const selectCustomersPerPage = createSelector(
+    [selectCustomersState],
+    customersState => customersState.customersPerPage
+)
+
+
 

@@ -13,12 +13,13 @@ import Alert from '../../components/alert/alert';
 import { addOrderToState } from '../../redux/orders/orders.actions';
 import { addOrderToCustomer, addCustomerToState } from '../../redux/customers/customers.action';
 import { createStructuredSelector } from 'reselect';
-import { selectCustomers } from '../../redux/customers/customers.selectors';
+import { selectCustomers, selectCurrentCustomer } from '../../redux/customers/customers.selectors';
 import { selectCurrencies } from '../../redux/currencies/currencies.selectors';
 import { selectCities } from '../../redux/cities/cities.selectors';
 import { sanitizeString, customerExists } from '../../helpers/helper';
+import { selectIsOrderFromCustomer } from '../../redux/orders/orders.selectors';
 
-const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer})=>{
+const CreateOrderForm = ({customers,currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder})=>{
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
     const currencyOutObj = currencies.filter(currency=>currency.currencyCode==="XAF")[0]
     const [searchString, setSearchString] = useState('');
@@ -29,17 +30,25 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                 customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1||
                 customer.mobileNumber.toLowerCase().indexOf(searchString.toLowerCase())!==-1
     }
+    let customer = null
+
+    console.log(isCustomersOrder)
+
+    if (isCustomersOrder) {
+        customer = customers.filter(customer=>parseInt(customer.id)===parseInt(currentCustomer))[0]
+    }
+    // console.log(customer)
     const toggleShow = show=>setShowDropdown(show);
     let initialVals = {
-        customerNumber:'',
+        customerNumber:customer?customer.mobileNumber:'',
         amountIn:'',
         amountOut:'',
         currencyIn:`/api/currencies/${currencyInObj.id}`,
         currencyOut: `/api/currencies/${currencyOutObj.id}`,
-        firstName:'',
-        lastName:'',
-        customerAddress:'',
-        customerTown:cities[0].code,
+        firstName:customer?customer.firstName:'',
+        lastName:customer?customer.lastName:'',
+        customerAddress:customer?customer.address:'',
+        customerTown:customer?customer.fkCity.code:'',
         orderNote:'',
         sentByName:'',
         sentBy:''
@@ -98,17 +107,12 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                                 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
-                                        let newOrder = resp.data
-                                        
+                                        const newOrder = resp.data
+                                        const newCustomer = newOrder.customer
                                         setStatus({success: false})
                                         setShowSuccess('show')
-                                        if(customerExists(resp.data, customers)){
-                                            newOrder = {...newOrder,
-                                                    customer:{
-                                                        ...newOrder.customer,
-                                                        CustomersOrders:[`/api/ce_orders/${newOrder.id}`]
-                                                    }
-                                                }
+                                        if(!customerExists(newCustomer, customers)){
+                                          addCustomerToState(newCustomer) 
                                         }
                                         
                                         addOrderToState(newOrder)
@@ -141,7 +145,7 @@ const CreateOrderForm = ({customers, addCustomerToState, currencies, cities, add
                             setFieldValue('sentBy', `/api/customers/${id}`)
                         }
                     
-                        return (
+                    return (
                         <Form 
                             onSubmit={handleSubmit}
                         >
@@ -473,7 +477,9 @@ const mapDispatchToProps = {
   const mapStateToProps = createStructuredSelector({
     customers:selectCustomers,
     currencies:selectCurrencies,
-    cities:selectCities
+    cities:selectCities,
+    currentCustomer: selectCurrentCustomer,
+    isCustomersOrder: selectIsOrderFromCustomer
   })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderForm)

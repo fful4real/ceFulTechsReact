@@ -1,16 +1,22 @@
 import React, { useState } from 'react'
-import { numberWithCommas } from '../../helpers/helper'
+import { numberWithCommas, getPageCount } from '../../helpers/helper'
 import ListItems from './list-items'
 import { Redirect } from 'react-router-dom'
 import moment from 'moment'
+import PaginatorDefault from '../pagination/pagination.default'
+import { createStructuredSelector } from 'reselect'
+import { selectCurrentPage } from '../../redux/fultechs/FultechsSelectors'
+import { setCurrentPageAttempt } from '../../redux/fultechs/FulTechsActions'
+import { connect } from 'react-redux'
 
-const ListCustomers = ({tableData, isFetching, expandableRows=false, pagination=false}) =>{
+const ListCustomers = ({tableData,currentPage, setPage,isFetching, expandableRows=false, pagination=false}) =>{
     // console.log(tableData)
     const [itemPage, setItemPage] = useState(false)
     const handleRowClick = row => {
-        console.log(row)
         setItemPage(row)
     }
+    const pageCount = getPageCount(tableData)
+    console.log(pageCount)
     const columns = [
         {
             name:'Customer',
@@ -70,9 +76,18 @@ const ListCustomers = ({tableData, isFetching, expandableRows=false, pagination=
     (<Redirect to={`/customers/${itemPage.id}`}/>)
     : (
         <div>
-            <ListItems pagination={pagination} expandableRows={expandableRows} columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} /> 
+            <ListItems pagination={pagination} expandableRows={expandableRows} columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} />
+            {pagination&&<PaginatorDefault currentPage={currentPage} pageCount={getPageCount(tableData)} setPage={setPage} />}
         </div>
     )
 }
 
-export default ListCustomers
+const mapStateToProps = createStructuredSelector({
+    currentPage: selectCurrentPage,
+})
+
+const mapDispatchToProps = {
+    setPage: setCurrentPageAttempt
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListCustomers)

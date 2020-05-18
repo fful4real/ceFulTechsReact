@@ -1,8 +1,13 @@
 import React from 'react'
 import { Form, Col, InputGroup, Button } from 'react-bootstrap'
 import { capitalizeFirstLetter } from '../../../../helpers/helper'
+import { useHistory } from 'react-router-dom'
 
 const OrderItemCustomerForm = ({order})=> {
+    const history = useHistory()
+    const handleCustomerLink = customerId =>{
+        history.push(`/customers/${customerId}`);
+    }
     const customerName = `${capitalizeFirstLetter(order.customer.firstName)} ${order.customer.lastName.toUpperCase()}`
     // console.log("Order - OrderItemCustomerForm: ", order)
     return (
@@ -39,7 +44,8 @@ const OrderItemCustomerForm = ({order})=> {
                             type="text"
                             value={customerName}
                             readOnly
-                            className="text-muted"
+                            className="text-muted cursor-pointer"
+                            onClick={()=>handleCustomerLink(order.customer.id)}
                         />
                     </InputGroup>
                 </Form.Group>
@@ -79,8 +85,9 @@ const OrderItemCustomerForm = ({order})=> {
                             name="sentBy" 
                             type="text" 
                             value={order.sentBy&&order.sentBy.firstName}
+                            onClick={()=>{order.sentBy&&handleCustomerLink(order.sentBy.id)}}
                             readOnly
-                            className="text-muted text-capitalized"
+                            className="text-muted text-capitalized cursor-pointer"
                         />
                     </InputGroup>
                 </Form.Group>
@@ -88,24 +95,9 @@ const OrderItemCustomerForm = ({order})=> {
 
 
             <Form.Row>
-                <Form.Group as={Col} md="3">
-                    <Button className="btn-block btn-success" disabled={true} variant="success" size="lg" type="submit">
-                        View
-                    </Button>
-                </Form.Group>
-                <Form.Group as={Col} md="3">
-                    <Button className="btn-block btn-info" disabled={true} variant="info" size="lg" type="submit">
-                        Modify
-                    </Button>
-                </Form.Group>
-                <Form.Group as={Col} md="3">
-                    <Button className="btn-block btn-warning" disabled={true} variant="warning" size="lg" type="submit">
-                        Abandon
-                    </Button>
-                </Form.Group>
-                <Form.Group as={Col} md="3">
-                    <Button className="btn-block btn-danger" disabled={true} variant="danger" size="lg" type="submit">
-                        Delete
+                <Form.Group as={Col}>
+                    <Button className="btn-block" onClick={()=>handleCustomerLink(order.customer.id)} disabled={false} variant="info" size="lg" type="submit">
+                        View Customer
                     </Button>
                 </Form.Group>
             </Form.Row>

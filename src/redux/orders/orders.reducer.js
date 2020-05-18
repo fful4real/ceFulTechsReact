@@ -1,5 +1,5 @@
 import OrdersActionTypes from "./orders.types";
-import { capitalizeFirstLetter, formatDate, addAttribute, paginateResult } from "../../helpers/helper";
+import { capitalizeFirstLetter, formatDate, addAttribute, paginateResult, getTotalPages } from "../../helpers/helper";
 
 
 const INITIAL_STATE = {
@@ -12,6 +12,7 @@ const INITIAL_STATE = {
     isFetchingNewOrders:false,
     isFechingOrderItemOrderEntries:false,
     isFechingOrderItemLatestOrderEntry:false,
+    isOrderFromCustomer:false,
     hasFetchedPendingOrders:false,
     hasFetchedProcessedOrders:false,
     hasFetchedNewOrders:false,
@@ -79,18 +80,15 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
                 shouldFetchPage:action.fetchPage
             }
         case OrdersActionTypes.ORDERS_FETCHING_SUCCESS:
-
-            const total_Pages = action.orders['hydra:view']['hydra:last']
-            const totalPageStringLenth = total_Pages.length
-            const indexOfValue = total_Pages.indexOf('=')+1
-            totalPages = parseInt(total_Pages.substr(indexOfValue,totalPageStringLenth-indexOfValue))
-            const page_1_orders= fixOrdersCustomerNames(action.orders['hydra:member'])
+            totalPages = getTotalPages(action.orders['hydra:view']['hydra:last'])
+            orders = action.orders['hydra:member']
+            const page_1_orders= fixOrdersCustomerNames(orders)
             // console.log(totalOrderPages)
             totalOrders = action.orders['hydra:totalItems']
             return{
                 ...state,
                 isFetching:false,
-                orders: action.orders['hydra:member'],
+                orders,
                 totalOrders,
                 totalPages,
                 ordersPerPage:{page_1: formatDate(page_1_orders, 'datec')}
@@ -119,11 +117,11 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
     case OrdersActionTypes.ALL_ORDERS_FETCHING_SUCCESS:
         allOrders = addAttribute(action.orders,'hasFetchedOrderEntries',false)
         allOrders = fixOrdersCustomerNames(allOrders)
-        ordersPerPage = paginateResult(allOrders, INITIAL_STATE.orderCountPerPage)
+        ordersPerPage = paginateResult(allOrders)
         newOrders = allOrders.filter(item=>item.status.statusCode==="NEW")
         processedOrders = allOrders.filter(item=>item.status.statusCode==="OK")
         pendingOrders = allOrders.filter(item=>item.status.statusCode==="PTL")
-        totalPages = Math.ceil(allOrders.length/ state.orderCountPerPage)
+        totalPages = Math.ceil(allOrders.length/state.orderCountPerPage)
         totalOrders = allOrders.length
         orders = allOrders
     return{
@@ -298,6 +296,13 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 isFechingOrderItemOrderEntries:false
+            }
+        
+        case OrdersActionTypes.SET_ORDER_FROM_CUSTOMER:
+            
+            return{
+                ...state,
+                isOrderFromCustomer:action.orderFromCustomer
             }
     
         default:

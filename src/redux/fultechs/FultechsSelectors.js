@@ -34,3 +34,16 @@ export const selectModalAlert = createSelector(
     [selectFultechsState],
     ftstate => ftstate.modalAlert
 )
+
+// Select redirect link
+export const selectRedirectLink = createSelector(
+    [selectFultechsState],
+    ftstate => ftstate.redirectLink
+)
+
+// Select current page
+export const selectCurrentPage = createSelector(
+    [selectFultechsState],
+    ftstate => ftstate.currentPage
+)
+

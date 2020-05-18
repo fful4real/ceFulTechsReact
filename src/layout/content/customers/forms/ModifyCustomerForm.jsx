@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { Form, Col, InputGroup, Button } from 'react-bootstrap'
 import { createStructuredSelector } from 'reselect'
@@ -19,7 +19,12 @@ const ModifyCustomerForm = ({cities,updateCustomer,setModalHeading, modalHeading
     useEffect(() => {
         setModalHeading("Modify Customer")
     }, [setModalHeading, modalHeading])
-    console.log(customer)
+    const [genderRadio, setGender] = useState(customer.gender)
+    const handleGender = genderM => {
+        setGender(genderM)
+        customer.gender=genderM
+    }
+    
     let initialVals = {
         customerNumber:customer.mobileNumber,
         customerFirstName: customer.firstName,
@@ -65,7 +70,7 @@ const ModifyCustomerForm = ({cities,updateCustomer,setModalHeading, modalHeading
                               mobileNumber = values.customerNumber,
                               fkCity = values.fkCity,
                               email = values.email,
-                              gender= values.gender
+                              gender= genderRadio
                         const processValues = {
                             firstName,
                             lastName,
@@ -205,8 +210,8 @@ const ModifyCustomerForm = ({cities,updateCustomer,setModalHeading, modalHeading
                                 <div className="input-group">
                                     <div className="row">
                                         <div className="col-6 mt-10">
-                                            <div className="custom-control custom-radio">
-                                            <input type="radio"
+                                            <div className="custom-control custom-radio cursor-pointer" onClick={()=>handleGender('Female')} id="customerFemaleRadio">
+                                                <input type="radio"
                                                     value="Female" 
                                                     id="customerGenderFemale" 
                                                     name="gender" 
@@ -214,12 +219,13 @@ const ModifyCustomerForm = ({cities,updateCustomer,setModalHeading, modalHeading
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     selected={values.gender==='Female'?true:false}
+                                                    checked={genderRadio==='Male'?false:true}
                                                 />
-                                                <label className="custom-control-label" htmlFor="customerGenderFemale">Female</label>
+                                                <label className="custom-control-label cursor-pointer" htmlFor="customerGenderFemale" id="genderFemaleLabel">Female</label>
                                             </div>
                                         </div>
                                         <div className="col-6 mt-10">
-                                            <div className="custom-control custom-radio">
+                                            <div className="custom-control custom-radio cursor-pointer" onClick={()=>handleGender('Male')} id="customerMaleRadio">
                                                 <input type="radio"
                                                     value="Male"
                                                     id="customerGenderMale" 
@@ -228,8 +234,9 @@ const ModifyCustomerForm = ({cities,updateCustomer,setModalHeading, modalHeading
                                                     className="custom-control-input" 
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
+                                                    checked={genderRadio==='Male'?true:false}
                                                 />
-                                                <label className="custom-control-label" htmlFor="customerGenderMale">Male</label>
+                                                <label className="custom-control-label cursor-pointer" htmlFor="customerGenderMale" id="genderMaleLabel">Male</label>
                                             </div>
                                         </div>
                                     </div>

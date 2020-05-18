@@ -2,8 +2,9 @@ import FultechsActionTypes from "./FultechsTypes";
 
 
 
-const INITIAL_STATE = {
+export const FULTECHS_INITIAL_STATE = {
     itemsPerPage:10,
+    currentPage:1,
     activePage:'dashboard',
     isRefreshing:false,
     refreshTimeInterval:20000,
@@ -12,10 +13,11 @@ const INITIAL_STATE = {
         message: '',
         icon:'',
         variant:''
-    }
+    },
+    redirectLink:null
 }
 
-const FultechsReducer = (state=INITIAL_STATE,action)=>{
+const FultechsReducer = (state=FULTECHS_INITIAL_STATE,action)=>{
     switch (action.type) {
         case FultechsActionTypes.SET_ACTIVE_PAGE:
             return{
@@ -38,6 +40,16 @@ const FultechsReducer = (state=INITIAL_STATE,action)=>{
                 modalAlert:{...state.modalAlert, 
                     show:'hide',
                 }
+            }
+        case FultechsActionTypes.SET_REDIRECT_LINK:
+            return{
+                ...state,
+                redirectLink:action.redirectLink
+            }
+        case FultechsActionTypes.SET_CURRENT_PAGE:
+            return{
+                ...state,
+                currentPage:action.currentPage
             }
     
         default:

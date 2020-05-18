@@ -21,7 +21,8 @@ export const fetchAccountsAsync = ()=>{
         dispatch(fetchAccountsStart());
         AxiosAgent.request('get',API_ROUTES.accounts(null), null, null)
         .then(resp => {
-            dispatch(fetchAccountsSuccess(resp.data['hydra:member']))
+            console.log(resp.data)
+            dispatch(fetchAccountsSuccess(resp.data))
         })
         .catch(err => {
             console.error(err.message)
@@ -40,5 +41,57 @@ export const updateAccountAsync = (accounts) =>{
 
     return dispatch =>{
         dispatch(updateAccount(accounts));
+    }
+}
+
+// Set show accounts Modal
+
+export const setShowAccountsModal = show =>({
+    type: AccountsActionTypes.SET_SHOW_ACCOUNTS_MODAL,
+    show
+})
+
+export const setShowAccountsModalAttempt = (show) =>{
+
+    return dispatch =>{
+        dispatch(setShowAccountsModal(show));
+    }
+}
+
+// Set accounts modal heading
+
+export const setAccountsModalHeading = heading =>({
+    type: AccountsActionTypes.SET_ACCOUNTS_MODAL_HEADING,
+    heading
+})
+
+export const setAccountsModalHeadingAttempt = (heading) =>{
+
+    return dispatch =>{
+        dispatch(setAccountsModalHeading(heading));
+    }
+}
+
+// Set accounts modal body
+
+export const setAccountsModalbody = body =>({
+    type: AccountsActionTypes.SET_ACCOUNTS_MODAL_BODY,
+    body
+})
+
+export const setAccountsModalbodyAttempt = (body) =>{
+
+    return dispatch =>{
+        dispatch(setAccountsModalbody(body));
+    }
+}
+
+// Close accounts Modal
+export const closeAccountsModal = () =>({
+    type:AccountsActionTypes.SET_CLOSE_ACCOUNTS_MODAL
+})
+export const closeAccountsModalAttempt = () =>{
+    return dispatch =>{
+        dispatch(closeAccountsModal())
     }
 }

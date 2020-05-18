@@ -294,3 +294,16 @@ export const setShouldFetchOrderPageAsync =  () =>{
         dispatch(setShouldFetchOrderPage(true))
     }
 }
+
+// Set is order from customer
+// Set Should Fetch Orders Page
+export const setOrderFromCustomer = orderFromCustomer => ({
+    type: OrdersActionTypes.SET_ORDER_FROM_CUSTOMER,
+    orderFromCustomer
+})
+
+export const setOrderFromCustomerAttempt =  orderFromCustomer =>{
+    return dispatch =>{
+        dispatch(setOrderFromCustomer(orderFromCustomer))
+    }
+}

@@ -14,6 +14,9 @@ import CustomersList from './CustomersList'
 import ModalAlert from '../../../components/alert/ModalAlert'
 import CustomerProfile from './CustomerProfile'
 import ModifyCustomerForm from './forms/ModifyCustomerForm'
+import CreateOrderForm from '../../forms/create-order.form'
+import DeleteCustomerForm from './forms/DeleteCustomerForm'
+import { setOrderFromCustomerAttempt } from '../../../redux/orders/orders.actions'
 
 
 
@@ -21,6 +24,13 @@ class CustomersPage extends Component {
     constructor(props) {
         super(props);
         this.props.setActivePage('customers')
+    }
+
+    componentWillUnmount(){
+        this.props.setIsOrderFromCustomer(false)
+    }
+    componentDidMount(){
+        this.props.setIsOrderFromCustomer(true)
     }
     
     render() {
@@ -32,9 +42,11 @@ class CustomersPage extends Component {
                 <div className="container mt-xl-30 mt-sm-20 mt-15">
                     <CustomersHeader/>
                     <ModalComponent showModal={showModal} closeModal={closeModal} modalHeading={modalHeading}>
-                    <ModalAlert />
+                        <ModalAlert />
                         {customerModal==='create'&&<CreateCustomerForm closeModal={closeModal}  />}
                         {customerModal==='modify'&&<ModifyCustomerForm closeModal={closeModal}  />}
+                        {customerModal==='newCustomerOrder'&&<CreateOrderForm closeModal={closeModal}  />}
+                        {customerModal==='delete'&&<DeleteCustomerForm closeModal={closeModal}  />}
                     </ModalComponent>
 
                     <Switch>
@@ -52,13 +64,14 @@ class CustomersPage extends Component {
 
 const mapDispatchToProps = {
     setActivePage:setActivePageAttempt,
-    closeModal: setCloseCustomerModal
+    closeModal: setCloseCustomerModal,
+    setIsOrderFromCustomer: setOrderFromCustomerAttempt
 }
 
 const mapStateToProps = createStructuredSelector({
     showModal: selectShowCustomerModal,
     customerModal: selectCustomerModal,
-    modalHeading: selectCustomerModalHeading
+    modalHeading: selectCustomerModalHeading,
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(CustomersPage);

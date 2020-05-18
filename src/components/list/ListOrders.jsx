@@ -21,8 +21,8 @@ const ListOrders = ({tableData, isFetching, receivedFrom=false}) =>{
             sortable:true,
             cell: row => <div onClick={()=>handleRowClick(row)}>
                             <i className="icon-user font-11 text-primary mr-5"></i>
-                            <span className="text-capitalize-">{receivedFrom?row.sentBy.firstName:row.customer.firstName}</span>
-                            <span className="text-uppercase-">&nbsp;{row.customer.lastName}</span>
+                            <span className="text-capitalize-">{receivedFrom?(row.sentBy?row.sentBy.firstName:'Not Mentioned'):row.customer.firstName}</span>
+                            <span className="text-uppercase-">&nbsp;{receivedFrom?(row.sentBy?row.sentBy.lastName:'Not Mentioned'):row.customer.lastName}</span>
                         </div>
         },
         {

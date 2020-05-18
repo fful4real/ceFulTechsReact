@@ -34,7 +34,8 @@ export const addOrderToCustomer = (customers, order)=>{
 
         const updatedCustomers = customers.map(customer=>{
             return parseInt(customer.mobileNumber) === parseInt(order.receiverNumber) ? 
-            {...customer, CustomersOrder:customer.CustomersOrders.push(`/api/ce_orders/${order.id}`)}:customer
+            {...customer, 
+                CustomersOrder:customer.CustomersOrders.push(order)}:customer
         })
 
         // console.log('Customers: ',customers)
@@ -147,5 +148,15 @@ export const updateCustomer = customer =>({
 export const updateCustomerAttempt = (customer) =>{
         
     return dispatch =>dispatch(updateCustomer(customer))
+}
+
+// Delete customer
+export const deleteCustomer = customer =>({
+    type: CustomersActionTypes.DELETE_CUSTOMER,
+    customer
+})
+
+export const deleteCustomerAttempt = (customer) =>{
+    return dispatch =>dispatch(deleteCustomer(customer))
 }
 
