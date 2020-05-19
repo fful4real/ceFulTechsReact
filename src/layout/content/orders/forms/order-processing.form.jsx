@@ -15,7 +15,7 @@ import { uid } from 'react-uid';
 import { updateAccountAsync } from '../../../../redux/accounts/accounts.action';
 import { sanitizeString, numberWithCommas } from '../../../../helpers/helper';
 
-const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOrderAsync,updateAccountAsync, accounts})=>{
+const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOrder,updateAccountAsync, accounts})=>{
     const accountData = accounts.filter(account=>{ return (account.currency.currencyCode===order.currencyOut.currencyCode)&&parseInt(account.balance)>0});
     const [showSuccess, setShowSuccess] = useState({show:"hide", className:"success", message:"Order processed successfully"});
     // console.log(statuses)
@@ -77,13 +77,9 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
                                             const orderResp = resp.data;
                                             console.log(resp.data)
                                             setStatus({success: false})
-                                            const updatedOrder = {...order,
-                                                    processedAmount:orderResp.processedAmount,
-                                                    pendingAmount:orderResp.pendingAmount,
-                                                    status:orderResp.status,
-                                                }
-                                            orders = orders.map(mapOrder=>mapOrder.id===updatedOrder.id?
-                                                updatedOrder:
+                                            
+                                            orders = orders.map(mapOrder=>mapOrder.id===orderResp.id?
+                                                orderResp:
                                                 mapOrder
                                                 )
                                             accounts = accounts.map(mapAccount=>mapAccount.id===parseInt(fromAccountVal[1])?
@@ -96,9 +92,8 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
                                             setShowSuccess({show:"show", className:"success", message:"Order processed successfully"})
                                             setSubmitting(false)
 
-                                            updateOrderAsync(updatedOrder)
+                                            updateOrder(orders)
                                             updateAccountAsync(accounts)
-                                            order.hasFetchedOrderEntries&&updateOrderEntry(updatedOrder)
                                             resetForm()
                                             setFieldValue('processingAmount',orderResp.pendingAmount)
                                             setFieldValue('pendingAmount',orderResp.pendingAmount )
@@ -309,7 +304,7 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
 }
 
 const mapDispatchToProps = {
-    updateOrderAsync,
+    updateOrder:updateOrderAsync,
     updateAccountAsync,
     updateOrderEntry: fetchOrderItemLatestOrderEntryAsync
 }

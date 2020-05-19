@@ -1,22 +1,29 @@
 import React, { useState } from 'react'
-import { numberWithCommas, getPageCount } from '../../helpers/helper'
+import { numberWithCommas, getPageCount, paginateResult } from '../../helpers/helper'
 import ListItems from './list-items'
 import { Redirect } from 'react-router-dom'
 import moment from 'moment'
 import PaginatorDefault from '../pagination/pagination.default'
-import { createStructuredSelector } from 'reselect'
-import { selectCurrentPage } from '../../redux/fultechs/FultechsSelectors'
-import { setCurrentPageAttempt } from '../../redux/fultechs/FulTechsActions'
-import { connect } from 'react-redux'
+import SearchForm from '../form/search-form'
 
 const ListCustomers = ({tableData,currentPage, setPage,isFetching, expandableRows=false, pagination=false}) =>{
     // console.log(tableData)
     const [itemPage, setItemPage] = useState(false)
+    const [searchString, setSearchString] = useState('')
+    const handleSearch = value => setSearchString(value)
     const handleRowClick = row => {
         setItemPage(row)
-    }
+    }    
+    tableData = tableData.filter(data=>data?true:false)
+    tableData = tableData.filter(tbData=>
+        (tbData.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
+        (tbData.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
+        (tbData.mobileNumber.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+    )
     const pageCount = getPageCount(tableData)
-    console.log(pageCount)
+    tableData = paginateResult(tableData)
+    tableData = tableData[`page_${currentPage}`]
+    // console.log(getPageCount(tableData))
     const columns = [
         {
             name:'Customer',
@@ -76,18 +83,12 @@ const ListCustomers = ({tableData,currentPage, setPage,isFetching, expandableRow
     (<Redirect to={`/customers/${itemPage.id}`}/>)
     : (
         <div>
-            <ListItems pagination={pagination} expandableRows={expandableRows} columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} />
-            {pagination&&<PaginatorDefault currentPage={currentPage} pageCount={getPageCount(tableData)} setPage={setPage} />}
+            <SearchForm handleSearch={handleSearch} searchString={searchString} searchPlaceHolder="Search Customer" />
+            <ListItems expandableRows={expandableRows} columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} />
+            <div className="mb-10"></div>
+            {pageCount>1&&<PaginatorDefault currentPage={currentPage} pageCount={pageCount} setPage={setPage} />}
         </div>
     )
 }
 
-const mapStateToProps = createStructuredSelector({
-    currentPage: selectCurrentPage,
-})
-
-const mapDispatchToProps = {
-    setPage: setCurrentPageAttempt
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ListCustomers)
+export default ListCustomers

@@ -1,14 +1,54 @@
 import React, { useState } from 'react'
-import { numberWithCommas } from '../../helpers/helper'
+import { numberWithCommas, getPageCount, paginateResult } from '../../helpers/helper'
 import ListItems from './list-items'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import moment from 'moment'
+import PaginatorDefault from '../pagination/pagination.default'
+import SearchForm from '../form/search-form'
+import { uid } from 'react-uid'
+import { selectStatuses } from '../../redux/statuses/statuses.selectors'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
-const ListOrders = ({tableData, isFetching, receivedFrom=false}) =>{
+const ListOrders = ({tableData,pagefilter='',statuses, currentPage, setPage, isFetching, receivedFrom=false, expandableRows=false}) =>{
+    const [searchString, setSearchString] = useState('')
     const [itemPage, setItemPage] = useState(false)
+    if (pagefilter) {
+        pagefilter = statuses.filter(status_i=>status_i.statusCode===pagefilter)[0]
+    }
+    const [status, setStatus] = useState(pagefilter)
+    const handleSearch = value => setSearchString(value)
     const handleRowClick = row => {
         setItemPage(row)
     }
+    tableData = tableData.filter(data=>data?true:false)
+    let statusFilter = []
+
+    tableData.map(data=>{
+        statusFilter[data.status.statusCode]=data.status.statusCode
+        return data
+    })
+    
+    statuses = statuses.filter(status1=>statusFilter[status1.statusCode]?true:false)
+    
+    tableData = status?tableData.filter(item=>
+        (item.status.className.toLowerCase()===status.className.toLowerCase())
+    ):tableData
+    if (receivedFrom) {
+        tableData = tableData.filter(item=>
+            (item.sentBy.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
+            (item.sentBy.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+        )
+    }else{
+        tableData = tableData.filter(item=>
+            (item.customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
+            (item.customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+        )
+    }
+    const pageCount = getPageCount(tableData)
+    tableData = paginateResult(tableData)
+    tableData = tableData[`page_${currentPage}`]
+    
     const columns = [
         {
             name:'Ref',
@@ -70,13 +110,38 @@ const ListOrders = ({tableData, isFetching, receivedFrom=false}) =>{
                             <span className="text-uppercase-">&nbsp;{row.createdBy.lastName}</span>
                         </div>}
     ]
+    const statusClassName = status?'text-'+status.className:'';
+    
+
     return itemPage? 
     (<Redirect to={`/orders/${itemPage.id}`}/>)
     : (
         <div>
-            <ListItems columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} /> 
+            <div className="d-flex justify-content-end align-items-center">
+                <div className="select-orders mr-10 cursor-pointer">
+                    <div className="inline-block dropdown">
+                        <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
+                            <i className={`ion ion-ios-analytics ${statusClassName}`} style={{fontSize:"1.5em"}}></i>
+                        </span>
+                        <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", transform: "translate3d(13px, 21px, 0px)", top: "0px", left: "0px", willChange: "transform"}}>
+                        {statuses.map(statusMap=>
+                                (<Link key={`status-${uid(statusMap.id)}`} to="#" className={`dropdown-item ${status?status.className===statusMap.className?"text-success":'':''}`} onClick={()=>setStatus(statusMap)}>{statusMap.statusLabel}</Link>)
+                            )
+                        }
+                            <div className="dropdown-divider"></div>
+                            <Link className="dropdown-item" to="#" onClick={e=>setStatus('')}>View all Orders</Link>
+                        </div>
+                    </div>
+                </div>
+                <SearchForm handleSearch={handleSearch} searchString={searchString} searchPlaceHolder="Search order" />
+            </div>
+                <ListItems expandableRows={expandableRows} columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} />
+            <div className="mb-10"></div>
+            {pageCount>1&&<PaginatorDefault currentPage={currentPage} pageCount={pageCount} setPage={setPage} />}
         </div>
     )
 }
-
-export default ListOrders
+const mapStateToProps = createStructuredSelector({
+    statuses: selectStatuses,
+})
+export default connect(mapStateToProps)(ListOrders)

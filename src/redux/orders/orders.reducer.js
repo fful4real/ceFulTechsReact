@@ -235,15 +235,10 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
             }
             
         case OrdersActionTypes.UPDATE_ORDERS:
-            orders = state.orders.map(order=>order.id===action.order.id?action.order:order)
-            allOrders = state.allOrders.map(order=>order.id===action.order.id?action.order:order)
-            ordersPerPage = paginateResult(allOrders)
+            
             return{
                 ...state,
-                orders,
-                ordersPerPage,
-                currentPage: 1,
-                allOrders,
+                orders:action.orders
             }
         
         case OrdersActionTypes.ORDER_ITEM_ORDER_ENTRIES_FETCHING_START:

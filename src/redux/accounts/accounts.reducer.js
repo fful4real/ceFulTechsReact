@@ -26,6 +26,7 @@ let accounts = [],
 const AccountsReducer = (state=INITIAL_STATE,action)=>{
     switch (action.type) {
         case AccountsActionTypes.ACCOUNTS_FETCHING_SUCCESS:
+            // console.log('Account: ', action.accounts)
             accounts = action.accounts['hydra:member']
             totalPages = getPageCount(accounts)
             accountsPerPage = paginateResult(accounts)

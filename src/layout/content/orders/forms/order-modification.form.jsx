@@ -8,12 +8,11 @@ import API_ROUTES from '../../../../api-route';
 import AxiosAgent from '../../../../axios-agent';
 import Alert from '../../../../components/alert/alert'
 import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
-import { selectAccounts } from '../../../../redux/accounts/accounts.selector';
 import { selectOrders } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { sanitizeString } from '../../../../helpers/helper';
 
-const OrderModificationForm = ({order,orders, updateOrderAsync, accounts, closeModal})=>{
+const OrderModificationForm = ({order,orders, updateOrders, closeModal})=>{
     const [showSuccess, setShowSuccess] = useState({show:"hide",alertIcon:"check-circle", className:"success", message:"Order processed successfully"});
     let initialVals = {
         customerNumber:order.customer.mobileNumber,
@@ -73,19 +72,18 @@ const OrderModificationForm = ({order,orders, updateOrderAsync, accounts, closeM
                                 AxiosAgent.request('patch', API_ROUTES.orders(values.orderId), null, processValues)
                                         .then(resp=>{
                                             const orderResp = resp.data;
-                                            console.log("Patched Order: ",orderResp)
+                                            console.log(resp.data)
                                             setStatus({success: false})
-                                            const updatedOrder = {...order,
-                                                    amountIn:orderResp.amountIn,
-                                                    amountOut:orderResp.amountOut,
-                                                    note:orderResp.note,
-                                                    pendingAmount:orderResp.pendingAmount
-                                                }
+                                            
+                                            orders = orders.map(mapOrder=>mapOrder.id===orderResp.id?
+                                                orderResp:
+                                                mapOrder
+                                                )
 
                                             setSubmitting(false)
                                             setShowSuccess({...showSuccess, show:"show", className:"success",alertIcon:"check-circle", message:"Order processed successfully"})
                                             resetForm()
-                                            updateOrderAsync(updatedOrder)
+                                            updateOrders(orders)
                                             setFieldValue('amountIn',orderResp.amountIn)
                                             setFieldValue('amountOut',orderResp.amountOut )
                                             setFieldValue('orderNote',orderResp.note )
@@ -290,11 +288,10 @@ const OrderModificationForm = ({order,orders, updateOrderAsync, accounts, closeM
 }
 
 const mapDispatchToProps = {
-    updateOrderAsync
+    updateOrders:updateOrderAsync
 }
 
 const mapStateToProps = createStructuredSelector({
-    accounts:selectAccounts,
     orders: selectOrders
 })
 

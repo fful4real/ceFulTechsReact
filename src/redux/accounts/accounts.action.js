@@ -21,7 +21,7 @@ export const fetchAccountsAsync = ()=>{
         dispatch(fetchAccountsStart());
         AxiosAgent.request('get',API_ROUTES.accounts(null), null, null)
         .then(resp => {
-            console.log(resp.data)
+            // console.log(resp.data)
             dispatch(fetchAccountsSuccess(resp.data))
         })
         .catch(err => {

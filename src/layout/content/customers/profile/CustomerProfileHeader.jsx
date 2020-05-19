@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import avatar1 from '../../../../assets/img/gallery/mankaa.jpeg'
 import { CustomerProfileStyle } from '../styles/CustomerProfileStyle'
 import { selectCustomers, selectCurrentCustomer } from '../../../../redux/customers/customers.selectors'
@@ -7,19 +7,20 @@ import { withRouter, Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProfileOrderDetail'
 import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
-import { useEffect } from 'react'
 
 const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
     
     useEffect(() => {
         setCustomer(customer.id)
     }, [setCustomer,customer.id])
+
     if (currentCustomer&&!customer) {
         customer = customers.filter(mapCustomer=>mapCustomer.id===currentCustomer)[0]
     }
     if (!customer) {
         return <Redirect to="/customers" />
     }
+    
     let sent = {
         amountIn:0, 
         currencyIn:'',

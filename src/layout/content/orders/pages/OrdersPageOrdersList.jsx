@@ -2,94 +2,23 @@ import React, { useState } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import ListOrders from '../../../../components/list/ListOrders'
-import PaginatorDefault from '../../../../components/pagination/pagination.default'
-import { selectOrders, selectOrdersCurrentPage, selectIsFetchingOrdersPage, selectShouldFetchOrderPage, selectOdersTotalPages, selectOrdersPerPage, selectAllOrders, selectIsFetchingAllOrders } from '../../../../redux/orders/orders.selectors'
-import { setOrdersCurrentPageAsync, fetchOrdersPageAsync, setShouldFetchOrderPageAsync } from '../../../../redux/orders/orders.actions'
-import SearchForm from '../../../../components/form/search-form'
-import { Link } from 'react-router-dom'
-import { OrderListFormStyle } from './styles/order-list.style'
-import { selectStatuses } from '../../../../redux/statuses/statuses.selectors'
-import { uid } from 'react-uid'
+import { selectOrders, selectIsFetchingOrdersPage, selectIsFetchingAllOrders } from '../../../../redux/orders/orders.selectors'
 
-const OrdersPageOrdersList = ({orders,
-    pageCount, 
-    fetchPage,
-    setPage,
-    startFetchPage,
-    isFetching, 
-    currentPage, 
-    shouldFetchPage,
-    ordersPerPage,
-    statuses,
-    allOrders,
+const OrdersPageOrdersList = ({
+    orders,
+    isFetching,
     isFetchingAllOrders,
     pagefilter
 })=> {
-    
-    if (!ordersPerPage[`page_${currentPage}`]) {
-        !shouldFetchPage&&startFetchPage(true)
-        shouldFetchPage&&fetchPage(currentPage)
-        isFetching=true
-    }else{
-        isFetching=false
-    }
-    const [searchString, setSearchString] = useState('')
-    if (pagefilter) {
-        pagefilter = statuses.filter(status_i=>status_i.statusCode===pagefilter)[0]
-    }
-    const [status, setStatus] = useState(pagefilter)
-    orders = ordersPerPage[`page_${currentPage}`]
-    const handleSearch = value => setSearchString(value)
-    const handleSetPage = page => {
-        setPage(page)
-        setStatus('')
-        setSearchString('')
-    }
-
-    if (orders) {
-        orders = status||searchString?allOrders:orders
-        orders = status?orders.filter(item=>
-            (item.status.className.toLowerCase()===status.className.toLowerCase())
-        ):orders
-
-        orders = orders.filter(item=>
-            (item.customer.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
-            (item.customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
-        )
-        
-    }
-    const statusClassName = status?'text-'+status.className:'';
+    const [currentPage, setCurrentPage] = useState(1)
     const fetching = isFetching&&!isFetchingAllOrders
     // console.log(status)
     return (
         <div className="row">
             <div className="col-xl-12">
                 <div className="hk-sec-wrapper">
-                    <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="hk-sec-title">List of Orders</h5>
-                        <OrderListFormStyle>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div className="select-orders">
-                                    <div className="inline-block dropdown">
-                                        <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
-                                            <i className={`ion ion-ios-analytics ${statusClassName}`}></i>
-                                        </span>
-                                        <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", transform: "translate3d(13px, 21px, 0px)", top: "0px", left: "0px", willChange: "transform"}}>
-                                        {statuses.map(statusMap=>
-                                                (<Link key={`status-${uid(statusMap.id)}`} to="#" className={`dropdown-item ${status?status.className===statusMap.className?"text-success":'':''}`} onClick={()=>setStatus(statusMap)}>{statusMap.statusLabel}</Link>)
-                                            )
-                                        }
-                                            <div className="dropdown-divider"></div>
-                                            <Link className="dropdown-item" to="#" onClick={e=>setStatus('')}>View all Orders</Link>
-                                        </div>
-                                    </div>
-                                </div>
-                                <SearchForm handleSearch={handleSearch} searchString={searchString} />
-                            </div>
-                        </OrderListFormStyle>
-                    </div>
-                    <ListOrders tableData={orders} isFetching={fetching} />
-                    <PaginatorDefault currentPage={currentPage} pageCount={pageCount} setPage={page=>handleSetPage(page)} />
+                    <h5 className="hk-sec-title">List of Orders</h5>
+                    <ListOrders pagefilter={pagefilter} currentPage={currentPage} isFetching={fetching} setPage={setCurrentPage} tableData={orders} />
                 </div>
             </div>
         </div>
@@ -98,21 +27,8 @@ const OrdersPageOrdersList = ({orders,
 
 const mapStateToProps = createStructuredSelector({
     orders:selectOrders,
-    currentPage: selectOrdersCurrentPage,
     isFetching: selectIsFetchingOrdersPage,
-    shouldFetchPage: selectShouldFetchOrderPage,
-    pageCount: selectOdersTotalPages,
-    ordersPerPage: selectOrdersPerPage,
-    statuses: selectStatuses,
-    allOrders: selectAllOrders,
     isFetchingAllOrders: selectIsFetchingAllOrders,
 })
 
-
-const mapDispatchToProps = {
-    setPage: setOrdersCurrentPageAsync,
-    fetchPage: fetchOrdersPageAsync,
-    startFetchPage:setShouldFetchOrderPageAsync
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersPageOrdersList)
+export default connect(mapStateToProps)(OrdersPageOrdersList)
