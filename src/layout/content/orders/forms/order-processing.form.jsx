@@ -75,7 +75,7 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
                                 AxiosAgent.request('put', API_ROUTES.orders(values.orderId), null, processValues)
                                         .then(resp=>{
                                             const orderResp = resp.data;
-                                            console.log(resp.data)
+                                            {/* console.log(resp.data) */}
                                             setStatus({success: false})
                                             
                                             orders = orders.map(mapOrder=>mapOrder.id===orderResp.id?

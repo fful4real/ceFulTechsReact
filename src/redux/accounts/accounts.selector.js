@@ -9,6 +9,7 @@ export const selectAccounts = createSelector(
     accountsState => accountsState.accounts
 )
 
+// Select isFetchingAccounts
 export const selectIsFetchingAccounts = createSelector(
     [selectAccountState],
     accounts => accounts.isFetchingAccounts
@@ -20,15 +21,54 @@ export const selectAccountsCount = createSelector(
     accounts =>  accounts.length
 );
 
-export const selectAccountsTotalAmount = createSelector(
+
+// Select total for XAF accounts
+export const selectAccountsXAFTotal = createSelector(
     [selectAccounts],
     accounts => {
-       const amount = accounts.reduce((totalAmount,order)=>totalAmount+=parseInt(order.amountOut),0);
+        const amount = accounts.reduce((totalAmount,account)=>{
+            return account.currency.currencyCode === "XAF"?totalAmount+parseInt(account.balance):totalAmount
+        },0);
 
        return numberWithCommas(amount)
     }
 )
 
+// Select count for XAF accounts
+export const selectAccountsXAFCount = createSelector(
+    [selectAccounts],
+    accounts => {
+        const amount = accounts.reduce((totalAmount,account)=>{
+            return account.currency.currencyCode === "XAF"?totalAmount+=1:totalAmount
+        },0);
+
+       return numberWithCommas(amount)
+    }
+)
+
+// Select total for AED accounts
+export const selectAccountsAEDTotal = createSelector(
+    [selectAccounts],
+    accounts => {
+        const amount = accounts.reduce((totalAmount,account)=>{
+            return account.currency.currencyCode === "AED"?totalAmount+parseInt(account.balance):totalAmount
+        },0);
+
+       return numberWithCommas(amount)
+    }
+)
+
+// Select count for AED accounts
+export const selectAccountsAEDCount = createSelector(
+    [selectAccounts],
+    accounts => {
+        const amount = accounts.reduce((totalAmount,account)=>{
+            return account.currency.currencyCode === "AED"?totalAmount+=1:totalAmount
+        },0);
+
+       return numberWithCommas(amount)
+    }
+)
 //Seelect account modal
 export const selectAccountModalObject = createSelector(
     [selectAccountState],

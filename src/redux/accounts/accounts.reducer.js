@@ -5,6 +5,7 @@ import { paginateResult, getPageCount } from "../../helpers/helper";
 const INITIAL_STATE = {
     accounts:[],
     isFetchingAccounts:false,
+    isFetchingAllAccounts:false,
     totalPages:null,
     accountsPerPage:[],
     allAccounts: [],
@@ -32,6 +33,7 @@ const AccountsReducer = (state=INITIAL_STATE,action)=>{
             accountsPerPage = paginateResult(accounts)
             allAccounts = accounts
             totalAccounts = accounts.length
+            
             return{
                 ...state,
                 isFetchingAccounts:false,
@@ -54,10 +56,38 @@ const AccountsReducer = (state=INITIAL_STATE,action)=>{
                 isFetchingAccounts:false,
                 error: action.error
             }
+            
+        case AccountsActionTypes.ALL_ACCOUNTS_FETCHING_SUCCESS:
+            accounts = action.accounts
+            totalAccounts = accounts.length
+            allAccounts = action.accounts
+            accountsPerPage = paginateResult(accounts)
+            
+            return{
+                ...state,
+                isFetchingAllAccounts:false,
+                accounts,
+                accountsPerPage,
+                allAccounts,
+                totalAccounts
+            }
+        case AccountsActionTypes.ALL_ACCOUNTS_FETCHING_START:
+            return{
+                ...state,
+                isFetchingAllAccounts:true
+            }
+
+        case AccountsActionTypes.ALL_ACCOUNTS_FETCHING_FAILURE:
+            return{
+                ...state,
+                isFetchingAllAccounts:false,
+                error: action.error
+            }
         case AccountsActionTypes.UPDATE_ACCOUNTS:
             return{
                 ...state,
-                accounts:action.accounts
+                accounts:action.accounts,
+                allAccounts: action.accounts
             }
         case AccountsActionTypes.SET_SHOW_ACCOUNTS_MODAL:
             return{

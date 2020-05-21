@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './accounts.styles.scss'
 import AccountsHeader from './accounts-header.component';
 import AccountsReports from './accounts-report.component';
-import AccountsList from './accounts-list.component';
+import AccountsList from './AccountsList';
 import ModalComponent from '../../../components/modal/modal-component';
 import ModalAlert from '../../../components/alert/ModalAlert';
 import { createStructuredSelector } from 'reselect';
@@ -26,7 +26,7 @@ class AccountsPage extends Component {
 
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
 
     }
 
@@ -34,7 +34,7 @@ class AccountsPage extends Component {
         return true
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
 
     }
 
@@ -42,7 +42,7 @@ class AccountsPage extends Component {
 
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
 
     }
 

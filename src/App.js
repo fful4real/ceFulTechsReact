@@ -20,7 +20,10 @@ import { selectIsFetchingCustomers } from './redux/customers/customers.selectors
 import { selectIsFetchingCities } from './redux/cities/cities.selectors';
 import { selectIsFetchingCurrencies } from './redux/currencies/currencies.selectors';
 import { selectIsFetchingStatuses } from './redux/statuses/statuses.selectors';
+import { selectIsFetchingBanks } from './redux/banks/BanksSelectors';
 import CashExpress from './layout/CashExpress';
+import { fetchAccountTypesAsync } from './redux/accountTypes/AccountTypesAction';
+import { fetchBanksAsync } from './redux/banks/BanksAction';
 
 class App extends React.Component{
   compReady = false;
@@ -34,7 +37,9 @@ class App extends React.Component{
       fetchCurrenciesAsync,
       fetchCitiesAsync,
       fetchStatusesAsync,
-      fetchAccountsAsync
+      fetchAccountsAsync,
+      fetchAccountTypesAsync,
+      fetchBanksAsync
     } = this.props
     this.compReady = true;
     const userId = window.localStorage.getItem('userId');
@@ -46,6 +51,8 @@ class App extends React.Component{
     fetchStatusesAsync()
     fetchAccountsAsync()
     fetchAllOrdersAsync()
+    fetchAccountTypesAsync()
+    fetchBanksAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -74,6 +81,7 @@ class App extends React.Component{
                         !this.props.selectIsFetchingCustomers&&
                         !this.props.selectIsFetchingCities&&
                         !this.props.selectIsFetchingCurrencies&&
+                        !this.props.selectIsFetchingBanks&&
                         !this.props.selectIsFetchingStatuses;
                         
 
@@ -92,6 +100,7 @@ const mapStateToProps = createStructuredSelector({
   selectIsFetchingCities,
   selectIsFetchingCurrencies,
   selectIsFetchingStatuses,
+  selectIsFetchingBanks
 })
 
 const mapDispatchToProps = {
@@ -103,7 +112,9 @@ const mapDispatchToProps = {
   fetchCitiesAsync,
   fetchStatusesAsync,
   fetchAccountsAsync,
-  fetchAllOrdersAsync
+  fetchAllOrdersAsync,
+  fetchAccountTypesAsync,
+  fetchBanksAsync,
 }
 
 

@@ -5,10 +5,16 @@ const selectCurrenciesState = state => state.currencies;
 
 export const selectCurrencies = createSelector(
     [selectCurrenciesState],
-    currencies => currencies.currencies
+    currenciesState => currenciesState.currencies
 )
 
 export const selectIsFetchingCurrencies = createSelector(
     [selectCurrenciesState],
-    currencies => currencies.isFetchingCurrencies
+    currenciesState => currenciesState.isFetchingCurrencies
+)
+
+// Select currency count
+export const selectCurrenciesCount = createSelector(
+    [selectCurrencies],
+    currencies => currencies.length
 )

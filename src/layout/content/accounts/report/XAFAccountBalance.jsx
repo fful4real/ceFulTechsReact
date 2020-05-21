@@ -1,9 +1,12 @@
 import React from 'react'
+import { createStructuredSelector } from 'reselect';
+import { selectAccountsXAFTotal, selectAccountsXAFCount } from '../../../../redux/accounts/accounts.selector';
+import { connect } from 'react-redux';
 
-const AccountBalanceReport = ()=>{
+const XAFAccountBalance = ({xafTotal, xafCount})=>{
 
     return(
-        <div className="col-lg-6 col-md-6">
+        <div className="col-lg-4 col-md-4">
                 <div className="card card-sm">
                     <div className="card-body">
                         <div className="d-flex justify-content-between mb-5">
@@ -16,10 +19,10 @@ const AccountBalanceReport = ()=>{
                         </div>
                         <div className="text-center">
                             <span className="d-block display-4 text-dark mb-5">
-                                XAF <span className="counter-anim">23,983,563</span>
+                                <span className="counter-anim">{xafTotal}</span>
                             </span>
                             <small className="d-block">
-                                172,458 Exact account balance
+                                for total of {xafCount} XAF accounts
                             </small>
                         </div>
                     </div>
@@ -28,4 +31,9 @@ const AccountBalanceReport = ()=>{
     )
 }
 
-export default AccountBalanceReport;
+const mapStateToProps = createStructuredSelector({
+    xafTotal: selectAccountsXAFTotal,
+    xafCount: selectAccountsXAFCount,
+})
+
+export default connect(mapStateToProps)(XAFAccountBalance);

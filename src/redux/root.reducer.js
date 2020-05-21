@@ -11,6 +11,8 @@ import CitiesReducer from './cities/cities.reducer'
 import statusesReducer from './statuses/statuses.reducer'
 import DefaultParamsReducer from './defaults/default.reducer'
 import FultechsReducer from './fultechs/FultechsReducer'
+import AccountTypesReducer from './accountTypes/AccountTypesReducer'
+import BanksReducer from './banks/BanksReducer'
 
 export default combineReducers({
     accounts:accountsReducer,
@@ -23,5 +25,7 @@ export default combineReducers({
     user: userReducer,
     statuses: statusesReducer,
     defaultParams: DefaultParamsReducer,
-    fultechs: FultechsReducer
+    fultechs: FultechsReducer,
+    accountTypes: AccountTypesReducer,
+    banks: BanksReducer,
 })

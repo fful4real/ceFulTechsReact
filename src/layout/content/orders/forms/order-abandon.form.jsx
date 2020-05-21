@@ -11,11 +11,11 @@ import { selectOrders } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { selectStatuses } from '../../../../redux/statuses/statuses.selectors';
 
-const OrderAbandonForm = ({order,statuses,orders, updateOrderAsync, closeModal})=>{
+const OrderAbandonForm = ({updateOrder, order,statuses,orders, closeModal})=>{
     const [showSuccess, setShowSuccess] = useState({show:"hide",alertIcon:"check-circle", className:"success", message:"Order processed successfully"});
-    console.log('Order: ', order)
+    // console.log('Order: ', order)
     const abandonStatus = statuses.find(status=>status.statusCode==="ABN")
-    console.log("abandonStatus: ",abandonStatus)
+    // console.log("abandonStatus: ",abandonStatus)
     let initialVals = {
         customerNumber:order.customer.mobileNumber,
         amountOut:order.amountOut,
@@ -47,19 +47,19 @@ const OrderAbandonForm = ({order,statuses,orders, updateOrderAsync, closeModal})
                                 AxiosAgent.request('patch', API_ROUTES.orders(values.orderId), null, processValues)
                                         .then(resp=>{
                                             const orderResp = resp.data;
-                                            console.log("Patched Order: ",orderResp)
+                                            console.log('Order Resp: ',orderResp)
+                                            orders = orders.map(mapOrder=>mapOrder.id===orderResp.id?orderResp:mapOrder)
                                             setStatus({success: false})
-                                            const updatedOrder = {...order,
-                                                    status:orderResp.status
-                                                }
 
                                             setSubmitting(false)
                                             setShowSuccess({...showSuccess, show:"show", className:"success",alertIcon:"check-circle", message:"Order abandoned"})
                                             resetForm()
-                                            updateOrderAsync(updatedOrder)
+                                            console.log('Order: ',orders)
+                                            updateOrder(orders)
                                             
                                             setTimeout(()=>{
                                                 setShowSuccess({show:"hide",alertIcon:"block", className:"success", message:"Order processed successfully"})
+                                                closeModal()
                                             },2000)
                                         })
                                         .catch(error=>{
@@ -236,7 +236,7 @@ const OrderAbandonForm = ({order,statuses,orders, updateOrderAsync, closeModal})
 }
 
 const mapDispatchToProps = {
-    updateOrderAsync
+    updateOrder: updateOrderAsync
 }
 
 const mapStateToProps = createStructuredSelector({

@@ -1,5 +1,5 @@
 import CustomersActionTypes from "./customers.types";
-import { getTotalPages, paginateResult } from "../../helpers/helper";
+import { paginateResult, getPageCount } from "../../helpers/helper";
 
 
 const INITIAL_STATE = {
@@ -40,8 +40,8 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
                 customers: [...state.customers,action.customer]
             }
         case CustomersActionTypes.CUSTOMERS_FETCHING_SUCCESS:
-            totalPages = getTotalPages(action.customers['hydra:view']['hydra:last'])
             customers = action.customers['hydra:member']
+            totalPages = getPageCount(customers.length)
             customersPerPage = paginateResult(customers)
             return{
                 ...state,

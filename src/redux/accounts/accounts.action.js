@@ -95,3 +95,31 @@ export const closeAccountsModalAttempt = () =>{
         dispatch(closeAccountsModal())
     }
 }
+
+// Fetch All Accounts
+export const fetchAllAccountsStart = ()=>({
+    type:AccountsActionTypes.ALL_ACCOUNTS_FETCHING_START
+})
+export const fetchAllAccountsSuccess = accounts =>({
+    type: AccountsActionTypes.ALL_ACCOUNTS_FETCHING_SUCCESS,
+    accounts
+})
+export const fetchAllAccountsFailure = err =>({
+    type: AccountsActionTypes.ALL_ACCOUNTS_FETCHING_FAILURE,
+    payload: err
+})
+
+export const fetchAllAccountsAsync = ()=>{
+
+    return dispatch =>{
+        dispatch(fetchAllAccountsStart());
+        AxiosAgent.request('get','ce_accounts?pagination=0', null, null)
+        .then(resp => {
+            // console.log(resp.data)
+            dispatch(fetchAllAccountsSuccess(resp.data['hydra:member']))
+        })
+        .catch(err => {
+            console.error(err.message)
+        })
+    }
+}

@@ -10,6 +10,7 @@ import { createStructuredSelector } from 'reselect';
 import { selectFultechsRefreshTimeInterval, selectRedirectLink } from '../redux/fultechs/FultechsSelectors';
 import { fetchAllCustomersAsync } from '../redux/customers/customers.action';
 import { Redirect } from 'react-router-dom';
+import { fetchAllAccountsAsync } from '../redux/accounts/accounts.action';
 
 class CashExpress extends Component {
     constructor(props){
@@ -19,17 +20,18 @@ class CashExpress extends Component {
         }
     }
     componentDidMount() {
-        const {refreshTime, fetchAllCustomers,fetchAllOrders}= this.props
+        const {refreshTime,fetchAllAccounts, fetchAllCustomers,fetchAllOrders}= this.props
         this.setState({
             ...this.state,
             refreshInterval: setInterval(() => {
                 fetchAllOrders()
                 fetchAllCustomers()
+                fetchAllAccounts()
             }, refreshTime)
         })
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
 
     }
 
@@ -59,7 +61,8 @@ class CashExpress extends Component {
 
 const mapDispatchToProps = {
     fetchAllOrders : fetchAllOrdersAsync,
-    fetchAllCustomers: fetchAllCustomersAsync
+    fetchAllCustomers: fetchAllCustomersAsync,
+    fetchAllAccounts: fetchAllAccountsAsync
 }
 
 const mapStateToProps = createStructuredSelector({

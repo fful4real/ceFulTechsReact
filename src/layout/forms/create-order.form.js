@@ -18,8 +18,10 @@ import { selectCurrencies } from '../../redux/currencies/currencies.selectors';
 import { selectCities } from '../../redux/cities/cities.selectors';
 import { sanitizeString, customerExists } from '../../helpers/helper';
 import { selectIsOrderFromCustomer } from '../../redux/orders/orders.selectors';
+import { selectAccounts } from '../../redux/accounts/accounts.selector';
+import { updateAccountAsync } from '../../redux/accounts/accounts.action';
 
-const CreateOrderForm = ({customers,currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder})=>{
+const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder})=>{
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
     const currencyOutObj = currencies.filter(currency=>currency.currencyCode==="XAF")[0]
     const [searchString, setSearchString] = useState('');
@@ -32,12 +34,10 @@ const CreateOrderForm = ({customers,currentCustomer, addCustomerToState, currenc
     }
     let customer = null
 
-    console.log(isCustomersOrder)
-
     if (isCustomersOrder) {
         customer = customers.filter(customer=>parseInt(customer.id)===parseInt(currentCustomer))[0]
     }
-    // console.log(customer)
+    
     const toggleShow = show=>setShowDropdown(show);
     let initialVals = {
         customerNumber:customer?customer.mobileNumber:'',
@@ -91,19 +91,17 @@ const CreateOrderForm = ({customers,currentCustomer, addCustomerToState, currenc
                                 let orderValues = {
                                     amountIn: parseInt(values.amountIn),
                                     amountOut: parseInt(values.amountOut),
-                                    receiverNumber: values.customerNumber,
+                                    receiverNumber: sanitizeString(values.customerNumber),
                                     currencyIn:values.currencyIn,
                                     currencyOut: values.currencyOut,
-                                    firstName:values.firstName,
-                                    lastName:values.lastName,
+                                    firstName:sanitizeString(values.firstName),
+                                    lastName:sanitizeString(values.lastName),
                                     city:values.customerTown,
-                                    address: values.customerAddress,
+                                    address: sanitizeString(values.customerAddress),
                                     note:sanitizeString(values.orderNote)
                                 }
                                 
                                 orderValues = values.sentByName&&values.sentBy?{...orderValues,sentBy:values.sentBy}:orderValues
-
-                                
                                 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
@@ -114,7 +112,13 @@ const CreateOrderForm = ({customers,currentCustomer, addCustomerToState, currenc
                                         if(!customerExists(newCustomer, customers)){
                                           addCustomerToState(newCustomer) 
                                         }
+                                        accounts = accounts.map(account=>{
+                                            return account.currency.id===currencyInObj.id?
+                                                ({...account,balance:account.balance+orderValues.amountIn})
+                                                :account
+                                        })
                                         
+                                        updateAccounts(accounts)
                                         addOrderToState(newOrder)
                                         addOrderToCustomer(customers, newOrder)
                                         setSubmitting(false)
@@ -471,7 +475,8 @@ const CreateOrderForm = ({customers,currentCustomer, addCustomerToState, currenc
 const mapDispatchToProps = {
     addOrderToState,
     addOrderToCustomer,
-    addCustomerToState
+    addCustomerToState,
+    updateAccounts: updateAccountAsync
   }
   
   const mapStateToProps = createStructuredSelector({
@@ -479,7 +484,8 @@ const mapDispatchToProps = {
     currencies:selectCurrencies,
     cities:selectCities,
     currentCustomer: selectCurrentCustomer,
-    isCustomersOrder: selectIsOrderFromCustomer
+    isCustomersOrder: selectIsOrderFromCustomer,
+    accounts: selectAccounts
   })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderForm)

@@ -1,13 +1,15 @@
 import React from 'react'
-import AccountBalanceReport from './report/account-balance.component'
-import AccountCountReport from './report/acount-count.component'
+import AccountCountReport from './report/AccountCountReport'
+import XAFAccountBalance from './report/XAFAccountBalance'
+import AEDAccountBalance from './report/AEDAccountBalance'
 
 const AccountsReports = ()=>{
 
     return(
         <div className="hk-row">
-            <AccountBalanceReport/>
             <AccountCountReport/>
+            <XAFAccountBalance/>
+            <AEDAccountBalance/>
         </div>
     )
 }
