@@ -7,12 +7,13 @@ import API_ROUTES from '../../../../api-route';
 import AxiosAgent from '../../../../axios-agent';
 import Alert from '../../../../components/alert/alert'
 import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
-import { selectOrders } from '../../../../redux/orders/orders.selectors';
+import { selectOrders, selectOrderModalObject } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { selectStatuses } from '../../../../redux/statuses/statuses.selectors';
 
 const OrderAbandonForm = ({updateOrder, order,statuses,orders, closeModal})=>{
     const [showSuccess, setShowSuccess] = useState({show:"hide",alertIcon:"check-circle", className:"success", message:"Order processed successfully"});
+    order = order.data
     // console.log('Order: ', order)
     const abandonStatus = statuses.find(status=>status.statusCode==="ABN")
     // console.log("abandonStatus: ",abandonStatus)
@@ -241,7 +242,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = createStructuredSelector({
     orders: selectOrders,
-    statuses:selectStatuses
+    statuses:selectStatuses,
+    order: selectOrderModalObject
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderAbandonForm)

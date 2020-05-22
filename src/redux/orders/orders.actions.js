@@ -307,3 +307,68 @@ export const setOrderFromCustomerAttempt =  orderFromCustomer =>{
         dispatch(setOrderFromCustomer(orderFromCustomer))
     }
 }
+
+// Set show orders Modal
+
+export const setShowOrdersModal = show =>({
+    type: OrdersActionTypes.SET_SHOW_ORDERS_MODAL,
+    show
+})
+
+export const setShowOrdersModalAttempt = (show) =>{
+
+    return dispatch =>{
+        dispatch(setShowOrdersModal(show));
+    }
+}
+
+// Set orders modal heading
+
+export const setOrdersModalHeading = heading =>({
+    type: OrdersActionTypes.SET_ORDERS_MODAL_HEADING,
+    heading
+})
+
+export const setOrdersModalHeadingAttempt = (heading) =>{
+
+    return dispatch =>{
+        dispatch(setOrdersModalHeading(heading));
+    }
+}
+
+// Set orders modal body
+
+export const setOrdersModalbody = body =>({
+    type: OrdersActionTypes.SET_ORDERS_MODAL_BODY,
+    body
+})
+
+export const setOrdersModalbodyAttempt = (body) =>{
+
+    return dispatch =>{
+        dispatch(setOrdersModalbody(body));
+    }
+}
+
+// Close orders Modal
+export const closeOrdersModal = () =>({
+    type:OrdersActionTypes.SET_CLOSE_ORDERS_MODAL
+})
+export const closeOrdersModalAttempt = () =>{
+    return dispatch =>{
+        dispatch(closeOrdersModal())
+    }
+}
+// Set orders modal data
+
+export const setOrdersModalData = data =>({
+    type: OrdersActionTypes.SET_ORDERS_MODAL_DATA,
+    data
+})
+
+export const setOrdersModalDataAttempt = (data) =>{
+
+    return dispatch =>{
+        dispatch(setOrdersModalData(data));
+    }
+}

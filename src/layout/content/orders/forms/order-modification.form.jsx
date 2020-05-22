@@ -8,12 +8,13 @@ import API_ROUTES from '../../../../api-route';
 import AxiosAgent from '../../../../axios-agent';
 import Alert from '../../../../components/alert/alert'
 import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
-import { selectOrders } from '../../../../redux/orders/orders.selectors';
+import { selectOrders, selectOrderModalObject } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { sanitizeString } from '../../../../helpers/helper';
 
 const OrderModificationForm = ({order,orders, updateOrders, closeModal})=>{
     const [showSuccess, setShowSuccess] = useState({show:"hide",alertIcon:"check-circle", className:"success", message:"Order processed successfully"});
+    order = order.data
     let initialVals = {
         customerNumber:order.customer.mobileNumber,
         amountOut:order.amountOut,
@@ -292,7 +293,8 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = createStructuredSelector({
-    orders: selectOrders
+    orders: selectOrders,
+    order: selectOrderModalObject
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderModificationForm)

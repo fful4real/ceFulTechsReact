@@ -249,3 +249,9 @@ export const selectIsOrderFromCustomer = createSelector(
     ordersState => ordersState.isOrderFromCustomer
 )
 
+//Seelect order modal
+export const selectOrderModalObject = createSelector(
+    [selectOrderState],
+    ordersState => ordersState.ordersModal
+)
+

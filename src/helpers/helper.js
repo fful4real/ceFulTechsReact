@@ -93,8 +93,14 @@ export const getTotalPages = pageString =>{
 
 // Get total pages and array of data
 export const getPageCount = data =>{
-    let dataLength = data.length,
-        pageCount = 1
+    let dataLength = 1
+    let pageCount = 1
+    if (typeof data === 'string' || typeof data === 'number') {
+        dataLength = parseInt(data)
+    }
+    if (Array.isArray(data)) {
+        dataLength = data.length
+    }
     if (dataLength<=globalItemsPerPage) {
         return pageCount
     }
@@ -104,5 +110,15 @@ export const getPageCount = data =>{
         dataLength-=globalItemsPerPage
     }
     return pageCount
+}
+
+// Get Account Entries
+export const getAccountEntries = (account, accountEntries, isDebit)=>{
+    return accountEntries.filter(accountEntry=>((accountEntry.ceAccount.id===account.id)&&(accountEntry.isDebit===isDebit))?true:false)
+}
+
+// Get Account Entries Amount
+export const getAccountEntriesAmount = accountEntries=>{
+    return accountEntries.reduce((amount, creditEntry)=>amount+=creditEntry.amount,0)
 }
 

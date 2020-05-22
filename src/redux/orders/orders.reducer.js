@@ -1,5 +1,5 @@
 import OrdersActionTypes from "./orders.types";
-import { capitalizeFirstLetter, formatDate, addAttribute, paginateResult, getTotalPages } from "../../helpers/helper";
+import { capitalizeFirstLetter, formatDate, addAttribute, paginateResult, getPageCount } from "../../helpers/helper";
 
 
 const INITIAL_STATE = {
@@ -26,7 +26,13 @@ const INITIAL_STATE = {
     newOrders: [],
     ordersPerPage:{},
     orderCountPerPage:10,
-    allOrders:[]
+    allOrders:[],
+    ordersModal:{
+        show: false,
+        body:'',
+        heading:'Add Order',
+        data:null,
+    }
 }
 
 const fixOrdersCustomerNames = orders => orders.map(order=>({
@@ -80,11 +86,11 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
                 shouldFetchPage:action.fetchPage
             }
         case OrdersActionTypes.ORDERS_FETCHING_SUCCESS:
-            totalPages = getTotalPages(action.orders['hydra:view']['hydra:last'])
             orders = action.orders['hydra:member']
+            // console.log('orders',orders)
+            totalPages = getPageCount(orders)
             const page_1_orders= fixOrdersCustomerNames(orders)
-            // console.log(totalOrderPages)
-            totalOrders = action.orders['hydra:totalItems']
+            totalOrders = orders.length
             return{
                 ...state,
                 isFetching:false,
@@ -298,6 +304,33 @@ const ordersReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 isOrderFromCustomer:action.orderFromCustomer
+            }
+
+    
+        case OrdersActionTypes.SET_SHOW_ORDERS_MODAL:
+            return{
+                ...state,
+                ordersModal:{...state.ordersModal, show:action.show}
+            }
+        case OrdersActionTypes.SET_ORDERS_MODAL_HEADING:
+            return{
+                ...state,
+                ordersModal:{...state.ordersModal, heading:action.heading}
+            }
+        case OrdersActionTypes.SET_ORDERS_MODAL_BODY:
+            return{
+                ...state,
+                ordersModal:{...state.ordersModal, body:action.body}
+            }
+        case OrdersActionTypes.SET_ORDERS_MODAL_DATA:
+            return{
+                ...state,
+                ordersModal:{...state.ordersModal, data:action.data}
+            }
+        case OrdersActionTypes.SET_CLOSE_ORDERS_MODAL:
+            return{
+                ...state,
+                ordersModal:{...state.ordersModal, show:false}
             }
     
         default:

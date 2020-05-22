@@ -1,34 +1,23 @@
 import React from 'react'
 import { Form, Col, InputGroup, Button } from 'react-bootstrap'
-import ModalComponent from '../../../../components/modal/modal-component'
-import { useState } from 'react'
-import OrderProcessingForm from './order-processing.form'
 import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
-import { selectUser } from '../../../../redux/user/user.selectors'
-import OrderModificationForm from './order-modification.form'
-import OrderAbandonForm from './order-abandon.form'
-import { numberWithCommas } from '../../../../helpers/helper'
+import { numberWithCommas, capitalizeFirstLetter } from '../../../../helpers/helper'
+import { setShowOrdersModalAttempt, setOrdersModalbodyAttempt, setOrdersModalHeadingAttempt, setOrdersModalDataAttempt } from '../../../../redux/orders/orders.actions'
 
-const OrderItemForm = ({order, handleModal, selectUser})=> {
-    const [showModal, setShowModal] = useState({show:false, formEl:'',modalHeading:''})
+const OrderItemForm = ({order, setModalbody, setModalHeading, setModalData, showModal})=> {
 
     const canProcess = order.status.statusCode==="ABN"||
             order.status.statusCode==="OK"?  false:true
-    const handleProcessing = (formEl, modalHeading)=>{
-        setShowModal({show:true,formEl, modalHeading})
-    }
-    const closeModal = ()=>{
-        setShowModal(false)
+    
+    const handleModal = (modal)=>{
+        setModalbody(modal)
+        setModalHeading(`${capitalizeFirstLetter(modal)} Order`)
+        setModalData(order)
+        showModal(true)
     }
 
     return (
         <React.Fragment>
-            <ModalComponent showModal={showModal.show} closeModal={closeModal} modalHeading={showModal.modalHeading}>
-                {showModal.formEl==="Processing"&&<OrderProcessingForm order={order} closeModal={closeModal} />}
-                {showModal.formEl==="Modifying"&&<OrderModificationForm order={order} closeModal={closeModal} />}
-                {showModal.formEl==="Abandon"&&<OrderAbandonForm order={order} closeModal={closeModal} />}
-            </ModalComponent>
             <Form>
                 <Form.Row>
                     <Form.Group as={Col} md="6" controlId="validationAmountIn">
@@ -143,7 +132,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                             disabled={!canProcess} 
                             size="lg"
                             type="button"
-                            onClick={()=>handleProcessing('Processing', 'Process Order')}
+                            onClick={()=>handleModal('process')}
                         >
                             Process
                         </Button>
@@ -153,7 +142,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                             disabled={!canProcess}
                             size="lg"
                             type="button"
-                            onClick={()=>handleProcessing('Modifying', 'Modify Order')}
+                            onClick={()=>handleModal('modify')}
                             
                         >
                             Modify
@@ -164,7 +153,7 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
                             disabled={!canProcess} 
                             size="lg"
                             type="button"
-                            onClick={()=>handleProcessing('Abandon', 'Abandon Order')}
+                            onClick={()=>handleModal('abandon')}
                         >
                             Abandon
                         </Button>
@@ -184,8 +173,11 @@ const OrderItemForm = ({order, handleModal, selectUser})=> {
         </React.Fragment>)
 }
 
-const mapStateToProps = createStructuredSelector({
-    selectUser
-})
+const mapDispatchToProps = {
+    showModal: setShowOrdersModalAttempt,
+    setModalbody: setOrdersModalbodyAttempt,
+    setModalHeading: setOrdersModalHeadingAttempt,
+    setModalData: setOrdersModalDataAttempt
+}
 
-export default connect(mapStateToProps)(OrderItemForm)
+export default connect(null,mapDispatchToProps)(OrderItemForm)

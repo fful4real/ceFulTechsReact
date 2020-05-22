@@ -7,10 +7,11 @@ import FooterContent from './footer/footer.component';
 import { connect } from 'react-redux';
 import { fetchAllOrdersAsync } from '../redux/orders/orders.actions';
 import { createStructuredSelector } from 'reselect';
-import { selectFultechsRefreshTimeInterval, selectRedirectLink } from '../redux/fultechs/FultechsSelectors';
+import { selectFultechsRefreshTimeInterval, selectRedirectLink, selectIsAppLoaded } from '../redux/fultechs/FultechsSelectors';
 import { fetchAllCustomersAsync } from '../redux/customers/customers.action';
 import { Redirect } from 'react-router-dom';
 import { fetchAllAccountsAsync } from '../redux/accounts/accounts.action';
+import { fetchAllAccountEntriesAsync } from '../redux/accountEntries/AccountEntriesAction';
 
 class CashExpress extends Component {
     constructor(props){
@@ -20,14 +21,14 @@ class CashExpress extends Component {
         }
     }
     componentDidMount() {
-        const {refreshTime,fetchAllAccounts, fetchAllCustomers,fetchAllOrders}= this.props
+        const {refreshTime,fetchAllAccounts, fetchAllCustomers,fetchAllOrders, isAppLoaded}= this.props
         this.setState({
             ...this.state,
-            refreshInterval: setInterval(() => {
+            refreshInterval: isAppLoaded?setInterval(() => {
                 fetchAllOrders()
                 fetchAllCustomers()
                 fetchAllAccounts()
-            }, refreshTime)
+            }, refreshTime):''
         })
     }
 
@@ -36,14 +37,37 @@ class CashExpress extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const {redirectLink} = this.props
+        const {
+            redirectLink, 
+            isAppLoaded, 
+            fetchAllOrders, 
+            fetchAllCustomers, 
+            fetchAllAccounts, 
+            refreshTime,
+            fetchAllAccountEntries
+        } = this.props
         if (prevProps.redirectLink!==redirectLink) {
             return <Redirect to='/customers'  />
+        }
+        if(prevProps.isAppLoaded!==isAppLoaded){
+            this.setState({
+                ...this.state, 
+                refreshInterval: setInterval(() => {
+                    fetchAllOrders()
+                    fetchAllCustomers()
+                    fetchAllAccounts()
+                    fetchAllAccountEntries()
+                }, refreshTime)
+            })
         }
     }
 
     componentWillUnmount() {
         clearInterval(this.state.refreshInterval)
+        this.setState({
+            ...this.state,
+            refreshInterval:''
+        })
     }
 
     render() {
@@ -62,12 +86,14 @@ class CashExpress extends Component {
 const mapDispatchToProps = {
     fetchAllOrders : fetchAllOrdersAsync,
     fetchAllCustomers: fetchAllCustomersAsync,
-    fetchAllAccounts: fetchAllAccountsAsync
+    fetchAllAccounts: fetchAllAccountsAsync,
+    fetchAllAccountEntries: fetchAllAccountEntriesAsync
 }
 
 const mapStateToProps = createStructuredSelector({
     refreshTime: selectFultechsRefreshTimeInterval,
-    redirectLink: selectRedirectLink
+    redirectLink: selectRedirectLink,
+    isAppLoaded: selectIsAppLoaded
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CashExpress);

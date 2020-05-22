@@ -24,6 +24,7 @@ import { selectIsFetchingBanks } from './redux/banks/BanksSelectors';
 import CashExpress from './layout/CashExpress';
 import { fetchAccountTypesAsync } from './redux/accountTypes/AccountTypesAction';
 import { fetchBanksAsync } from './redux/banks/BanksAction';
+import { setAppLoadedAttempt } from './redux/fultechs/FulTechsActions';
 
 class App extends React.Component{
   compReady = false;
@@ -67,7 +68,7 @@ class App extends React.Component{
 
   render(){
     
-    const {auth}=this.props
+    const {auth, appIsLoaded}=this.props
     let {token, isUserAuthenticated} = auth
     // console.log(isUserAuthenticated)
     if(!token){
@@ -75,7 +76,7 @@ class App extends React.Component{
       token&&AxiosAgent.setToken(token)
     }
   let finishedLoadingApp = false;
-  if(this.compReady)
+  if(this.compReady){
     finishedLoadingApp = !this.props.selectIsFetchingOrders&&
                         !this.props.selectIsFetchingAccounts&&
                         !this.props.selectIsFetchingCustomers&&
@@ -83,7 +84,8 @@ class App extends React.Component{
                         !this.props.selectIsFetchingCurrencies&&
                         !this.props.selectIsFetchingBanks&&
                         !this.props.selectIsFetchingStatuses;
-                        
+  }
+  finishedLoadingApp&&appIsLoaded()
 
     return !token||!isUserAuthenticated ? 
       <Redirect to='/login'  /> : 
@@ -115,6 +117,7 @@ const mapDispatchToProps = {
   fetchAllOrdersAsync,
   fetchAccountTypesAsync,
   fetchBanksAsync,
+  appIsLoaded: setAppLoadedAttempt
 }
 
 

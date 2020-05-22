@@ -1,7 +1,7 @@
 import React from 'react'
 import DataTable from 'react-data-table-component'
 
-const  ListItems = ({columns,data, pagination=false, isFetchingData, handleRowClick, expandableRows})=> {
+const  ListItems = ({columns,data, pagination=false, isFetchingData, handleRowClick, expandableRows, expandableRowsComponent})=> {
     
     return (
         <div className="row">
@@ -21,6 +21,7 @@ const  ListItems = ({columns,data, pagination=false, isFetchingData, handleRowCl
                         fixedHeaderScrollHeight="100vh"
                         expandableRows={expandableRows?true:false}
                         onRowClicked={handleRowClick&&handleRowClick}
+                        expandableRowsComponent={expandableRowsComponent}
                     />
                 </div>
             </div>

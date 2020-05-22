@@ -46,4 +46,9 @@ export const selectCurrentPage = createSelector(
     [selectFultechsState],
     ftstate => ftstate.currentPage
 )
+// Select current page
+export const selectIsAppLoaded = createSelector(
+    [selectFultechsState],
+    ftstate => ftstate.isAppLoaded
+)
 

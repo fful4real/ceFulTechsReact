@@ -59,4 +59,15 @@ export const setCurrentPageAttempt = currentPage =>{
         dispatch(setCurrentPage(currentPage));
     }
 }
+// set is App loaded
+
+export const setAppLoaded = () =>({
+    type: FultechsActionTypes.SET_IS_APP_LOADED
+})
+
+export const setAppLoadedAttempt = () =>{
+    return dispatch =>{
+        dispatch(setAppLoaded());
+    }
+}
 

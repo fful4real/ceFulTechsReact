@@ -8,10 +8,11 @@ import { connect } from 'react-redux';
 
 const AccountsHeader = ({setModalbody, setModalHeading, showModal})=>{
     const handleClick = ()=>{
-        setModalbody('new')
+        setModalbody('create')
         setModalHeading('Add Account')
         showModal(true)
     }
+    
     return(
         <div className="hk-pg-header mb-10">
             <div>
@@ -24,7 +25,7 @@ const AccountsHeader = ({setModalbody, setModalHeading, showModal})=>{
             </div>
             <div className="d-flex">
                 <Button variant="info" size="sm">
-                    <IosListBoxOutline color="#fff" /> List Accounts&nbsp;
+                    <IosListBoxOutline color="#fff" /> Receive Amount&nbsp;
                 </Button>
                 <Button variant="primary" size="sm" className="order-new" onClick={handleClick}>
                     <IosAddCircleOutline color="#fff" /> Add Account&nbsp;

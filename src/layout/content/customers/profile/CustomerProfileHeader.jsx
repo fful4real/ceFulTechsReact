@@ -7,8 +7,9 @@ import { withRouter, Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProfileOrderDetail'
 import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
+import { selectIsAppLoaded } from '../../../../redux/fultechs/FultechsSelectors'
 
-const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
+const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
     
     useEffect(() => {
         setCustomer(customer.id)
@@ -224,7 +225,7 @@ const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHead
                         <div className="hk-row">
                             <div className="col-lg-4 d-flex justify-content-left">
                                 <div className="media position-relative align-items-center profile-cover-content">
-                                    <div className="modify-customer-profile position-absolute cursor-pointer">
+                                    {appIsLoaded&&<div className="modify-customer-profile position-absolute cursor-pointer">
                                         <div className="inline-block dropdown">
                                             <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
                                                 <i className="ion ion-ios-settings "></i>
@@ -240,7 +241,7 @@ const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHead
                                                 </Link>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>}
                                     <div className="media-img-wrap  d-flex">
                                         <div className="customer-avatar avatar">
                                             <img src={avatar1} alt="user" className="avatar-img rounded-circle"></img>
@@ -285,33 +286,16 @@ const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHead
                                     <div className="row">
                                         <div className="col-lg-6">
                                             <ul className="list-group list-group-flush">
-                                                <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <DisplayCustomerProfileOrderDetail attr={sent}/>
-                                                </li>
-                                                
-                                                <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <DisplayCustomerProfileOrderDetail attr={received}/>
-                                                </li>
-                                                
-                                                <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <DisplayCustomerProfileOrderDetail attr={processed}/>
-                                                </li>
-                                                
+                                                <DisplayCustomerProfileOrderDetail attr={sent}/>
+                                                <DisplayCustomerProfileOrderDetail attr={received}/>
+                                                <DisplayCustomerProfileOrderDetail attr={processed}/>
                                             </ul>
                                         </div>
                                         <div className="col-lg-6">
                                             <ul className="list-group list-group-flush">
-                                                <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <DisplayCustomerProfileOrderDetail attr={abandoned}/>
-                                                </li>
-                                                
-                                                <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <DisplayCustomerProfileOrderDetail attr={pending}/>
-                                                </li>
-                                                
-                                                <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <DisplayCustomerProfileOrderDetail attr={neworder}/>
-                                                </li>
+                                                <DisplayCustomerProfileOrderDetail attr={abandoned}/>
+                                                <DisplayCustomerProfileOrderDetail attr={pending}/>
+                                                <DisplayCustomerProfileOrderDetail attr={neworder}/>
                                             </ul>
                                         </div>
                                     </div>
@@ -332,7 +316,8 @@ const CustomerProfileHeader = ({customer,currentCustomer, customers,setModalHead
 
 const mapStateToProps = createStructuredSelector({
     customers: selectCustomers,
-    currentCustomer: selectCurrentCustomer
+    currentCustomer: selectCurrentCustomer,
+    appIsLoaded: selectIsAppLoaded
 })
 
 const mapDispatchToProps = {

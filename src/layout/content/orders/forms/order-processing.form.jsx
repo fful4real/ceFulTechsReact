@@ -7,18 +7,20 @@ import { connect } from 'react-redux';
 import API_ROUTES from '../../../../api-route';
 import AxiosAgent from '../../../../axios-agent';
 import Alert from '../../../../components/alert/alert'
-import {updateOrderAsync, fetchOrderItemLatestOrderEntryAsync } from '../../../../redux/orders/orders.actions'
+import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
 import { selectAccounts } from '../../../../redux/accounts/accounts.selector';
-import { selectOrders } from '../../../../redux/orders/orders.selectors';
+import { selectOrders, selectOrderModalObject } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { uid } from 'react-uid';
 import { updateAccountAsync } from '../../../../redux/accounts/accounts.action';
 import { sanitizeString, numberWithCommas } from '../../../../helpers/helper';
 
-const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOrder,updateAccountAsync, accounts})=>{
+const OrderProcessingForm = ({order,closeModal,orders, updateOrder,updateAccountAsync, accounts})=>{
+    order = order.data
+
+    console.log(order)
     const accountData = accounts.filter(account=>{ return (account.currency.currencyCode===order.currencyOut.currencyCode)&&parseInt(account.balance)>0});
     const [showSuccess, setShowSuccess] = useState({show:"hide", className:"success", message:"Order processed successfully"});
-    // console.log(statuses)
     let initialVals = {
         customerNumber:order.customer.mobileNumber,
         pendingAmount:order.pendingAmount,
@@ -60,7 +62,6 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
                                 }
                                 const fromAccountVal = values.fromAccount.split("/")
                                 if(parseInt(values.processingAmount)>parseInt(fromAccountVal[0])){
-                                    console.log(fromAccountVal[0])
                                     setErrors({processingAmount: 'Amount greated than account balance'})
                                     return false
                                 }
@@ -75,7 +76,6 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
                                 AxiosAgent.request('put', API_ROUTES.orders(values.orderId), null, processValues)
                                         .then(resp=>{
                                             const orderResp = resp.data;
-                                            {/* console.log(resp.data) */}
                                             setStatus({success: false})
                                             
                                             orders = orders.map(mapOrder=>mapOrder.id===orderResp.id?
@@ -306,12 +306,12 @@ const OrderProcessingForm = ({order,closeModal,orders,updateOrderEntry, updateOr
 const mapDispatchToProps = {
     updateOrder:updateOrderAsync,
     updateAccountAsync,
-    updateOrderEntry: fetchOrderItemLatestOrderEntryAsync
 }
 
 const mapStateToProps = createStructuredSelector({
     accounts:selectAccounts,
-    orders: selectOrders
+    orders: selectOrders,
+    order: selectOrderModalObject
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderProcessingForm)

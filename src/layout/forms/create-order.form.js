@@ -21,9 +21,8 @@ import { selectIsOrderFromCustomer } from '../../redux/orders/orders.selectors';
 import { selectAccounts } from '../../redux/accounts/accounts.selector';
 import { updateAccountAsync } from '../../redux/accounts/accounts.action';
 
-const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder})=>{
+const CreateOrderForm = ({customers,closeModal,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder})=>{
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
-    const currencyOutObj = currencies.filter(currency=>currency.currencyCode==="XAF")[0]
     const [searchString, setSearchString] = useState('');
     const [showDropdown, setShowDropdown] = useState({phoneNumber:'hide',sentBy:'hide'});
     const [showSuccess, setShowSuccess] = useState('hide');
@@ -43,8 +42,8 @@ const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, a
         customerNumber:customer?customer.mobileNumber:'',
         amountIn:'',
         amountOut:'',
-        currencyIn:`/api/currencies/${currencyInObj.id}`,
-        currencyOut: `/api/currencies/${currencyOutObj.id}`,
+        currencyIn:'',
+        currencyOut: '',
         firstName:customer?customer.firstName:'',
         lastName:customer?customer.lastName:'',
         customerAddress:customer?customer.address:'',
@@ -86,6 +85,10 @@ const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, a
                         (values, {setSubmitting,setErrors, error, resetForm, setStatus})=>{
                                 if(values.currencyIn===values.currencyOut){
                                     setErrors({amountIn: 'Currency In must be different from Currency Out'})
+                                    return false
+                                }
+                                if(!values.currencyIn||!values.currencyOut){
+                                    setErrors({amountIn: 'Please select currencies'})
                                     return false
                                 }
                                 let orderValues = {
@@ -232,9 +235,23 @@ const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, a
                                                 autoComplete="off"
                                             />
                                             <InputGroup.Append>
-                                            <InputGroup.Text>
-                                                <span>{currencyInObj.currencyCode}</span>
-                                            </InputGroup.Text>
+                                                <select 
+                                                    id="orderCurrencyIn" 
+                                                    onChange={handleChange} 
+                                                    className="form-control" 
+                                                    value={values.currencyIn}
+                                                    name="currencyIn"
+                                                    disabled={isSubmitting}
+                                                    onBlur={handleBlur}
+                                                >
+                                                    <option value="">--</option>
+                                                    {
+                                                        currencies
+                                                        .map(({currencyCode, id})=>(
+                                                            <option key={`currency-${uid({id})}`} value={`/api/currencies/${id}`}>{currencyCode}</option>
+                                                            ))
+                                                    }
+                                                </select>
                                             </InputGroup.Append>
                                     </InputGroup>
                                     {touched.amountIn&&errors.amountIn&&
@@ -263,9 +280,23 @@ const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, a
                                                 autoComplete="off"
                                             />
                                             <InputGroup.Append>
-                                                <InputGroup.Text>
-                                                    <span>{currencyOutObj.currencyCode}</span>
-                                                </InputGroup.Text>
+                                            <select 
+                                                    id="orderCurrencyOut" 
+                                                    onChange={handleChange} 
+                                                    className="form-control" 
+                                                    value={values.currencyOut}
+                                                    name="currencyOut"
+                                                    disabled={isSubmitting}
+                                                    onBlur={handleBlur}
+                                                >
+                                                    <option value="">--</option>
+                                                    {
+                                                        currencies
+                                                        .map(({currencyCode, id})=>(
+                                                            <option key={`currency-${uid({id})}`} value={`/api/currencies/${id}`}>{currencyCode}</option>
+                                                            ))
+                                                    }
+                                                </select>
                                             </InputGroup.Append>
                                     </InputGroup>
                                     {touched.amountOut&&errors.amountOut&&
@@ -454,15 +485,20 @@ const CreateOrderForm = ({customers,updateAccounts, accounts, currentCustomer, a
                                 </Form.Group>
                     
                             </Form.Row>
-
-                            
-                            <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
-                                {
-                                    isSubmitting? <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>: "Create"
-                                }
-                            </Button>
-
-                            {/* {JSON.stringify(values,null,2)} */}
+                            <Form.Row>
+                                <Form.Group as={Col} md="6" className="mb-0" controlId="validationNewOrderSubmitForm">
+                                    <Button className="btn-block" disabled={isSubmitting} variant="success" size="lg" type="submit">
+                                        {
+                                            isSubmitting? <Spinner spinnerHeight="24px" spinnerFontSize="1.2em" spinnerRight="48%"/>: "Create"
+                                        }
+                                    </Button>
+                                </Form.Group>
+                                <Form.Group as={Col} md="6" className="mb-0" controlId="validationNewOderSubmitCancel">
+                                    <Button className="btn-block" onClick={closeModal} disabled={isSubmitting} variant="secondary" size="lg" type="button">
+                                        Close
+                                    </Button>
+                                </Form.Group>
+                            </Form.Row>
 
                         </Form>
                     )}}

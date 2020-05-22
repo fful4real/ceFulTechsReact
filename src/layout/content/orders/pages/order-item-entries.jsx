@@ -2,6 +2,7 @@ import React from 'react'
 import ListItems from '../../../../components/list/list-items'
 import { numberWithCommas } from '../../../../helpers/helper'
 import moment from 'moment'
+import OrderItemNote from './OrderItemNote'
 const  OrderItemEntries = ({order})=> {
     // console.log(selectOrdersTableData
     const columns = [
@@ -49,7 +50,7 @@ const  OrderItemEntries = ({order})=> {
     ]
 
     return (
-            <ListItems columns={columns} data={order.orderEntries} />
+            <ListItems columns={columns} data={order.orderEntries} expandableRowsComponent={<OrderItemNote />}  expandableRows={true}/>
         )
 
 }

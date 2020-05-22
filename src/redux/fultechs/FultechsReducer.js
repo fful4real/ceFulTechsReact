@@ -14,7 +14,8 @@ export const FULTECHS_INITIAL_STATE = {
         icon:'',
         variant:''
     },
-    redirectLink:null
+    redirectLink:null,
+    isAppLoaded: false
 }
 
 const FultechsReducer = (state=FULTECHS_INITIAL_STATE,action)=>{
@@ -50,6 +51,11 @@ const FultechsReducer = (state=FULTECHS_INITIAL_STATE,action)=>{
             return{
                 ...state,
                 currentPage:action.currentPage
+            }
+        case FultechsActionTypes.SET_IS_APP_LOADED:
+            return{
+                ...state,
+                isAppLoaded:true
             }
     
         default:

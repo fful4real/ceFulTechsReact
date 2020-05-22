@@ -9,8 +9,9 @@ import { uid } from 'react-uid'
 import { selectStatuses } from '../../redux/statuses/statuses.selectors'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import { selectIsAppLoaded } from '../../redux/fultechs/FultechsSelectors'
 
-const ListOrders = ({tableData,pagefilter='',statuses, currentPage, setPage, isFetching, receivedFrom=false, expandableRows=false}) =>{
+const ListOrders = ({tableData,appIsLoaded,pagefilter='',statuses, currentPage, setPage, isFetching, receivedFrom=false, expandableRows=false}) =>{
     const [searchString, setSearchString] = useState('')
     const [itemPage, setItemPage] = useState(false)
     if (pagefilter) {
@@ -35,9 +36,18 @@ const ListOrders = ({tableData,pagefilter='',statuses, currentPage, setPage, isF
         (item.status.className.toLowerCase()===status.className.toLowerCase())
     ):tableData
     if (receivedFrom) {
-        tableData = tableData.filter(item=>
-            (item.sentBy.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
-            (item.sentBy.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+        console.log(tableData)
+        tableData = tableData.filter(item=>{
+            if(item.sentBy){
+                return (item.sentBy.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
+                (item.sentBy.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)
+            }
+            if(searchString){
+                return false
+            }else{
+                return true
+            }
+        }
         )
     }else{
         tableData = tableData.filter(item=>
@@ -117,7 +127,7 @@ const ListOrders = ({tableData,pagefilter='',statuses, currentPage, setPage, isF
     (<Redirect to={`/orders/${itemPage.id}`}/>)
     : (
         <div>
-            <div className="d-flex justify-content-end align-items-center">
+            {appIsLoaded&&<div className="d-flex justify-content-end align-items-center">
                 <div className="select-orders mr-10 cursor-pointer">
                     <div className="inline-block dropdown">
                         <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
@@ -134,7 +144,7 @@ const ListOrders = ({tableData,pagefilter='',statuses, currentPage, setPage, isF
                     </div>
                 </div>
                 <SearchForm handleSearch={handleSearch} searchString={searchString} searchPlaceHolder="Search order" />
-            </div>
+            </div>}
                 <ListItems expandableRows={expandableRows} columns={columns} data={tableData} isFetchingData={isFetching} handleRowClick={handleRowClick} />
             <div className="mb-10"></div>
             {pageCount>1&&<PaginatorDefault currentPage={currentPage} pageCount={pageCount} setPage={setPage} />}
@@ -143,5 +153,6 @@ const ListOrders = ({tableData,pagefilter='',statuses, currentPage, setPage, isF
 }
 const mapStateToProps = createStructuredSelector({
     statuses: selectStatuses,
+    appIsLoaded: selectIsAppLoaded
 })
 export default connect(mapStateToProps)(ListOrders)
