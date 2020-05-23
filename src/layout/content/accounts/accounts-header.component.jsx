@@ -3,7 +3,7 @@ import IosAddCircleOutline from 'react-ionicons/lib/IosAddCircleOutline'
 import IosListBoxOutline from 'react-ionicons/lib/IosListBoxOutline'
 import IosCalculator from 'react-ionicons/lib/IosCalculator'
 import { Button } from 'react-bootstrap';
-import { setShowAccountsModal, setAccountsModalbodyAttempt, setAccountsModalHeadingAttempt } from '../../../redux/accounts/accounts.action';
+import { setAccountsModalbodyAttempt, setAccountsModalHeadingAttempt, setShowAccountsModalAttempt } from '../../../redux/accounts/accounts.action';
 import { connect } from 'react-redux';
 
 const AccountsHeader = ({setModalbody, setModalHeading, showModal})=>{
@@ -36,7 +36,7 @@ const AccountsHeader = ({setModalbody, setModalHeading, showModal})=>{
 }
 
 const mapDispatchToProps = {
-    showModal: setShowAccountsModal,
+    showModal: setShowAccountsModalAttempt,
     setModalbody: setAccountsModalbodyAttempt,
     setModalHeading: setAccountsModalHeadingAttempt
 }

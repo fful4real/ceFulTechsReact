@@ -21,7 +21,7 @@ export const fetchAllAccountEntriesAsync = ()=>{
         dispatch(fetchAllAccountEntriesStart());
         AxiosAgent.request('get','account_entries?pagination=0', null, null)
         .then(resp => {
-            console.log(resp.data)
+            // console.log(resp.data)
             dispatch(fetchAllAccountEntriesSuccess(resp.data['hydra:member']))
         })
         .catch(err => {

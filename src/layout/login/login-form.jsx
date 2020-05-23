@@ -19,8 +19,6 @@ class LoginForm extends Component {
         const {handleSubmit, auth} = this.props;
         const textColor = auth.isLogging?'text-grey':'';
 
-        console.log(textColor)
-
         return(
             <form onSubmit={handleSubmit(this.onSubmit.bind(this))} className="relative-position">
                 <div className="login-error" style={{maxWidth:'500px',position:'relative', margin:"0px 18px 0px auto"}}>

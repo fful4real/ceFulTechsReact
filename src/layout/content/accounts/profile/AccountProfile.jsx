@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import { withRouter, Redirect } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import AccountProfileHeader from './AccountProfileHeader'
+import AccountProfileAccountEntries from './AccountProdileAccountEntries'
 import { selectAccounts } from '../../../../redux/accounts/accounts.selector'
 
-function AccountProfile({accounts, match}) {
+const AccountProfile = ({accounts, match})=> {
     if (!accounts) {
         return <Redirect to="/accounts" />
     }
@@ -17,6 +18,7 @@ function AccountProfile({accounts, match}) {
     return (
         <>
             <AccountProfileHeader account={account} />
+            <AccountProfileAccountEntries account={account} />
         </>
     )
 }

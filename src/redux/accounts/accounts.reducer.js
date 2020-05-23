@@ -15,7 +15,8 @@ const INITIAL_STATE = {
         show: false,
         body:'',
         heading:'Add Account'
-    }
+    },
+    receivingAccount:null
 }
 
 let accounts = [],
@@ -108,6 +109,11 @@ const AccountsReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 accountsModal:{...state.accountsModal, show:false}
+            }
+        case AccountsActionTypes.SET_RECEIVING_ACCOUNT:
+            return{
+                ...state,
+                receivingAccount:action.id
             }
     
         default:

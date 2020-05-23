@@ -3,13 +3,19 @@ import avatar1 from '../../../../assets/img/gallery/bank.jpg'
 import { CustomerProfileStyle } from '../../customers/styles/CustomerProfileStyle'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { setShowAccountsModalAttempt, setAccountsModalHeadingAttempt } from '../../../../redux/accounts/accounts.action'
+import { setShowAccountsModalAttempt, setAccountsModalHeadingAttempt, setAccountsModalbodyAttempt, setReceivingAccountAttempt } from '../../../../redux/accounts/accounts.action'
 import { createStructuredSelector } from 'reselect'
 import { selectIsAppLoaded } from '../../../../redux/fultechs/FultechsSelectors'
 import { numberWithCommas, getAccountEntries, getAccountEntriesAmount } from '../../../../helpers/helper'
 import { selectAccountEntries } from '../../../../redux/accountEntries/AccountEntriesSelectors'
 
-const AccountProfileHeader = ({appIsLoaded,accountEntries, setModal, setModalHeading, account})=> {
+const AccountProfileHeader = ({setReceivingAccount, setModalbody,showModal,appIsLoaded,accountEntries, setModal, setModalHeading, account})=> {
+    const handleClick = ()=>{
+        setReceivingAccount(account.id)
+        setModalbody('receive')
+        setModalHeading('Receive Amount')
+        showModal(true)
+    }
     let debitAccountEntries = [],
         creditAccountEntries = [],
         debitEntriesAmount = 0,
@@ -25,7 +31,7 @@ const AccountProfileHeader = ({appIsLoaded,accountEntries, setModal, setModalHea
         entriesCount: debitAccountEntries.length+creditAccountEntries.length,
         amount: debitEntriesAmount+creditEntriesAmount
     }
-    console.log(debitAccountEntries)
+    // console.log(debitAccountEntries)
     return (
         <div className="row">
             <div className="col-xl-12">
@@ -113,6 +119,11 @@ const AccountProfileHeader = ({appIsLoaded,accountEntries, setModal, setModalHea
                                             </ul>
                                         </div>
                                     </div>
+                                    <div className="row">
+                                        <div className="col-lg-12">
+                                            <button className="btn btn-info btn-block" onClick={handleClick}>Receive Amount</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +138,11 @@ const mapStateToProps = createStructuredSelector({
     accountEntries: selectAccountEntries
 })
 const mapDispatchToProps = {
+    showModal: setShowAccountsModalAttempt,
     setModal: setShowAccountsModalAttempt,
-    setModalHeading: setAccountsModalHeadingAttempt
+    setModalbody: setAccountsModalbodyAttempt,
+    setModalHeading: setAccountsModalHeadingAttempt,
+    setReceivingAccount: setReceivingAccountAttempt
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(AccountProfileHeader)

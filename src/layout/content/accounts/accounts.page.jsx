@@ -12,6 +12,7 @@ import { setActivePageAttempt } from '../../../redux/defaults/default.action';
 import { Switch, Route } from 'react-router-dom';
 import AccountsDashoard from './AccountsDashoard';
 import AccountProfile from './profile/AccountProfile';
+import CreateOrderForm from '../../forms/create-order.form';
 
 class AccountsPage extends Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class AccountsPage extends Component {
                     <ModalComponent showModal={accountsModal.show} closeModal={closeModal} modalHeading={accountsModal.heading}>
                         <ModalAlert />
                         {accountsModal.body==='create'&&<CreateAccountForm closeModal={closeModal}  />}
+                        {accountsModal.body==='receive'&&<CreateOrderForm closeModal={closeModal} receiving={true} />}
                     </ModalComponent>
                     <Switch>
                         <Route path="/accounts/:id" component={AccountProfile} />

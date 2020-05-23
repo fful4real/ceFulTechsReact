@@ -18,10 +18,11 @@ import { selectCurrencies } from '../../redux/currencies/currencies.selectors';
 import { selectCities } from '../../redux/cities/cities.selectors';
 import { sanitizeString, customerExists } from '../../helpers/helper';
 import { selectIsOrderFromCustomer } from '../../redux/orders/orders.selectors';
-import { selectAccounts } from '../../redux/accounts/accounts.selector';
+import { selectAccounts, selectReceivingAccount } from '../../redux/accounts/accounts.selector';
 import { updateAccountAsync } from '../../redux/accounts/accounts.action';
 
-const CreateOrderForm = ({customers,closeModal,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder})=>{
+const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder, receiving=false})=>{
+    const receivingAccount = receiving?accounts.filter(account=>account.id===receivingAccountId)[0]:null
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
     const [searchString, setSearchString] = useState('');
     const [showDropdown, setShowDropdown] = useState({phoneNumber:'hide',sentBy:'hide'});
@@ -42,7 +43,7 @@ const CreateOrderForm = ({customers,closeModal,updateAccounts, accounts, current
         customerNumber:customer?customer.mobileNumber:'',
         amountIn:'',
         amountOut:'',
-        currencyIn:'',
+        currencyIn:receivingAccount?`/api/currencies/${receivingAccount.currency.id}`:'',
         currencyOut: '',
         firstName:customer?customer.firstName:'',
         lastName:customer?customer.lastName:'',
@@ -105,6 +106,12 @@ const CreateOrderForm = ({customers,closeModal,updateAccounts, accounts, current
                                 }
                                 
                                 orderValues = values.sentByName&&values.sentBy?{...orderValues,sentBy:values.sentBy}:orderValues
+                                orderValues = receiving?{
+                                    ...orderValues,
+                                    creditingAccount:receivingAccountId
+                                    }:orderValues
+
+                                console.log(JSON.stringify(orderValues,null,2))
                                 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
@@ -241,7 +248,7 @@ const CreateOrderForm = ({customers,closeModal,updateAccounts, accounts, current
                                                     className="form-control" 
                                                     value={values.currencyIn}
                                                     name="currencyIn"
-                                                    disabled={isSubmitting}
+                                                    disabled={isSubmitting||receivingAccount}
                                                     onBlur={handleBlur}
                                                 >
                                                     <option value="">--</option>
@@ -521,7 +528,8 @@ const mapDispatchToProps = {
     cities:selectCities,
     currentCustomer: selectCurrentCustomer,
     isCustomersOrder: selectIsOrderFromCustomer,
-    accounts: selectAccounts
+    accounts: selectAccounts,
+    receivingAccountId: selectReceivingAccount
   })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderForm)

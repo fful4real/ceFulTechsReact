@@ -18,7 +18,7 @@ import { sanitizeString, numberWithCommas } from '../../../../helpers/helper';
 const OrderProcessingForm = ({order,closeModal,orders, updateOrder,updateAccountAsync, accounts})=>{
     order = order.data
 
-    console.log(order)
+    // console.log(order)
     const accountData = accounts.filter(account=>{ return (account.currency.currencyCode===order.currencyOut.currencyCode)&&parseInt(account.balance)>0});
     const [showSuccess, setShowSuccess] = useState({show:"hide", className:"success", message:"Order processed successfully"});
     let initialVals = {

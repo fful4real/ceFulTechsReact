@@ -74,3 +74,8 @@ export const selectAccountModalObject = createSelector(
     [selectAccountState],
     accountsState => accountsState.accountsModal
 )
+//Seelect receiving account
+export const selectReceivingAccount = createSelector(
+    [selectAccountState],
+    accountsState => accountsState.receivingAccount
+)

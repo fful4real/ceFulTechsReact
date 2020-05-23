@@ -7,7 +7,8 @@ const CustomerProfileOrders = ({orders})=> {
         sentCount = orders.sent.length,
         receivedCount = orders.received.length,
         hasReceived = receivedCount?true:false,
-        hasSent = sentCount?true:false
+        hasSent = sentCount?true:false,
+        [receivedCurrentPage, setReceivedCurrentPage] = useState(1)
     
     return (
         <React.Fragment>
@@ -20,7 +21,7 @@ const CustomerProfileOrders = ({orders})=> {
                             <h5 className="hk-sec-title">Orders
                                 <small className="text-muted pl-10">received&nbsp;({receivedCount})</small>
                             </h5>
-                            <ListOrders currentPage={currentPage} setPage={setCurrentPage} tableData={orders.received} receivedFrom={true} />
+                            <ListOrders currentPage={receivedCurrentPage} setPage={setReceivedCurrentPage} tableData={orders.received} receivedFrom={true} />
                         </div>
                     </div>}
                     {hasSent&&

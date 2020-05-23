@@ -123,3 +123,17 @@ export const fetchAllAccountsAsync = ()=>{
         })
     }
 }
+
+// Set receiving account
+
+export const setReceivingAccount = id =>({
+    type: AccountsActionTypes.SET_RECEIVING_ACCOUNT,
+    id
+})
+
+export const setReceivingAccountAttempt = (id) =>{
+
+    return dispatch =>{
+        dispatch(setReceivingAccount(id));
+    }
+}
