@@ -5,12 +5,15 @@ import Nav from 'react-bootstrap/Nav'
 import { connect } from 'react-redux';
 import Spinner from '../../../../components/spinner/spinner';
 import { userDestroyAuthAttemp } from '../../../../redux/auth/auth.action';
+import { createStructuredSelector } from 'reselect';
+import { selectUser } from '../../../../redux/user/user.selectors';
+import { capitalizeFirstLetter } from '../../../../helpers/helper';
 
 const AuthenticationMenu = ({user, signOut})=> {
     let firstName=null, lastName =null
-    if(user.user!==null){
-        lastName = user.user.lastName
-        firstName = user.user.firstName
+    if(user!==null){
+        lastName = user.lastName?user.lastName.toUpperCase():user.lastName
+        firstName = user.firstName?capitalizeFirstLetter(user.firstName):user.firstName
     }
 
     return (
@@ -35,7 +38,7 @@ const AuthenticationMenu = ({user, signOut})=> {
                 </div>
             </Nav.Link>
             <div className="dropdown-menu dropdown-menu-right" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
-                <Link className="dropdown-item" to="profile.html"><i className="dropdown-icon zmdi zmdi-account"></i><span>Profile</span></Link>
+                <Link className="dropdown-item" to="/users/1"><i className="dropdown-icon zmdi zmdi-account"></i><span>Profile</span></Link>
                 <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-card"></i><span>My balance</span></Link>
                 <Link className="dropdown-item" to="inbox.html"><i className="dropdown-icon zmdi zmdi-email"></i><span>Inbox</span></Link>
                 <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-settings"></i><span>Settings</span></Link>
@@ -55,9 +58,8 @@ const AuthenticationMenu = ({user, signOut})=> {
     
 };
 
-const mapStateToProps = rootReducerState =>({
-    user:rootReducerState.user,
-    auth:rootReducerState.aut
+const mapStateToProps = createStructuredSelector({
+    user:selectUser,
 });
 
 const mapDispatchToProps = {
