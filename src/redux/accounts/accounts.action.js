@@ -137,3 +137,17 @@ export const setReceivingAccountAttempt = (id) =>{
         dispatch(setReceivingAccount(id));
     }
 }
+
+// Set receiving account
+
+export const setCurrentAccount = id =>({
+    type: AccountsActionTypes.SET_CURRENT_ACCOUNT,
+    id
+})
+
+export const setCurrentAccountAttempt = (id) =>{
+
+    return dispatch =>{
+        dispatch(setCurrentAccount(id));
+    }
+}

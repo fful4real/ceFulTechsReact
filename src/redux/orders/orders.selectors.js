@@ -1,10 +1,12 @@
 import {createSelector} from 'reselect'
 import { numberWithCommas, capitalizeFirstLetter} from '../../helpers/helper';
 import moment from 'moment';
-
+import { selectUser } from '../user/user.selectors';
 
 export const selectOrderState = state => state.orders;
 const selectCitiesState = state => state.cities;
+const selectUserState = state => state.user;
+
 const selectCities = createSelector(
     [selectCitiesState],
     cities => cities.cities
@@ -66,8 +68,8 @@ export const selectLastTenOrders = createSelector(
 
 
 export const isFechingOrderItemOrderEntries = createSelector(
-    [selectOrderState],
-    orders => orders.isFechingOrderItemOrderEntries
+    [selectOrderState, selectUserState],
+    (orders, user) => orders.isFechingOrderItemOrderEntries
 )
 
 export const selectMonthsOrders = createSelector(
@@ -253,5 +255,101 @@ export const selectIsOrderFromCustomer = createSelector(
 export const selectOrderModalObject = createSelector(
     [selectOrderState],
     ordersState => ordersState.ordersModal
+)
+
+//Seelect orders processed by current user
+export const selectOrdersProcessedByUser = createSelector(
+    [selectOrders, selectUser],
+    (orders, user) => {
+        const OrdersProcessedByUser = orders.filter(order=>{
+            if (order.processedBy) {
+                return order.processedBy.id===user.id?true:false
+            }
+            return false
+        })
+        
+        return OrdersProcessedByUser
+    }
+)
+
+//Seelect count orders processed by current user
+export const selectOrdersProcessedByUserCount = createSelector(
+    [selectOrdersProcessedByUser],
+    orders => orders.length
+)
+
+
+
+//Seelect orders created by current user
+export const selectOrdersCreatedByUser = createSelector(
+    [selectOrders, selectUser],
+    (orders, user) => {
+        const OrdersCreatedByUser = orders.filter(order=>{
+            if (order.createdBy) {
+                return order.createdBy.id===user.id?true:false
+            }
+            return false
+        })
+        
+        return OrdersCreatedByUser
+    }
+)
+
+//Seelect highest value order processed by current user
+export const selectHighestProcessedOrderByUser = createSelector(
+    [selectOrdersProcessedByUser],
+    orders => {
+        orders = orders.filter(order=>order.currencyOut.currencyCode==="XAF")
+        let highestOrder = null
+        if (orders.length) {
+            orders.map(order=>{
+                if (highestOrder) {
+                    highestOrder = highestOrder.amountOut>order.amountOut?highestOrder:order
+                }else{
+                    highestOrder = order
+                }
+                return order
+            })
+        }
+
+        return highestOrder
+    }
+)
+
+
+//Seelect least value order processed by current user
+export const selectLeastProcessedOrderByUser = createSelector(
+    [selectOrdersProcessedByUser],
+    orders => {
+        orders = orders.filter(order=>order.currencyOut.currencyCode==="XAF")
+        let leastOrder = null
+        if (orders.length) {
+            orders.map(order=>{
+                if (leastOrder) {
+                    leastOrder = leastOrder.amountOut<order.amountOut?leastOrder:order
+                }else{
+                    leastOrder = order
+                }
+                return order
+            })
+        }
+
+        return leastOrder
+    }
+)
+
+//Seelect orders processed by current user
+export const selectOrdersAbandonedByUser = createSelector(
+    [selectOrders, selectUser],
+    (orders, user) => {
+        const OrdersAbandonedByUser = orders.filter(order=>{
+            if (order.abandonedBy) {
+                return order.abandonedBy.id===user.id?true:false
+            }
+            return false
+        })
+        
+        return OrdersAbandonedByUser
+    }
 )
 

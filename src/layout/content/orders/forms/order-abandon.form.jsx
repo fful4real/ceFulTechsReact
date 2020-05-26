@@ -10,8 +10,9 @@ import {updateOrderAsync } from '../../../../redux/orders/orders.actions'
 import { selectOrders, selectOrderModalObject } from '../../../../redux/orders/orders.selectors';
 import { createStructuredSelector } from 'reselect';
 import { selectStatuses } from '../../../../redux/statuses/statuses.selectors';
+import { selectUser } from '../../../../redux/user/user.selectors';
 
-const OrderAbandonForm = ({updateOrder, order,statuses,orders, closeModal})=>{
+const OrderAbandonForm = ({updateOrder,user, order,statuses,orders, closeModal})=>{
     const [showSuccess, setShowSuccess] = useState({show:"hide",alertIcon:"check-circle", className:"success", message:"Order processed successfully"});
     order = order.data
     // console.log('Order: ', order)
@@ -42,20 +43,19 @@ const OrderAbandonForm = ({updateOrder, order,statuses,orders, closeModal})=>{
                         (values, {setSubmitting,setErrors, error, resetForm, setStatus, setFieldValue})=>{
                                 
                                 const processValues = {
-                                    status:values.status
+                                    status:values.status,
+                                    abandonedBy: `/api/users/${user.id}`
                                 }
                                 
                                 AxiosAgent.request('patch', API_ROUTES.orders(values.orderId), null, processValues)
                                         .then(resp=>{
                                             const orderResp = resp.data;
-                                            console.log('Order Resp: ',orderResp)
                                             orders = orders.map(mapOrder=>mapOrder.id===orderResp.id?orderResp:mapOrder)
                                             setStatus({success: false})
 
                                             setSubmitting(false)
                                             setShowSuccess({...showSuccess, show:"show", className:"success",alertIcon:"check-circle", message:"Order abandoned"})
                                             resetForm()
-                                            console.log('Order: ',orders)
                                             updateOrder(orders)
                                             
                                             setTimeout(()=>{
@@ -243,7 +243,8 @@ const mapDispatchToProps = {
 const mapStateToProps = createStructuredSelector({
     orders: selectOrders,
     statuses:selectStatuses,
-    order: selectOrderModalObject
+    order: selectOrderModalObject,
+    user: selectUser
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderAbandonForm)

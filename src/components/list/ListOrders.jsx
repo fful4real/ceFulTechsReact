@@ -10,18 +10,19 @@ import { selectStatuses } from '../../redux/statuses/statuses.selectors'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { selectIsAppLoaded } from '../../redux/fultechs/FultechsSelectors'
+import { Dropdown } from 'react-bootstrap'
 
-const ListOrders = ({tableData,appIsLoaded,pagefilter='',statuses, currentPage, setPage, isFetching, receivedFrom=false, expandableRows=false}) =>{
+const ListOrders = ({tableData,appIsLoaded,pagefilter='',statuses, isFetching, receivedFrom=false, expandableRows=false}) =>{
     const [searchString, setSearchString] = useState('')
+    const [currentPage, setCurrentPage] = useState(1)
     const [itemPage, setItemPage] = useState(false)
     if (pagefilter) {
         pagefilter = statuses.filter(status_i=>status_i.statusCode===pagefilter)[0]
     }
     const [status, setStatus] = useState(pagefilter)
     const handleSearch = value => setSearchString(value)
-    const handleRowClick = row => {
-        setItemPage(row)
-    }
+    const setPage = page => setCurrentPage(page)
+    const handleRowClick = row =>setItemPage(row)
     tableData = tableData.filter(data=>data?true:false)
     let statusFilter = []
 
@@ -31,12 +32,11 @@ const ListOrders = ({tableData,appIsLoaded,pagefilter='',statuses, currentPage, 
     })
     
     statuses = statuses.filter(status1=>statusFilter[status1.statusCode]?true:false)
-    
     tableData = status?tableData.filter(item=>
         (item.status.className.toLowerCase()===status.className.toLowerCase())
-    ):tableData
+        ):tableData
     if (receivedFrom) {
-        console.log(tableData)
+        // console.log(tableData)
         tableData = tableData.filter(item=>{
             if(item.sentBy){
                 return (item.sentBy.firstName.toLowerCase().indexOf(searchString.toLowerCase())!==-1)||
@@ -56,8 +56,10 @@ const ListOrders = ({tableData,appIsLoaded,pagefilter='',statuses, currentPage, 
         )
     }
     const pageCount = getPageCount(tableData)
-    tableData = paginateResult(tableData)
-    tableData = tableData[`page_${currentPage}`]
+    if (!status) {
+        tableData = paginateResult(tableData)
+        tableData = tableData[`page_${currentPage}`]
+    }
     
     const columns = [
         {
@@ -129,19 +131,26 @@ const ListOrders = ({tableData,appIsLoaded,pagefilter='',statuses, currentPage, 
         <div>
             {appIsLoaded&&<div className="d-flex justify-content-end align-items-center">
                 <div className="select-orders mr-10 cursor-pointer">
+                    <Dropdown>
                     <div className="inline-block dropdown">
                         <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
                             <i className={`ion ion-ios-analytics ${statusClassName}`} style={{fontSize:"1.5em"}}></i>
                         </span>
                         <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", transform: "translate3d(13px, 21px, 0px)", top: "0px", left: "0px", willChange: "transform"}}>
                         {statuses.map(statusMap=>
-                                (<Link key={`status-${uid(statusMap.id)}`} to="#" className={`dropdown-item ${status?status.className===statusMap.className?"text-success":'':''}`} onClick={()=>setStatus(statusMap)}>{statusMap.statusLabel}</Link>)
+                                (<Link 
+                                    key={`status-${uid(statusMap.id)}`} 
+                                    to="#" 
+                                    className={`dropdown-item ${status?status.className===statusMap.className?"text-success":'':''}`} 
+                                    onClick={()=>setStatus(statusMap)}>{statusMap.statusLabel}
+                                </Link>)
                             )
                         }
                             <div className="dropdown-divider"></div>
                             <Link className="dropdown-item" to="#" onClick={e=>setStatus('')}>View all Orders</Link>
                         </div>
                     </div>
+                </Dropdown>
                 </div>
                 <SearchForm handleSearch={handleSearch} searchString={searchString} searchPlaceHolder="Search order" />
             </div>}

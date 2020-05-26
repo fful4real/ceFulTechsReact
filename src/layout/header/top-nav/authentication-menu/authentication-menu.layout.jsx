@@ -1,13 +1,13 @@
 import React from 'react'
 import Avatar10 from '../../../../assets/img/avatar10.jpg'
 import {Link} from 'react-router-dom'
-import Nav from 'react-bootstrap/Nav'
 import { connect } from 'react-redux';
 import Spinner from '../../../../components/spinner/spinner';
 import { userDestroyAuthAttemp } from '../../../../redux/auth/auth.action';
 import { createStructuredSelector } from 'reselect';
 import { selectUser } from '../../../../redux/user/user.selectors';
 import { capitalizeFirstLetter } from '../../../../helpers/helper';
+import { Dropdown } from 'react-bootstrap';
 
 const AuthenticationMenu = ({user, signOut})=> {
     let firstName=null, lastName =null
@@ -17,8 +17,8 @@ const AuthenticationMenu = ({user, signOut})=> {
     }
 
     return (
-    <li className="nav-item dropdown dropdown-authentication">
-            <Nav.Link className="dropdown-toggle no-caret" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <Dropdown className="nav-item dropdown-authentication">
+            <Dropdown.Toggle variant="link" className="no-caret nav-link" id="dropdown-basic">
                 <div className="media">
                     <div className="media-img-wrap">
                         <div className="avatar">
@@ -27,7 +27,7 @@ const AuthenticationMenu = ({user, signOut})=> {
                                 <img src={Avatar10} alt="user" className="avatar-img rounded-circle"/>
                             }
                         </div>
-                        {firstName&&<span className="badge badge-success badge-indicator"></span>}
+                        {firstName&&<span className="badge badge-success badge-indicator" style={{top:"25px"}}></span>}
                     </div>
                     <div className="media-body">
                         {!firstName?
@@ -36,25 +36,13 @@ const AuthenticationMenu = ({user, signOut})=> {
                         }
                     </div>
                 </div>
-            </Nav.Link>
-            <div className="dropdown-menu dropdown-menu-right" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
-                <Link className="dropdown-item" to="/users/1"><i className="dropdown-icon zmdi zmdi-account"></i><span>Profile</span></Link>
-                <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-card"></i><span>My balance</span></Link>
-                <Link className="dropdown-item" to="inbox.html"><i className="dropdown-icon zmdi zmdi-email"></i><span>Inbox</span></Link>
-                <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-settings"></i><span>Settings</span></Link>
-                <div className="dropdown-divider"></div>
-                <div className="sub-dropdown-menu show-on-hover">
-                    <Link to="#" className="dropdown-toggle dropdown-item no-caret"><i className="zmdi zmdi-check text-success"></i>Online</Link>
-                    <div className="dropdown-menu open-left-side">
-                        <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-check text-success"></i><span>Online</span></Link>
-                        <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-circle-o text-warning"></i><span>Busy</span></Link>
-                        <Link className="dropdown-item" to="#"><i className="dropdown-icon zmdi zmdi-minus-circle-outline text-danger"></i><span>Offline</span></Link>
-                    </div>
-                </div>
-                <div className="dropdown-divider"></div>
-                <Link className="dropdown-item" to="#" onClick={()=>signOut()}><i className="dropdown-icon zmdi zmdi-power"></i><span>Log out</span></Link>
-            </div>
-        </li>)
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+                <Link className="dropdown-item" to={`/users/${user?user.id:'1'}`}><i className="dropdown-icon zmdi zmdi-account text-primary"></i><span>Profile</span></Link>
+                <Link className="dropdown-item" to="#" onClick={()=>signOut()}><i className="dropdown-icon zmdi zmdi-power text-danger"></i><span>Log out</span></Link>
+            </Dropdown.Menu>
+        </Dropdown>
+    )
     
 };
 

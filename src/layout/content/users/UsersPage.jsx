@@ -48,14 +48,16 @@ class UsersPage extends Component {
         const {accountsModal,closeModal} = this.props
         return(
             <div className="hk-pg-wrapper">
-                <div className="container mt-xl-30 mt-sm-20 mt-15">
-                    <ModalComponent showModal={accountsModal.show} closeModal={closeModal} modalHeading={accountsModal.heading}>
-                        <ModalAlert />
-                        {accountsModal.body==='modify'&&<CreateAccountForm closeModal={closeModal}  />}
-                    </ModalComponent>
-                    <Switch>
-                        <Route path="/users/:id" component={UserProfile} />
-                    </Switch>
+                <div className="container-fluid">
+                    <div className="row">
+                        <ModalComponent showModal={accountsModal.show} closeModal={closeModal} modalHeading={accountsModal.heading}>
+                            <ModalAlert />
+                            {accountsModal.body==='modify'&&<CreateAccountForm closeModal={closeModal}  />}
+                        </ModalComponent>
+                        <Switch>
+                            <Route path="/users/:id" component={UserProfile} />
+                        </Switch>
+                    </div>
                 </div>
             </div>
         )

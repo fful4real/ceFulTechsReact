@@ -110,8 +110,6 @@ const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccount
                                     ...orderValues,
                                     creditingAccount:receivingAccountId
                                     }:orderValues
-
-                                console.log(JSON.stringify(orderValues,null,2))
                                 
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{

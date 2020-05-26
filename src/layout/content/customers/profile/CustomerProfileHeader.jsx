@@ -3,11 +3,12 @@ import avatar1 from '../../../../assets/img/gallery/mankaa.jpeg'
 import { CustomerProfileStyle } from '../styles/CustomerProfileStyle'
 import { selectCustomers, selectCurrentCustomer } from '../../../../redux/customers/customers.selectors'
 import { createStructuredSelector } from 'reselect'
-import { withRouter, Link, Redirect } from 'react-router-dom'
+import { withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProfileOrderDetail'
 import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
 import { selectIsAppLoaded } from '../../../../redux/fultechs/FultechsSelectors'
+import { Dropdown } from 'react-bootstrap'
 
 const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
     
@@ -226,21 +227,21 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
                             <div className="col-lg-4 d-flex justify-content-left">
                                 <div className="media position-relative align-items-center profile-cover-content">
                                     {appIsLoaded&&<div className="modify-customer-profile position-absolute cursor-pointer">
-                                        <div className="inline-block dropdown">
-                                            <span className="dropdown-toggle no-caret" data-toggle="dropdown" aria-expanded="false" role="button">
-                                                <i className="ion ion-ios-settings "></i>
-                                            </span>
-                                            <div className="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
-                                                <Link to="#" className="dropdown-item" onClick={()=>setModal('modify')}>
-                                                    <i className="dropdown-icon zmdi zmdi-edit"></i>
+                                        <Dropdown className="d-inline">
+                                            <Dropdown.Toggle className="no-caret" variant="link">
+                                                <i className="ion ion-ios-settings text-muted"></i>
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item href="#" onClick={()=>setModal('modify')}>
+                                                    <i className="dropdown-icon zmdi zmdi-edit text-dark"></i>
                                                     <span>Modify</span>
-                                                </Link>
-                                                <Link to="#" className="dropdown-item" onClick={()=>setModal('delete')}>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item href="#" onClick={()=>setModal('delete')}>
                                                     <i className="dropdown-icon zmdi zmdi-block text-danger"></i>
                                                     <span>Delete</span>
-                                                </Link>
-                                            </div>
-                                        </div>
+                                                </Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
                                     </div>}
                                     <div className="media-img-wrap  d-flex">
                                         <div className="customer-avatar avatar">

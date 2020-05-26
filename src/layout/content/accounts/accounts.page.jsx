@@ -13,6 +13,7 @@ import { Switch, Route } from 'react-router-dom';
 import AccountsDashoard from './AccountsDashoard';
 import AccountProfile from './profile/AccountProfile';
 import CreateOrderForm from '../../forms/create-order.form';
+import TransferAmountForm from './forms/TransferAmountForm';
 
 class AccountsPage extends Component {
     constructor(props) {
@@ -58,6 +59,7 @@ class AccountsPage extends Component {
                         <ModalAlert />
                         {accountsModal.body==='create'&&<CreateAccountForm closeModal={closeModal}  />}
                         {accountsModal.body==='receive'&&<CreateOrderForm closeModal={closeModal} receiving={true} />}
+                        {accountsModal.body==='transfer'&&<TransferAmountForm closeModal={closeModal} />}
                     </ModalComponent>
                     <Switch>
                         <Route path="/accounts/:id" component={AccountProfile} />

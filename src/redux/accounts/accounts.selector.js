@@ -79,3 +79,10 @@ export const selectReceivingAccount = createSelector(
     [selectAccountState],
     accountsState => accountsState.receivingAccount
 )
+
+
+//Seelect current account
+export const selectCurrentAccount = createSelector(
+    [selectAccountState],
+    accountsState => accountsState.currentAccount
+)

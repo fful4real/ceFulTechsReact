@@ -16,7 +16,7 @@ const OrdersHeader = ({showModal,setModalHeading,setModalbody})=>{
     return(
         <div className="hk-pg-header mb-10">
             <div>
-                <h4 className="hk-pg-title position-relative">
+                <h4 className="hk-pg-title position-relative cursor-pointer">
                     <span className="pg-title-icon">
                         <span className="feather-icon">
                         </span>

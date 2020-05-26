@@ -5,8 +5,9 @@ import { createStructuredSelector } from 'reselect'
 import AccountProfileHeader from './AccountProfileHeader'
 import AccountProfileAccountEntries from './AccountProdileAccountEntries'
 import { selectAccounts } from '../../../../redux/accounts/accounts.selector'
+import { setCurrentAccountAttempt } from '../../../../redux/accounts/accounts.action'
 
-const AccountProfile = ({accounts, match})=> {
+const AccountProfile = ({accounts, match, setAccount})=> {
     if (!accounts) {
         return <Redirect to="/accounts" />
     }
@@ -14,6 +15,8 @@ const AccountProfile = ({accounts, match})=> {
     if (!account) {
         return <Redirect to="/accounts" />
     }
+
+    setAccount(account.id)
     
     return (
         <>
@@ -27,4 +30,8 @@ const mapStateToProps = createStructuredSelector({
     accounts: selectAccounts
 })
 
-export default withRouter(connect(mapStateToProps)(AccountProfile))
+const mapDispatchToProps = {
+    setAccount: setCurrentAccountAttempt
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AccountProfile))

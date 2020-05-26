@@ -10,6 +10,7 @@ const INITIAL_STATE = {
     accountsPerPage:[],
     allAccounts: [],
     totalAccounts:null,
+    currentAccount:null,
     error:null,
     accountsModal:{
         show: false,
@@ -114,6 +115,11 @@ const AccountsReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 receivingAccount:action.id
+            }
+        case AccountsActionTypes.SET_CURRENT_ACCOUNT:
+            return{
+                ...state,
+                currentAccount:action.id
             }
     
         default:

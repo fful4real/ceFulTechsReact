@@ -6,14 +6,14 @@ import { connect } from 'react-redux'
 import { setShowAccountsModalAttempt, setAccountsModalHeadingAttempt, setAccountsModalbodyAttempt, setReceivingAccountAttempt } from '../../../../redux/accounts/accounts.action'
 import { createStructuredSelector } from 'reselect'
 import { selectIsAppLoaded } from '../../../../redux/fultechs/FultechsSelectors'
-import { numberWithCommas, getAccountEntries, getAccountEntriesAmount } from '../../../../helpers/helper'
+import { numberWithCommas, getAccountEntries, getAccountEntriesAmount, capitalizeFirstLetter } from '../../../../helpers/helper'
 import { selectAccountEntries } from '../../../../redux/accountEntries/AccountEntriesSelectors'
 
 const AccountProfileHeader = ({setReceivingAccount, setModalbody,showModal,appIsLoaded,accountEntries, setModal, setModalHeading, account})=> {
-    const handleClick = ()=>{
+    const handleClick = (modal)=>{
         setReceivingAccount(account.id)
-        setModalbody('receive')
-        setModalHeading('Receive Amount')
+        setModalbody(modal)
+        setModalHeading(`${capitalizeFirstLetter(modal)} Amount`)
         showModal(true)
     }
     let debitAccountEntries = [],
@@ -120,8 +120,11 @@ const AccountProfileHeader = ({setReceivingAccount, setModalbody,showModal,appIs
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col-lg-12">
-                                            <button className="btn btn-info btn-block" onClick={handleClick}>Receive Amount</button>
+                                        <div className="col-md-6">
+                                            <button className="btn btn-info btn-block" onClick={()=>handleClick("receive")}>Receive</button>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <button className="btn btn-danger btn-block" onClick={()=>handleClick("transfer")}>Transfer</button>
                                         </div>
                                     </div>
                                 </div>
