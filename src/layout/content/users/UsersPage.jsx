@@ -16,7 +16,7 @@ class UsersPage extends Component {
         this.props.setActivePage('users')
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
 
     }
 

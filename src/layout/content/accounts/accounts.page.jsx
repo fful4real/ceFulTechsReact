@@ -21,7 +21,7 @@ class AccountsPage extends Component {
         this.props.setActivePage('accounts')
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
 
     }
 

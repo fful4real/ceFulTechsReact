@@ -8,6 +8,7 @@ import { createStructuredSelector } from 'reselect';
 import { selectUser } from '../../../../redux/user/user.selectors';
 import { capitalizeFirstLetter } from '../../../../helpers/helper';
 import { Dropdown } from 'react-bootstrap';
+import { ImageUrl } from '../../../../api-route';
 
 const AuthenticationMenu = ({user, signOut})=> {
     let firstName=null, lastName =null
@@ -24,7 +25,7 @@ const AuthenticationMenu = ({user, signOut})=> {
                         <div className="avatar">
                             {!firstName?
                                 <Spinner spinnerHeight="40px" spinnerFontSize="1.7em" spinnerRight="0p" style={{right:'10px'}}/>:
-                                <img src={Avatar10} alt="user" className="avatar-img rounded-circle"/>
+                                <img src={user.profileImage.url?ImageUrl+user.profileImage.url:Avatar10} alt="user" className="avatar-img rounded-circle"/>
                             }
                         </div>
                         {firstName&&<span className="badge badge-success badge-indicator" style={{top:"25px"}}></span>}

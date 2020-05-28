@@ -353,3 +353,25 @@ export const selectOrdersAbandonedByUser = createSelector(
     }
 )
 
+// Select orders per month
+export const selectOrdersPerMonth = createSelector(
+    [selectOrders],
+    orders =>{
+        let ordersPermonth = {}
+        orders.map(order=>{
+            const orderDate = new Date(order.datec);
+
+            if (ordersPermonth[`month_${orderDate.getMonth()+1}`]) {
+                ordersPermonth[`month_${orderDate.getMonth()+1}`]+=1;
+            }else{
+                ordersPermonth[`month_${orderDate.getMonth()+1}`]=1
+            }
+
+            return order
+        })
+        // console.log(ordersPermonth)
+
+        return Object.values(ordersPermonth).reverse()
+    }
+)
+

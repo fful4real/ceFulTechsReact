@@ -1,6 +1,7 @@
 import React from 'react'
+import FulTechsApexChart from '../../../../components/chards/FulTechsApexChart'
 
-const SmallCardReportItem=({title, counterUp,value}) =>{
+const SmallCardReportItem=({title, counterUp,value, data}) =>{
 
     return (
         <div className="col-lg-3 col-sm-6">
@@ -17,8 +18,10 @@ const SmallCardReportItem=({title, counterUp,value}) =>{
                                 </span>
                             </span>
                         </div>
-                        <div className="position-absolute r-0 b-0 w-40">
-                            <div id="spark1"></div>
+                        <div className="position-absolute r-0 w-50" style={{bottom:"-30px"}}>
+                            <div id="spark1">
+                                <FulTechsApexChart data={data}/>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -136,7 +136,9 @@ const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccount
                                         },2000)
                                     })
                                     .catch(error=>{
-
+                                        alert('There was an issue creating order')
+                                        setSubmitting(false)
+                                        resetForm()
                                         console.error(error.message)
                                     })
                                 

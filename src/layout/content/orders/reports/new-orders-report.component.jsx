@@ -1,5 +1,5 @@
 import React from 'react'
-import { selectNewOrdersCount, selectNewOrdersAmount, selectIsFetchingNewOrders } from '../../../../redux/orders/orders.selectors';
+import { selectNewOrdersCount, selectNewOrdersAmount, selectIsFetchingOrders } from '../../../../redux/orders/orders.selectors';
 import { connect } from 'react-redux';
 import DisplayReport from '../../../../components/report/display-report';
 import SpinnerDisplay from '../../../../components/spinner/spinnerDisplay';
@@ -26,7 +26,7 @@ const NewOrdersReport = ({isFetching,newOrdersCount, newOrdersAmount})=>{
 const ordersState = createStructuredSelector({
     newOrdersCount:selectNewOrdersCount,
     newOrdersAmount:selectNewOrdersAmount,
-    isFetching: selectIsFetchingNewOrders
+    isFetching: selectIsFetchingOrders
 })
 
 export default connect(ordersState)(NewOrdersReport);

@@ -7,7 +7,7 @@ export const FULTECHS_INITIAL_STATE = {
     currentPage:1,
     activePage:'dashboard',
     isRefreshing:false,
-    refreshTimeInterval:20000,
+    refreshTimeInterval:40000,
     modalAlert: {
         show:'hide',
         message: '',

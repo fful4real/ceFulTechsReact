@@ -6,6 +6,7 @@ import { createStructuredSelector } from 'reselect'
 import { selectUser } from '../../../../redux/user/user.selectors'
 import { connect } from 'react-redux'
 import { capitalizeFirstLetter } from '../../../../helpers/helper'
+import { ImageUrl } from '../../../../api-route'
 
 const UserProfileHeader = ({user}) => {
     let firstName=null, lastName =null
@@ -24,7 +25,7 @@ const UserProfileHeader = ({user}) => {
                                 <div className="media align-items-center">
                                     <div className="media-img-wrap  d-flex">
                                         <div className="avatar">
-                                            <img src={avatar1} alt="user" className="avatar-img rounded-circle"/>
+                                            <img src={user.profileImage?ImageUrl+user.profileImage.url:avatar1} alt="user" className="avatar-img rounded-circle"/>
                                         </div>
                                     </div>
                                     <div className="media-body">

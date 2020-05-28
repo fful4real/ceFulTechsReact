@@ -1,20 +1,3 @@
-/*Dashboard3 Init*/
- 
-"use strict"; 
-$(document).ready(function() {
-	/*Toaster Alert*/
-	$.toast({
-		heading: 'Oh snap!',
-		text: '<p>Change a few things and try submitting again.</p>',
-		position: 'bottom-right',
-		loaderBg:'#00acf0',
-		class: 'jq-toast-danger',
-		hideAfter: 3500, 
-		stack: 6,
-		showHideTransition: 'fade'
-	});
-});
-
 /*ApexCharts Start*/
 window.Apex = {
       stroke: {
