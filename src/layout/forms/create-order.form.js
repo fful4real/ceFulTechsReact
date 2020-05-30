@@ -58,9 +58,8 @@ const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccount
     const validationSchema = Yup.object().shape({
         customerNumber: Yup.string()
                         .min(9,'Must have 9 characters')
-                        .max(9,'Must not exceed 9 characters')
+                        .max(12,'Must not exceed 9 characters')
                         .required('Please enter number')
-                        .matches(/^65|67|69|66|68/ , 'Invalid Cameroon number')
                         .matches(/^[0-9]+$/, 'Only Numbers accepted'),
             amountIn:Yup.string()
                         .required('Please enter amount')
@@ -110,7 +109,6 @@ const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccount
                                     ...orderValues,
                                     creditingAccount:receivingAccountId
                                     }:orderValues
-                                
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
                                         const newOrder = resp.data

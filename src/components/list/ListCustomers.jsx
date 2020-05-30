@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { numberWithCommas, getPageCount, paginateResult } from '../../helpers/helper'
 import ListItems from './list-items'
 import { Redirect } from 'react-router-dom'
+import cmrFlag from '../../assets/img/CM.png'
+import aeFlag from '../../assets/img/AE.png'
 import moment from 'moment'
 import PaginatorDefault from '../pagination/pagination.default'
 import SearchForm from '../form/search-form'
@@ -39,8 +41,14 @@ const ListCustomers = ({tableData,currentPage, setPage,isFetching, expandableRow
             name:'Mobile Number',
             selector: 'mobileNumber',
             sortable:true,
-            cell: row => <div onClick={()=>handleRowClick(row)}>
-                            <i className="icon-phone font-11 text-success mr-5"></i>{row.mobileNumber}
+            cell: row => <div onClick={()=>handleRowClick(row)} className="d-flex align-items-center w-100 justify-content-between">
+                            <div>
+                                <i className="icon-phone font-11 text-success mr-5"></i>
+                                <span>{row.mobileNumber}</span>
+                            </div>
+                            <span className="d-inline ml-5" style={{height: "16px"}}>
+                                <img src={row.mobileNumber.startsWith('0')?aeFlag:cmrFlag} style={{height:"100%", width:"100%"}} alt="ctry" />
+                            </span>
                         </div>
         },
         {
