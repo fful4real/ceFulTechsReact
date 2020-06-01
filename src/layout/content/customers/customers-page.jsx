@@ -17,6 +17,7 @@ import ModifyCustomerForm from './forms/ModifyCustomerForm'
 import CreateOrderForm from '../../forms/create-order.form'
 import DeleteCustomerForm from './forms/DeleteCustomerForm'
 import { setOrderFromCustomerAttempt } from '../../../redux/orders/orders.actions'
+import ModifyCustomerProfileImageForm from './forms/ModifyCustomerProfileImageForm'
 
 
 
@@ -47,6 +48,7 @@ class CustomersPage extends Component {
                         {customerModal==='modify'&&<ModifyCustomerForm closeModal={closeModal}  />}
                         {customerModal==='newCustomerOrder'&&<CreateOrderForm closeModal={closeModal}  />}
                         {customerModal==='delete'&&<DeleteCustomerForm closeModal={closeModal}  />}
+                        {customerModal==='modifyProfile'&&<ModifyCustomerProfileImageForm closeModal={closeModal}  />}
                     </ModalComponent>
 
                     <Switch>

@@ -25,6 +25,8 @@ import CashExpress from './layout/CashExpress';
 import { fetchAccountTypesAsync } from './redux/accountTypes/AccountTypesAction';
 import { fetchBanksAsync } from './redux/banks/BanksAction';
 import { setAppLoadedAttempt } from './redux/fultechs/FulTechsActions';
+import { selectIsFetchingImages } from './redux/Images/ImagesSelectors';
+import { fetchImagesAsync } from './redux/Images/ImagesActions';
 
 class App extends React.Component{
   compReady = false;
@@ -40,7 +42,8 @@ class App extends React.Component{
       fetchStatusesAsync,
       fetchAccountsAsync,
       fetchAccountTypesAsync,
-      fetchBanksAsync
+      fetchBanksAsync,
+      fetchImagesAsync
     } = this.props
     this.compReady = true;
     const userId = window.localStorage.getItem('userId');
@@ -54,6 +57,7 @@ class App extends React.Component{
     fetchAllOrdersAsync()
     fetchAccountTypesAsync()
     fetchBanksAsync()
+    fetchImagesAsync()
   }
   UNSAFE_componentWillMount(){
     const userId = window.localStorage.getItem('userId');
@@ -102,7 +106,8 @@ const mapStateToProps = createStructuredSelector({
   selectIsFetchingCities,
   selectIsFetchingCurrencies,
   selectIsFetchingStatuses,
-  selectIsFetchingBanks
+  selectIsFetchingBanks,
+  selectIsFetchingImages
 })
 
 const mapDispatchToProps = {
@@ -117,6 +122,7 @@ const mapDispatchToProps = {
   fetchAllOrdersAsync,
   fetchAccountTypesAsync,
   fetchBanksAsync,
+  fetchImagesAsync,
   appIsLoaded: setAppLoadedAttempt
 }
 

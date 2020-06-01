@@ -13,6 +13,7 @@ import DefaultParamsReducer from './defaults/default.reducer'
 import FultechsReducer from './fultechs/FultechsReducer'
 import AccountTypesReducer from './accountTypes/AccountTypesReducer'
 import BanksReducer from './banks/BanksReducer'
+import ImagesReducer from './Images/ImagesReducer'
 import AccountEntriesReducer from './accountEntries/AccountEntriesReducer'
 
 export default combineReducers({
@@ -29,5 +30,6 @@ export default combineReducers({
     fultechs: FultechsReducer,
     accountTypes: AccountTypesReducer,
     banks: BanksReducer,
+    images: ImagesReducer,
     accountEntries: AccountEntriesReducer
 })

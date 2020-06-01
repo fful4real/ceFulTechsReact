@@ -9,6 +9,8 @@ import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProf
 import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
 import { selectIsAppLoaded } from '../../../../redux/fultechs/FultechsSelectors'
 import { Dropdown } from 'react-bootstrap'
+import FulTechsTooltip from '../../../../components/FulTechsTooltip'
+import { ImageUrl } from '../../../../api-route'
 
 const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
     
@@ -202,6 +204,7 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
         }
         return false
     })
+    console.log(customer.profileImage)
     if(newOrders.length){
         newOrders.map(order=>{
             neworder = {
@@ -244,8 +247,11 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
                                         </Dropdown>
                                     </div>}
                                     <div className="media-img-wrap  d-flex">
-                                        <div className="customer-avatar avatar">
-                                            <img src={avatar1} alt="user" className="avatar-img rounded-circle"></img>
+                                        <div className="customer-avatar avatar position-relative">
+                                            <FulTechsTooltip tooltipMessage="update profile picture">
+                                                <i className="ion ion-ios-create text-muted position-absolute cursor-pointer t-0 r-0" onClick={()=>setModal('modifyProfile')}></i>
+                                            </FulTechsTooltip>
+                                            <img src={customer.profileImage?ImageUrl+customer.profileImage.url:avatar1} alt="user" className="avatar-img rounded-circle"></img>
                                         </div>
                                     </div>
                                     <div className="media-body">
@@ -301,8 +307,21 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col-lg-12">
-                                            <button className="btn btn-link btn-block" onClick={()=>{setModalHeading('Create Order');setModal('newCustomerOrder')}}>Place New Order</button>
+                                        <div className="col-lg-6 col-md-6 col-sm-12">
+                                            <button 
+                                                className="btn btn-link btn-block" 
+                                                onClick={()=>{setModalHeading('Receive Order');setModal('newCustomerOrder')}}
+                                            >
+                                                Receive Order
+                                            </button>
+                                        </div>
+                                        <div className="col-lg-6 col-md-6 col-sm-12">
+                                            <button 
+                                                className="btn btn-link btn-block" 
+                                                onClick={()=>{setModalHeading('Send Order');setModal('newCustomerOrder')}}
+                                            >
+                                                Send Order
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

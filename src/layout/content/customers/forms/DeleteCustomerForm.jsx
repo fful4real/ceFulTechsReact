@@ -35,7 +35,6 @@ const DeleteCustomerForm = ({cities, deleteCustomer, modalHeading, setModalHeadi
                         
                         Axios.delete(`/customers/${customer.id}`)
                                 .then(resp =>{
-                                        console.log(resp)
                                         showModalAlert('success', 'block', 'Customer has been deleted')
                                         setTimeout(() => {
                                             closeModal()
