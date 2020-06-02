@@ -190,5 +190,11 @@ export const selectCustomersPerPage = createSelector(
     customersState => customersState.customersPerPage
 )
 
+// Select is sent by
+export const selectIsSentBy = createSelector(
+    [selectCustomersState],
+    customersState => customersState.isSentBy
+)
+
 
 

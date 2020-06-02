@@ -15,20 +15,21 @@ const ImageUpload = ({name="imageUploade", handleChange, updateImages, images}) 
     }
     const [isSubmitting, setIsSubmitting] = useState(false)
     const handleImageChangeChange = (e)=>{
-        setIsSubmitting(true)
         let formData = new FormData()
         const file = e.target.files[0]
-        handleChange(isSubmitting)
+        handleChange(true)
+        setIsSubmitting(true)
         formData.append('file', file)
         Axios.post('/images', formData, config)
           .then(function (response) {
             images = [response.data, ...images]
             updateImages(images)
             setIsSubmitting(false)
-            console.log(response);
+            handleChange(false)
           })
           .catch(function (error) {
             setIsSubmitting(false)
+            handleChange(false)
             console.log(error);
           });
     }

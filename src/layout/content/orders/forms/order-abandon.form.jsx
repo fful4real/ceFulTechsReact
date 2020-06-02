@@ -224,7 +224,7 @@ const OrderAbandonForm = ({updateOrder,user, order,statuses,orders, closeModal})
                         </Form.Group>
                         <Form.Group as={Col} md="6" className="mb-0" controlId="validationCancel">
                             <Button className="btn-block" onClick={closeModal} disabled={isSubmitting} variant="secondary" size="lg" type="button">
-                                Cancel
+                                Close
                             </Button>
                         </Form.Group>
                     </Form.Row>

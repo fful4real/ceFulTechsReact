@@ -187,7 +187,7 @@ const TransferAmountForm = ({updateAccounts,match, account, closeModal,accounts,
                         </Form.Group>
                         <Form.Group as={Col} md="6" className="mb-md-0 mb-lg-0 mb-s-5" controlId="validationCancel">
                             <Button className="btn-block" onClick={closeModal} disabled={isSubmitting} variant="secondary" size="lg" type="button">
-                                Cancel
+                                Close
                             </Button>
                         </Form.Group>
                     </Form.Row>

@@ -26,11 +26,11 @@ const ModifyCustomerProfileImageForm = ({images, updateCustomer, modalHeading, s
 
     return (
         <>
-        <div className="row">
+        <div className="row" style={{maxHeight:'250px', overflowX:'scroll'}}>
             {
                 images.map(image=>(
                     <div key={`status-${uid(image.id)}`} 
-                        className="col-md-4 col-sm-6 col-lg-2 "
+                        className="col-md-4 col-sm-6 col-lg-2 mb-md-10 mb-lg-20 mb-sm-10"
                         onClick={()=>setActiveImage(image.id)} 
                         style={{height:"100px", overflow:"hidden"}}
                     >
@@ -53,10 +53,9 @@ const ModifyCustomerProfileImageForm = ({images, updateCustomer, modalHeading, s
                             const processValues = {
                                 profileImage: `/api/images/${activeImage}`
                             }
-                            console.log(activeImage, JSON.stringify(processValues,null,2))
+                            
                             AxiosAgent.request('patch', API_ROUTES.customers(customer.id), null, processValues)
                                     .then(resp =>{
-                                            console.log(resp)
                                             updateCustomer(resp.data)
                                             showModalAlert('success', 'check-circle', 'Profile image updated')
                                             setSubmitting(false)

@@ -136,6 +136,17 @@ export const setCustomerModalHeadingAttempt = (heading) =>{
     }
 }
 
+// Set is Sent By
+export const setIsSentBy = sentBy =>({
+    type:CustomersActionTypes.SET_IS_SENT_BY,
+    sentBy
+})
+export const setIsSentByAttempt = (sentBy) =>{
+    return dispatch =>{
+        dispatch(setIsSentBy(sentBy))
+    }
+}
+
 // Update existing customer
 export const updateCustomer = customer =>({
     type: CustomersActionTypes.UPDATE_CUSTOMER,

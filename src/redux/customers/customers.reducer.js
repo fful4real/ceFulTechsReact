@@ -17,7 +17,8 @@ const INITIAL_STATE = {
     customerModal: '',
     showCustomerModal: false,
     currentCustomer: null,
-    customerModalHeading:"Add Customer"
+    customerModalHeading:"Add Customer",
+    isSentBy: false
 }
 
 let customers = [],
@@ -121,6 +122,12 @@ const customersReducer = (state=INITIAL_STATE,action)=>{
             return{
                 ...state,
                 customers
+            }
+        case CustomersActionTypes.SET_IS_SENT_BY:
+            
+            return{
+                ...state,
+                isSentBy:action.sentBy
             }
     
         default:

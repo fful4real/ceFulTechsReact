@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.olhhs.com/'
+const BASE_URL = 'http://127.0.0.1:8000/'
 const API_BASE_URL = BASE_URL+'api/'
 
 export const ImageUrl = BASE_URL+'images/'

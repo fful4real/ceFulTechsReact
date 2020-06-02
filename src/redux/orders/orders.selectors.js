@@ -19,7 +19,12 @@ export const selectOrders = createSelector(
             customer: {...order.customer,
                  firstName:capitalizeFirstLetter(order.customer.firstName), 
                  lastName: order.customer.lastName.toUpperCase()
-                }
+                },
+            sentBy: order.sentBy?{
+                ...order.sentBy,
+                firstName:capitalizeFirstLetter(order.sentBy.firstName),
+                lastName: order.sentBy.lastName.toUpperCase()
+            }:''
         }
     ))
 )

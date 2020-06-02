@@ -13,15 +13,15 @@ import Alert from '../../components/alert/alert';
 import { addOrderToState } from '../../redux/orders/orders.actions';
 import { addOrderToCustomer, addCustomerToState } from '../../redux/customers/customers.action';
 import { createStructuredSelector } from 'reselect';
-import { selectCustomers, selectCurrentCustomer } from '../../redux/customers/customers.selectors';
+import { selectCustomers, selectCurrentCustomer, selectIsSentBy } from '../../redux/customers/customers.selectors';
 import { selectCurrencies } from '../../redux/currencies/currencies.selectors';
 import { selectCities } from '../../redux/cities/cities.selectors';
-import { sanitizeString, customerExists } from '../../helpers/helper';
+import { sanitizeString, customerExists, capitalizeFirstLetter } from '../../helpers/helper';
 import { selectIsOrderFromCustomer } from '../../redux/orders/orders.selectors';
 import { selectAccounts, selectReceivingAccount } from '../../redux/accounts/accounts.selector';
 import { updateAccountAsync } from '../../redux/accounts/accounts.action';
 
-const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder, receiving=false})=>{
+const CreateOrderForm = ({isSentByCustomer, receivingAccountId, customers,closeModal,updateAccounts, accounts, currentCustomer, addCustomerToState, currencies, cities, addOrderToState, addOrderToCustomer, isCustomersOrder, receiving=false})=>{
     const receivingAccount = receiving?accounts.filter(account=>account.id===receivingAccountId)[0]:null
     const currencyInObj = currencies.filter(currency=>currency.currencyCode==="AED")[0]
     const [searchString, setSearchString] = useState('');
@@ -32,26 +32,28 @@ const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccount
                 customer.lastName.toLowerCase().indexOf(searchString.toLowerCase())!==-1||
                 customer.mobileNumber.toLowerCase().indexOf(searchString.toLowerCase())!==-1
     }
-    let customer = null
+    let customer = null,
+        isSentByBool = false
 
     if (isCustomersOrder) {
         customer = customers.filter(customer=>parseInt(customer.id)===parseInt(currentCustomer))[0]
+        isSentByBool = !isSentByCustomer&&customer
     }
     
     const toggleShow = show=>setShowDropdown(show);
     let initialVals = {
-        customerNumber:customer?customer.mobileNumber:'',
+        customerNumber:isSentByBool?customer.mobileNumber:'',
         amountIn:'',
         amountOut:'',
         currencyIn:receivingAccount?`/api/currencies/${receivingAccount.currency.id}`:'',
         currencyOut: '',
-        firstName:customer?customer.firstName:'',
-        lastName:customer?customer.lastName:'',
-        customerAddress:customer?customer.address:'',
-        customerTown:customer?customer.fkCity.code:'',
+        firstName:isSentByBool?customer.firstName:'',
+        lastName:isSentByBool?customer.lastName:'',
+        customerAddress:isSentByBool?customer.address:'',
+        customerTown:isSentByBool?customer.fkCity.code:'DLA',
         orderNote:'',
-        sentByName:'',
-        sentBy:''
+        sentByName:!isSentByBool&&customer?capitalizeFirstLetter(customer.firstName):'',
+        sentBy:!isSentByBool&&customer?`/api/customers/${customer.id}`:'',
 
     }
 
@@ -109,6 +111,7 @@ const CreateOrderForm = ({receivingAccountId, customers,closeModal,updateAccount
                                     ...orderValues,
                                     creditingAccount:receivingAccountId
                                     }:orderValues
+
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
                                         const newOrder = resp.data
@@ -527,7 +530,8 @@ const mapDispatchToProps = {
     currentCustomer: selectCurrentCustomer,
     isCustomersOrder: selectIsOrderFromCustomer,
     accounts: selectAccounts,
-    receivingAccountId: selectReceivingAccount
+    receivingAccountId: selectReceivingAccount,
+    isSentByCustomer: selectIsSentBy
   })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderForm)

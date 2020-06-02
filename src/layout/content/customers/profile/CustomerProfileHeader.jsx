@@ -6,18 +6,23 @@ import { createStructuredSelector } from 'reselect'
 import { withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import DisplayCustomerProfileOrderDetail from '../components/DisplayCustomerProfileOrderDetail'
-import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt } from '../../../../redux/customers/customers.action'
+import { setCustomerModalAsync, setCurrentCustomerAttempt, setCustomerModalHeadingAttempt, setIsSentByAttempt } from '../../../../redux/customers/customers.action'
 import { selectIsAppLoaded } from '../../../../redux/fultechs/FultechsSelectors'
 import { Dropdown } from 'react-bootstrap'
 import FulTechsTooltip from '../../../../components/FulTechsTooltip'
 import { ImageUrl } from '../../../../api-route'
 
-const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
+const CustomerProfileHeader = ({setIsSentBy,customer,appIsLoaded, currentCustomer, customers,setModalHeading, setModal, setCustomer}) => {
     
     useEffect(() => {
         setCustomer(customer.id)
     }, [setCustomer,customer.id])
 
+    const handleCustomerOrder = (title, isSentBy) => {
+        setIsSentBy(isSentBy)
+        setModalHeading(title)
+        setModal('newCustomerOrder')
+    }
     if (currentCustomer&&!customer) {
         customer = customers.filter(mapCustomer=>mapCustomer.id===currentCustomer)[0]
     }
@@ -204,7 +209,7 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
         }
         return false
     })
-    console.log(customer.profileImage)
+    
     if(newOrders.length){
         newOrders.map(order=>{
             neworder = {
@@ -310,7 +315,7 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
                                         <div className="col-lg-6 col-md-6 col-sm-12">
                                             <button 
                                                 className="btn btn-link btn-block" 
-                                                onClick={()=>{setModalHeading('Receive Order');setModal('newCustomerOrder')}}
+                                                onClick={()=>{handleCustomerOrder('Receive Order', false)}}
                                             >
                                                 Receive Order
                                             </button>
@@ -318,7 +323,7 @@ const CustomerProfileHeader = ({customer,appIsLoaded, currentCustomer, customers
                                         <div className="col-lg-6 col-md-6 col-sm-12">
                                             <button 
                                                 className="btn btn-link btn-block" 
-                                                onClick={()=>{setModalHeading('Send Order');setModal('newCustomerOrder')}}
+                                                onClick={()=>{handleCustomerOrder('Send Order', true)}}
                                             >
                                                 Send Order
                                             </button>
@@ -343,7 +348,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = {
     setModal: setCustomerModalAsync,
     setCustomer: setCurrentCustomerAttempt,
-    setModalHeading: setCustomerModalHeadingAttempt
+    setModalHeading: setCustomerModalHeadingAttempt,
+    setIsSentBy: setIsSentByAttempt
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CustomerProfileHeader))
