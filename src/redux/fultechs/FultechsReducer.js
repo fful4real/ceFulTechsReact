@@ -15,7 +15,24 @@ export const FULTECHS_INITIAL_STATE = {
         variant:''
     },
     redirectLink:null,
-    isAppLoaded: false
+    isAppLoaded: false,
+    notificationIcons: {
+        customer: {
+            icon: 'account-o',
+            link: 'customers/list',
+            className: 'avatar-text-primart'
+        },
+        ceorder: {
+            icon: 'assignment-o',
+            link: 'orders/new',
+            className: 'avatar-text-success'
+        },
+        ceaccount: {
+            icon:'money-box',
+            link:'accounts/list',
+            className: 'avatar-text-danger'
+        }
+    }
 }
 
 const FultechsReducer = (state=FULTECHS_INITIAL_STATE,action)=>{

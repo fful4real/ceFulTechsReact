@@ -1,7 +1,7 @@
-const BASE_URL = 'http://127.0.0.1:8000/'
+const BASE_URL = 'https://api.olhhs.com/'
 const API_BASE_URL = BASE_URL+'api/'
 
-export const ImageUrl = BASE_URL+'images/'
+export const ImageUrl = BASE_URL+'public/images/'
 
 const API_ROUTES = {
     base_url: API_BASE_URL,
@@ -16,6 +16,7 @@ const API_ROUTES = {
     cities:id => id?`cities/${id}`:'cities',
     banks:id => id?`banks/${id}`:'banks',
     images:id => id?`images/${id}?pagination=0`:'images?pagination=0',
+    notifications:userId => userId?`notifications?notSeenBy=${userId}&pagination=0`:'notifications?pagination=0',
     statuses:id => id?`statuses/${id}`:'statuses',
     orders:id => id?`ce_orders/${id}`:'ce_orders',
 }

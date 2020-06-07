@@ -75,12 +75,9 @@ const CreateAccountForm = ({customers,updateAccounts, currencies, accountTypes, 
                             accountType,
                             currency
                         }
-
-                        console.log(JSON.stringify(processValues,null,2))
                         
                         AxiosAgent.request('post','ce_accounts',null, processValues)
                                 .then(resp =>{
-                                        console.log(resp.data)
                                        accounts = [resp.data, ...accounts]
                                        updateAccounts(accounts)
                                         showModalAlert('success', 'check-circle', 'Account Added')

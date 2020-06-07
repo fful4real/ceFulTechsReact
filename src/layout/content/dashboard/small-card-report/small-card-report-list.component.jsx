@@ -1,13 +1,13 @@
 import React from 'react'
 import SmallCardReportItem from './small-card-report-item.component';
 import { createStructuredSelector } from 'reselect';
-import { selectOrdersPerMonth } from '../../../../redux/orders/orders.selectors';
+import { selectOrdersPerMonth, selectMonthsOrders } from '../../../../redux/orders/orders.selectors';
 import { connect } from 'react-redux';
 
-const SmallCardReportList =({ordersPerMonth})=>{
+const SmallCardReportList =({ordersPerMonth, ordersOfMonth})=>{
     return(
         <div className="hk-row">
-            <SmallCardReportItem title="Orders This Month" value="30" data={ordersPerMonth}/>
+            <SmallCardReportItem title="Orders Per Month" value={ordersOfMonth.length} data={ordersPerMonth}/>
             <SmallCardReportItem title="Received This Month" counterUp="yes" value="124,509"/>
             <SmallCardReportItem title="Sent This Month" value="905" />
             <SmallCardReportItem />
@@ -16,7 +16,8 @@ const SmallCardReportList =({ordersPerMonth})=>{
 }
 
 const mapStateToProps = createStructuredSelector({
-    ordersPerMonth: selectOrdersPerMonth
+    ordersPerMonth: selectOrdersPerMonth,
+    ordersOfMonth: selectMonthsOrders
 })
 
 export default connect(mapStateToProps)(SmallCardReportList)

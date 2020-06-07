@@ -14,6 +14,7 @@ import FultechsReducer from './fultechs/FultechsReducer'
 import AccountTypesReducer from './accountTypes/AccountTypesReducer'
 import BanksReducer from './banks/BanksReducer'
 import ImagesReducer from './Images/ImagesReducer'
+import NotificationsReducer from './notifications/NotificationsReducer'
 import AccountEntriesReducer from './accountEntries/AccountEntriesReducer'
 
 export default combineReducers({
@@ -31,5 +32,6 @@ export default combineReducers({
     accountTypes: AccountTypesReducer,
     banks: BanksReducer,
     images: ImagesReducer,
-    accountEntries: AccountEntriesReducer
+    accountEntries: AccountEntriesReducer,
+    notifications: NotificationsReducer,
 })

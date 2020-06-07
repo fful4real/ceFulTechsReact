@@ -11,7 +11,7 @@ const SmallCardReportItem=({title, counterUp,value, data}) =>{
                     <div className="d-flex align-items-center justify-content-between position-relative">
                         <div>
                             <span className="d-block">
-                                <span className="display-5 font-weight-400 text-dark">$
+                                <span className="display-5 font-weight-400 text-dark">
                                     <span className={counterUp? 'counter-anim':''}>
                                         {value}
                                     </span>

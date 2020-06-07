@@ -52,3 +52,9 @@ export const selectIsAppLoaded = createSelector(
     ftstate => ftstate.isAppLoaded
 )
 
+// Select notificationIcons
+export const selectNotificationIcons = createSelector(
+    [selectFultechsState],
+    ftstate => ftstate.notificationIcons
+)
+

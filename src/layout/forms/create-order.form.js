@@ -111,7 +111,7 @@ const CreateOrderForm = ({isSentByCustomer, receivingAccountId, customers,closeM
                                     ...orderValues,
                                     creditingAccount:receivingAccountId
                                     }:orderValues
-
+                                
                                 AxiosAgent.request('post', API_ROUTES.orders(), null, orderValues)
                                     .then(resp=>{
                                         const newOrder = resp.data

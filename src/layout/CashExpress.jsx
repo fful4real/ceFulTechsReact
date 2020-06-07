@@ -12,6 +12,8 @@ import { fetchAllCustomersAsync } from '../redux/customers/customers.action';
 import { Redirect } from 'react-router-dom';
 import { fetchAllAccountsAsync } from '../redux/accounts/accounts.action';
 import { fetchAllAccountEntriesAsync } from '../redux/accountEntries/AccountEntriesAction';
+import { selectUser } from '../redux/user/user.selectors';
+import { fetchNotificationsAsync } from '../redux/notifications/NotificationsActions';
 
 class CashExpress extends Component {
     constructor(props){
@@ -21,13 +23,22 @@ class CashExpress extends Component {
         }
     }
     componentDidMount() {
-        const {refreshTime,fetchAllAccounts, fetchAllCustomers,fetchAllOrders, isAppLoaded}= this.props
+        const {
+            refreshTime,
+            fetchAllAccounts, 
+            fetchAllCustomers,
+            fetchAllOrders, 
+            isAppLoaded,
+            user,
+            fetchNotifications
+        }= this.props
         this.setState({
             ...this.state,
             refreshInterval: isAppLoaded?setInterval(() => {
                 fetchAllOrders()
                 fetchAllCustomers()
                 fetchAllAccounts()
+                fetchNotifications(user.id)
             }, refreshTime):''
         })
     }
@@ -44,7 +55,9 @@ class CashExpress extends Component {
             fetchAllCustomers, 
             fetchAllAccounts, 
             refreshTime,
-            fetchAllAccountEntries
+            fetchAllAccountEntries,
+            user,
+            fetchNotifications
         } = this.props
         if (prevProps.redirectLink!==redirectLink) {
             return <Redirect to='/customers'  />
@@ -57,6 +70,7 @@ class CashExpress extends Component {
                     fetchAllCustomers()
                     fetchAllAccounts()
                     fetchAllAccountEntries()
+                    fetchNotifications(user.id)
                 }, refreshTime)
             })
         }
@@ -87,13 +101,15 @@ const mapDispatchToProps = {
     fetchAllOrders : fetchAllOrdersAsync,
     fetchAllCustomers: fetchAllCustomersAsync,
     fetchAllAccounts: fetchAllAccountsAsync,
-    fetchAllAccountEntries: fetchAllAccountEntriesAsync
+    fetchAllAccountEntries: fetchAllAccountEntriesAsync,
+    fetchNotifications: fetchNotificationsAsync
 }
 
 const mapStateToProps = createStructuredSelector({
     refreshTime: selectFultechsRefreshTimeInterval,
     redirectLink: selectRedirectLink,
-    isAppLoaded: selectIsAppLoaded
+    isAppLoaded: selectIsAppLoaded,
+    user: selectUser
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CashExpress);
